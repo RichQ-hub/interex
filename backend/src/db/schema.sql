@@ -1,0 +1,159 @@
+-- Initialise database tables.
+-- Run via: \i {absolute_path_to_sql_file}
+--      Sample: \i C:/Users/rrqui/OneDrive/Desktop/Projects/interex/backend/src/db/schema.sql
+
+-- Note: PostgreSQL Shell does this weird thing where the path uses '/' instead of 
+-- the normal '\'.
+
+--------------------------------------------------------------------------------------------------
+
+-- Set the timezone of this database.
+SET TIMEZONE TO 'Australia/NSW';
+
+CREATE TYPE MemberRole AS ENUM ('Admin', 'Moderator', 'Member');
+CREATE TYPE VoteType AS ENUM ('Upvote', 'Downvote');
+
+CREATE TABLE Users (
+  id SERIAL,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL, -- We store the hashed password.
+
+  PRIMARY KEY (id)
+);
+
+-- COMMUNITIES
+CREATE TABLE Communities (
+  id SERIAL,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE Categories (
+  id SERIAL,
+  name VARCHAR(50) NOT NULL,
+  description TEXT,
+
+  PRIMARY KEY (id)
+);
+
+-- This models a 1-many relationship.
+--    Communities can have multiple threads, as well as users can have multiple multiple threads.
+CREATE TABLE Threads (
+  id SERIAL,
+  community_id INT NOT NULL, -- Total participation (A thread must be associated with a community).
+  author INT, -- Can be null. If a user would be deleted, this thread would not be deleted.
+  title VARCHAR(255) NOT NULL,
+  content TEXT,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,
+  FOREIGN KEY (author) REFERENCES Users(id), -- No cascade. If a user would be deleted, this thread would not be deleted. 
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE Comments (
+  id SERIAL,
+  thread_id INT NOT NULL,
+  author INT,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE,
+  FOREIGN KEY (author) REFERENCES Users(id),
+  PRIMARY KEY (id)
+);
+
+-- This models a many-many relationship.
+CREATE TABLE Community_Categories (
+  community_id INT,
+  category_id INT,
+
+  FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES Categories(id) ON DELETE CASCADE,
+  PRIMARY KEY (community_id, category_id)
+);
+
+-- This models a many-many relationship.
+CREATE TABLE Community_Members (
+  community_id INT,
+  member_id INT,
+  role MemberRole NOT NULL DEFAULT 'Member',
+  joined_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,
+  FOREIGN KEY (member_id) REFERENCES Users(id) ON DELETE CASCADE,
+  PRIMARY KEY (community_id, member_id)
+);
+
+-- This models a n-way relationship.
+CREATE TABLE Thread_Votes (
+  user_id INT NOT NULL,
+  thread_id INT NOT NULL,
+  type VoteType,
+
+  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+  FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE,
+  PRIMARY KEY (user_id, thread_id)
+  -- Composite key ensures a user can only upvoate a specific thread only once, as
+  -- the combination of user_id and thread_id is unique.
+
+  -- This heavily relates to 'Functional Dependencies' which promotes good database design (Look at your notes).
+);
+
+-- This models a n-way relationship. (Don't mistake this to be a 1-1 relationship).
+CREATE TABLE Comment_Votes (
+  user_id INT NOT NULL,
+  comment_id INT NOT NULL,
+  type VoteType,
+
+  FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+  FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
+  PRIMARY KEY (user_id, comment_id)
+);
+
+-- This database is in 3NF (3rd Normal Form) I think.
+
+-- RELATIONAL DATABASE DESIGN RESOURCES:
+-- 1: https://www.youtube.com/watch?v=GFQaEYEc8_8
+-- 2: https://www.youtube.com/watch?v=J-drts33N8g
+
+--------------------------------------------------------------------------------------------------------------
+
+-- NOTE: Thread-Votes and Threads tables are not the same.
+-- While they both are involved in 2 1-many relationships where arrows are pointing away from them, they
+-- are different. Since thread_votes uses a composite key to enforce a user can only upvote a thread once.
+-- Whereas a thread tuple has its own id (primary key), and thus doesn't enforce that a user can only
+-- create 1 thread.
+
+--------------------------------------------------------------------------------------------------------------
+
+-- NOTE:
+-- Inheritance is the wrong approach (as seen below) since it doesn't enforce the fact that a user can only
+-- upvote or downvote a single comment only once, since the composite key (vote_id, thread_id) is not a
+-- feasible key to enforce that a user can only vote once on a thread/comment. This is because we can't
+-- have access to user_id attr in the parent table Votes, hence the enforcement cannot be done.
+
+--------------------------------------------------------------------------------------------------------------
+
+-- CREATE TABLE Votes (
+--   id SERIAL,
+--   user_id INT,
+--   type VoteType,
+
+--   FOREIGN KEY (user_id) REFERENCES Users(id),
+--   PRIMARY KEY (id)
+-- );
+
+-- -- The 2 tables below use inheritance.
+-- CREATE TABLE Thread_Votes (
+--   vote_id INT,
+--   thread_id INT,
+
+--   FOREIGN KEY (thread_id) REFERENCES Threads(id),
+--   FOREIGN KEY (vote_id) REFERENCES Votes(id),
+--   PRIMARY KEY (vote_id, thread_id) -- Vote id is both a primary and foreign key.
+-- );
