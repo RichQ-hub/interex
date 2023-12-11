@@ -10,6 +10,7 @@
 -- Set the timezone of this database.
 SET TIMEZONE TO 'Australia/NSW';
 
+CREATE DOMAIN EmailString AS VARCHAR(64) CHECK (VALUE ~ '^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$');
 CREATE TYPE MemberRole AS ENUM ('Admin', 'Moderator', 'Member');
 CREATE TYPE VoteType AS ENUM ('Upvote', 'Downvote');
 
@@ -46,12 +47,14 @@ CREATE TABLE Threads (
   id SERIAL,
   community_id INT NOT NULL, -- Total participation (A thread must be associated with a community).
   author INT, -- Can be null. If a user would be deleted, this thread would not be deleted.
+  pinned_by INT, -- NULL value represents this thread as not being pinned.
   title VARCHAR(255) NOT NULL,
   content TEXT,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,
   FOREIGN KEY (author) REFERENCES Users(id), -- No cascade. If a user would be deleted, this thread would not be deleted. 
+  FOREIGN KEY (pinned_by) REFERENCES Users(id),
   PRIMARY KEY (id)
 );
 
@@ -89,11 +92,11 @@ CREATE TABLE Community_Members (
   PRIMARY KEY (community_id, member_id)
 );
 
--- This models a n-way relationship.
+-- This models a many-many relationship.
 CREATE TABLE Thread_Votes (
   user_id INT NOT NULL,
   thread_id INT NOT NULL,
-  type VoteType,
+  type VoteType NOT NULL,
 
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
   FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE,
@@ -104,22 +107,41 @@ CREATE TABLE Thread_Votes (
   -- This heavily relates to 'Functional Dependencies' which promotes good database design (Look at your notes).
 );
 
--- This models a n-way relationship. (Don't mistake this to be a 1-1 relationship).
+-- This models a many-many relationship.
 CREATE TABLE Comment_Votes (
   user_id INT NOT NULL,
   comment_id INT NOT NULL,
-  type VoteType,
+  type VoteType NOT NULL,
 
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
   FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, comment_id)
 );
 
+--------------------------------------------------------------------------------------------------------------
+
 -- This database is in 3NF (3rd Normal Form) I think.
 
 -- RELATIONAL DATABASE DESIGN RESOURCES:
 -- 1: https://www.youtube.com/watch?v=GFQaEYEc8_8
 -- 2: https://www.youtube.com/watch?v=J-drts33N8g
+
+--------------------------------------------------------------------------------------------------------------
+
+-- This schema is different from the above comment_votes table since it is not a composite primary key
+-- but instead has its own primary key. This enables users to vote a comment multiple times, whereas
+-- the above many-many relationship does not.
+
+-- CREATE TABLE Comment_Votes (
+--   id SERIAL,
+--   user_id INT NOT NULL,
+--   comment_id INT NOT NULL,
+--   type VoteType NOT NULL,
+
+--   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+--   FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
+--   PRIMARY KEY (id)
+-- );
 
 --------------------------------------------------------------------------------------------------------------
 

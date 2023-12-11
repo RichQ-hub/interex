@@ -17,6 +17,4 @@ export default {
 	query: (text: string, params?: any[]) => pool.query(text, params),
 };
 
-// Wonder if you can just do [export default pool.query;]? TEST THIS
-
 // Link to types: https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/pg/index.d.ts

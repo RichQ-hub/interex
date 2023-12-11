@@ -4,6 +4,7 @@
 -- Run via: \i {absolute_path_to_sql_file}
 --      Sample: \i C:/Users/rrqui/OneDrive/Desktop/Projects/interex/backend/src/db/cleanup.sql
 
+DROP DOMAIN IF EXISTS EmailString CASCADE;
 DROP TYPE IF EXISTS MemberRole CASCADE;
 DROP TYPE IF EXISTS VoteType CASCADE;
 
