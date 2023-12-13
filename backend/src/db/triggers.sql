@@ -23,7 +23,7 @@ BEGIN
   IF NEW.pinned_by NOT IN (
     SELECT member_id FROM community_moderators(OLD.community_id)
   ) THEN
-    RAISE EXCEPTION 'User is not a moderator';
+    RAISE EXCEPTION 'User is not a moderator or admin';
   END IF;
 
   RETURN NEW;

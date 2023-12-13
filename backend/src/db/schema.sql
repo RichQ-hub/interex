@@ -26,7 +26,7 @@ CREATE TABLE Users (
 -- COMMUNITIES
 CREATE TABLE Communities (
   id SERIAL,
-  name VARCHAR(255) NOT NULL,
+  name VARCHAR(255) UNIQUE NOT NULL,
   description TEXT,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
@@ -35,7 +35,7 @@ CREATE TABLE Communities (
 
 CREATE TABLE Categories (
   id SERIAL,
-  name VARCHAR(50) NOT NULL,
+  name VARCHAR(50) UNIQUE NOT NULL,
   description TEXT,
 
   PRIMARY KEY (id)
