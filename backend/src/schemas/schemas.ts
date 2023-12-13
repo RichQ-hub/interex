@@ -13,4 +13,5 @@ const CommunityCard = CommunitySchema.omit({
   description: true,
 });
 
-export type CommunityDetails = z.infer<typeof CommunityCard>;
+export type CommunityDetails = z.infer<typeof CommunitySchema>;
+export type CommunityCardDetails = z.infer<typeof CommunityCard>;

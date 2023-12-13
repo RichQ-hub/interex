@@ -42,14 +42,14 @@ CREATE TABLE Categories (
 );
 
 -- This models a 1-many relationship.
---    Communities can have multiple threads, as well as users can have multiple multiple threads.
+-- Communities can have multiple threads, as well as users can have multiple multiple threads.
 CREATE TABLE Threads (
   id SERIAL,
   community_id INT NOT NULL, -- Total participation (A thread must be associated with a community).
   author INT, -- Can be null. If a user would be deleted, this thread would not be deleted.
   pinned_by INT, -- NULL value represents this thread as not being pinned.
   title VARCHAR(255) NOT NULL,
-  content TEXT,
+  content TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,

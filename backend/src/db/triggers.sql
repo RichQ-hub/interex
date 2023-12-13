@@ -17,13 +17,13 @@ CREATE OR REPLACE FUNCTION
 AS $$
 BEGIN
   if NEW.pinned_by IS NULL THEN
-    RAISE EXCEPTION 'Thread cannot be pinned by a non-existant user';
+    RETURN NEW;
   END IF;
 
   IF NEW.pinned_by NOT IN (
     SELECT member_id FROM community_moderators(OLD.community_id)
   ) THEN
-    RAISE EXCEPTION 'User is not a moderator or admin';
+    RAISE EXCEPTION 'User is not a moderator or admin in this community';
   END IF;
 
   RETURN NEW;
@@ -34,3 +34,7 @@ CREATE OR REPLACE TRIGGER is_community_moderator
   AFTER UPDATE ON Threads
   FOR EACH ROW
   EXECUTE PROCEDURE valid_community_member();
+
+-- This trigger enforces the fact that should we update a thread so that it is pinned
+-- by some user, this trigger first checks if the user is a moderator or admin
+-- in this community to be able to pin this thread.
