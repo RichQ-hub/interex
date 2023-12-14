@@ -24,13 +24,13 @@ export const catchErrors = (fn: any) => async (req: Request, res: Response) => {
   } catch (err: any) {
     if (err instanceof InputError) {
       logger.error(err.message);
-      res.status(400).send({ error: err.message });
+      res.status(400).send({ error: `InputError: ${err.message}` });
     } else if (err instanceof AccessError) {
       logger.error(err.message);
-      res.status(403).send({ error: err.message });
-    } else {
-      console.log(err);
-      res.status(500).send({ error: 'A system error ocurred' });
+      res.status(403).send({ error: `AccessError: ${err.message}` });
+    } else if (err instanceof Error) {
+      logger.error(err.message);
+      res.status(500).send({ error: err.message });
     }
   }
 };
