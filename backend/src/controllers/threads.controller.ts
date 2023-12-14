@@ -138,6 +138,14 @@ export const voteThread = async (req: Request, res: Response) => {
     `, [voteType, threadId, userId]);
   }
 
+  // If there was no existing vote, we create a new one.
+  await db.query(`
+    INSERT INTO Thread_Votes (user_id, thread_id, type)
+    VALUES ($1, $2, $3);
+  `, [userId, threadId, voteType]);
+
+  // IMPORVEMENT:
+  // Could cache popular posts in redis.
 }
 
 export const pinThread = async (req: Request, res: Response) => {
