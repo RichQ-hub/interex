@@ -106,6 +106,22 @@ export const getComments = async (req: Request, res: Response) => {
 export const createComment = async (req: Request, res: Response) => {
   const { threadId } = req.params;
 
+  const {
+    userId,
+    content
+  } = req.body;
+
+  const result = await db.query(`
+    INSERT INTO Comments (thread_id, author, content)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `, [threadId, userId, content]);
+
+  const newComment = result.rows[0];
+
+  res.json({
+    comment: newComment,
+  })
 }
 
 export const updateComment = async (req: Request, res: Response) => {
