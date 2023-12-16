@@ -64,9 +64,11 @@ CREATE TABLE Comments (
   author INT,
   content TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  reply_to INT, -- NULL means that this comment is not replying to any comment.
 
   FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE,
   FOREIGN KEY (author) REFERENCES Users(id),
+  FOREIGN KEY (reply_to) REFERENCES Comments(id),
   PRIMARY KEY (id)
 );
 

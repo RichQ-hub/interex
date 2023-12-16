@@ -1,27 +1,60 @@
-insert into users (username, email, password) values ('mike', '2@gmail.com', 'no');
-insert into users (username, email, password) values ('sarah', 'sarah@gmail.com', 'no');
+INSERT INTO Users (username, email, password)
+VALUES
+  ('mike', '2@gmail.com', 'no'),
+  ('sarah', 'sarah@gmail.com', 'no')
+;
 
-insert into communities (name) values ('Minecraft');
-insert into communities (name) values ('Real Estate');
-insert into communities (name) values ('Cooking');
+INSERT INTO Communities (name)
+VALUES
+  ('Minecraft'),
+  ('Real Estate'),
+  ('Cooking')
+;
 
-insert into categories (name) values ('Gaming');
-insert into categories (name) values ('Sports');
-insert into categories (name) values ('News');
-insert into categories (name) values ('Politics');
-insert into categories (name) values ('Gambling');
-insert into categories (name) values ('Housing');
+INSERT INTO Categories (name)
+VALUES
+  ('Gaming'),
+  ('Sports'),
+  ('News'),
+  ('Politics'),
+  ('Gambling'),
+  ('Housing')
+;
 
-insert into community_categories (community_id, category_id) values (1, 1);
-insert into community_categories (community_id, category_id) values (1, 6);
-insert into community_categories (community_id, category_id) values (2, 6);
-insert into community_categories (community_id, category_id) values (2, 3);
-insert into community_categories (community_id, category_id) values (2, 4);
+INSERT INTO Community_Categories (community_id, category_id)
+VALUES
+  (1, 1),
+  (1, 6),
+  (2, 6),
+  (2, 3),
+  (2, 4)
+;
 
-insert into community_members (community_id, member_id, role) values (1, 1, 'Member');
-insert into community_members (community_id, member_id, role) values (1, 2, 'Moderator');
+INSERT INTO Community_Members (community_id, member_id, role)
+VALUES
+  (1, 1, 'Member'),
+  (1, 2, 'Moderator')
+;
 
-insert into threads (community_id, author, title) values (1, 1, 'Is this game worth it?');
+INSERT INTO Threads (community_id, author, title, content)
+VALUES
+  (1, 1, 'Is this game worth it?', 'what the title says')
+;
+
+
+INSERT INTO Comments (thread_id, content)
+VALUES
+  (1, 'This is amazing, so yes'),
+  (1, 'YES THE BLOCK IS THE WAY')
+;
+
+INSERT INTO Comments (thread_id, reply_to, content)
+VALUES
+  (1, 1, 'Reply1'),
+  (1, 1, 'Reply2'),
+  (1, 2, 'Reply3'),
+  (1, 3, 'Reply to Reply 1')
+;
 
 -- update threads set pinned_by = 1 where id = 1;
 

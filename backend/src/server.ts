@@ -9,6 +9,7 @@ import logger from './utils/logger';
 // Routers.
 import communities from './routers/communities';
 import threads from './routers/threads';
+import comments from './routers/comments';
 
 // Need to specify the direct path to the .env file to have access to its variables.
 // Resource: https://stackoverflow.com/questions/42335016/dotenv-file-is-not-loading-environment-variables (2nd answer).
@@ -64,7 +65,7 @@ app.use(express.json());
 const rootRoute = '/api/v1';
 app.use(`${rootRoute}/communities`, communities);
 app.use(`${rootRoute}/threads`, threads);
-// app.use(`${rootRoute}/restaurants`, restaurants);
+app.use(`${rootRoute}/comments`, comments);
 // app.use(`${rootRoute}/auth`, auth);
 
 // --------------------------------------------------------------------------------
