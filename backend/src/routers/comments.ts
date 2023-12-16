@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { catchErrors } from '../utils/catchErrors';
-import { getCommentsV2 } from '../controllers/comments.controller';
+import { getComments } from '../controllers/comments.controller';
 
 // Controllers.
 
 const router = Router();
 
-router.get('/:threadId', catchErrors(getCommentsV2));
+router.get('/:threadId', catchErrors(getComments));
 
 export default router;
