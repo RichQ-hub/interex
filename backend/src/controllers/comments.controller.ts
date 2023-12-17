@@ -125,17 +125,108 @@ export const createComment = async (req: Request, res: Response) => {
 }
 
 export const updateComment = async (req: Request, res: Response) => {
+  const { commentId } = req.params;
 
+  const { content } = req.body;
+
+  const result = await db.query(`
+    UPDATE Comments
+    SET content = $1
+    WHERE id = $2
+    RETURNING *;
+  `, [content, commentId]);
+
+  const updatedComment = result.rows[0];
+
+  res.json({
+    comment: updatedComment,
+  })
 }
 
 export const deleteComment = async (req: Request, res: Response) => {
+  const { commentId } = req.params;
 
+  const result = await db.query(`
+    DELETE FROM Comments
+    WHERE id = $1
+    RETURNING *;
+  `, [commentId]);
+
+  const deletedComment = result.rows[0];
+
+  res.json({
+    comment: deletedComment,
+  }) 
 }
 
 export const voteComment = async (req: Request, res: Response) => {
+  const { commentId } = req.params;
 
+  const {
+    userId,
+    voteType,
+  }: {
+    userId: string;
+    voteType: 'Upvote' | 'Downvote';
+  } = req.body;
+
+  // Check for whether the current user has already voted on this comment.
+  const existingVote = await db.query(`
+    SELECT type
+    FROM Comment_Votes
+    WHERE comment_id = $1 AND user_id = $2;
+  `, [commentId, userId]);
+
+  if (existingVote.rowCount) {
+    const existingVoteType = existingVote.rows[0];
+
+    // Case where if we upvote the same thread twice, we delete that vote.
+    if (existingVoteType === voteType) {
+      await db.query(`
+        DELETE FROM Comment_Votes
+        WHERE comment_id = $1 AND user_id = $2;
+      `, [commentId, userId]);
+    }
+
+    // Case when there is an existing vote, but the vote type we passed is not the same,
+    // so we just return vote the opposite vote.
+    await db.query(`
+      UPDATE  Comment_Votes
+      SET     type = $1
+      WHERE   comment_id = $2 AND user_id = $3;
+    `, [voteType, commentId, userId]);
+  }
+
+  // If there was no existing vote, we create a new one.
+  await db.query(`
+    INSERT INTO Comment_Votes (user_id, comment_id, type)
+    VALUES ($1, $2, $3);
+  `, [userId, commentId, voteType]);
+
+  // IMPORVEMENT:
+  // Could cache popular posts in redis.
 }
 
+/**
+ * Replies to the given commentId in req.params.
+ */
 export const replyComment = async (req: Request, res: Response) => {
-  
+  const { threadId, commentId } = req.params;
+
+  const {
+    userId,
+    content
+  } = req.body;
+
+  const result = await db.query(`
+    INSERT INTO Comments (thread_id, author, content, reply_to)
+    VALUES ($1, $2, $3, $4)
+    returning *;
+  `, [threadId, userId, content, commentId]);
+
+  const newComment = result.rows[0];
+
+  res.json({
+    comment: newComment,
+  })
 }
