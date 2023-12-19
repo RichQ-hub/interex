@@ -121,7 +121,7 @@ export const voteThread = async (req: Request, res: Response) => {
   if (existingVote.rowCount) {
     const existingVoteType = existingVote.rows[0];
 
-    // Case where if we upvote the same thread twice, it deleted that vote.
+    // Case where if we upvote the same thread twice, we delete that vote.
     if (existingVoteType === voteType) {
       await db.query(`
         DELETE FROM Thread_Votes

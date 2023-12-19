@@ -10,6 +10,7 @@ import logger from './utils/logger';
 import communities from './routers/communities';
 import threads from './routers/threads';
 import comments from './routers/comments';
+import auth from './routers/auth';
 
 // Need to specify the direct path to the .env file to have access to its variables.
 // Resource: https://stackoverflow.com/questions/42335016/dotenv-file-is-not-loading-environment-variables (2nd answer).
@@ -66,7 +67,7 @@ const rootRoute = '/api/v1';
 app.use(`${rootRoute}/communities`, communities);
 app.use(`${rootRoute}/threads`, threads);
 app.use(`${rootRoute}/comments`, comments);
-// app.use(`${rootRoute}/auth`, auth);
+app.use(`${rootRoute}/auth`, auth);
 
 // --------------------------------------------------------------------------------
 // Server Listen

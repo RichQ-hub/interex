@@ -4,7 +4,7 @@ import logger from '../utils/logger';
 
 /**
  * Middleware wrapper function that verifies the req body or query properties matching
- * the given schema.
+ * the given zod schema.
  */
 const validation = (schema: ZodSchema, property: 'body' | 'query') => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -24,3 +24,5 @@ const validation = (schema: ZodSchema, property: 'body' | 'query') => {
     next();
   }
 }
+
+export default validation;
