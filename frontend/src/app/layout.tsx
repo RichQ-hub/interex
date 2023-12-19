@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Fira_Sans } from 'next/font/google'
 import './globals.css'
+import { ClerkProvider } from '@clerk/nextjs';
 
 const fira = Fira_Sans({
   weight: ['400', '500', '700']
@@ -17,8 +18,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={fira.className}>{children}</body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={fira.className}>{children}</body>
+      </html>
+    </ClerkProvider>
   )
 }
