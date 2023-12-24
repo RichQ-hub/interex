@@ -16,11 +16,10 @@ CREATE TYPE VoteType AS ENUM ('Upvote', 'Downvote');
 
 CREATE TABLE Users (
   id SERIAL,
-  clerk_id TEXT NOT NULL,
   username VARCHAR(50) UNIQUE NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   avatar_url VARCHAR(255),
-  -- password VARCHAR(255) NOT NULL, -- We store the hashed password. (PASSWORD IS MANAGED BY CLERK).
+  password VARCHAR(255) NOT NULL, -- Store the hashed password.
 
   PRIMARY KEY (id)
 );

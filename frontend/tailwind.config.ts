@@ -8,13 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-      },
       colors: {
-        
+        'interex-nav': '#0E141B',
+        'interex-brand': '#F942FD',
+        'interex-blue': '#66C0F4',
       }
     },
   },
