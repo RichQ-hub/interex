@@ -1,7 +1,7 @@
 SELECT  c.name as community_name
 FROM    Communities c
-        JOIN Community_Categories cc ON cc.community_id = c.id
-        JOIN Categories cat ON cat.id = cc.category_id
+        LEFT OUTER JOIN Community_Categories cc ON cc.community_id = c.id
+        LEFT OUTER JOIN Categories cat ON cat.id = cc.category_id
 WHERE   cat.name IN ('Gaming', 'Housing')
 GROUP BY c.name
 HAVING  count(cat.id) = 2;
@@ -32,7 +32,7 @@ HAVING  count(cat.id) = 2;
 -- EVERY category in that ('Gaming', 'Housing') set. 
 
 -- ALTERNATIVE:
--- We not change to count(cat.id) > 2? You might think this because we might want to match AT LEAST all the
+-- Why not change to count(cat.id) > 2? You might think this because we might want to match AT LEAST all the
 -- categories. E.g. the community 'PS4' has the matches the following categories ('Gaming', 'Hardware', 'News').
 -- Say we want to filter communities that have the following categories ('Gaming'). In our app, this should
 -- still display 'PS4' since it matches that 'Gaming' category.

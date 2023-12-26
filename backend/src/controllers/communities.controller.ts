@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import db from '../db';
 import { InputError } from '../utils/error';
 
+/**
+ * Helper that obtains a community's categories.
+ */
 const getCommunityCategories = async (communityId: string) => {
   const result = await db.query(`
     SELECT  cat.name
@@ -15,32 +18,25 @@ const getCommunityCategories = async (communityId: string) => {
   return result.rows.map((category) => category.name as string);
 }
 
-/**
- * Helper that returns each community along with each of their cateogories in parallel.
- */
-const getCommunitiesWithCategories = async (communities: { id: string, name: string }[]) => {
-  return await Promise.all(communities.map((com) => {
-    // Return a promise for each community that fetches its categories.
-    return getCommunityCategories(com.id)
-      .then((categories) => {
-        // Reurn this object which is wrapped in a promise.
-        return {
-          id: com.id,
-          name: com.name,
-          categories,
-        }
-      });
-  }))
-}
-
 export const getAllCommunities = async (req: Request, res: Response) => {
   const allCommunities = await db.query(`
-    SELECT  id, name
-    FROM    Communities;
+    SELECT  c.id, c.name, count(m.member_id) as num_members
+    FROM    Communities c
+            LEFT OUTER JOIN Community_Members m ON m.community_id = c.id
+    GROUP BY c.id, c.name;
   `);
 
   // Grab each community's categories in parallel.
-  const communities = await getCommunitiesWithCategories(allCommunities.rows);
+  const communities = await Promise.all(allCommunities.rows.map(async (com) => {
+    // Return a promise for each community that fetches its categories.
+    const categories = await getCommunityCategories(com.id);
+    return {
+      id: com.id,
+      name: com.name,
+      numMembers: com.num_members,
+      categories,
+    }
+  }));
   
   res.json({
     communities,
@@ -52,7 +48,7 @@ export const filterCommunitiesByCategory = async (req: Request, res: Response) =
   const { category } = req.query;
 
   if (!category) {
-    throw new InputError('nice')
+    throw new InputError('No categories were given.')
   }
 
   let categories: string[] = [];
@@ -73,15 +69,34 @@ export const filterCommunitiesByCategory = async (req: Request, res: Response) =
   const result = await db.query(`
     SELECT  c.id, c.name
     FROM    Communities c
-            JOIN Community_Categories cc ON cc.community_id = c.id
-            JOIN Categories cat ON cat.id = cc.category_id
+            LEFT OUTER JOIN Community_Categories cc ON cc.community_id = c.id
+            LEFT OUTER JOIN Categories cat ON cat.id = cc.category_id
     WHERE   cat.name IN (${conditions.join(', ')})
     GROUP BY c.id, c.name
     HAVING  count(cat.id) = $${queryPlaceholderNum};
   `, [...categories, categories.length]);
 
   // Grab each community's categories in parallel.
-  const communities = await getCommunitiesWithCategories(result.rows);
+  const communities = await Promise.all(result.rows.map(async (com) => {
+    const categories = await getCommunityCategories(com.id);
+
+    // Grab the number of community members in this particular community.
+    const resultMembers = await db.query(`
+      SELECT  count(m.member_id) as num_members
+      FROM    Communities c
+              LEFT OUTER JOIN Community_Members m ON m.community_id = c.id
+      WHERE   c.id = $1;
+    `, [com.id]);
+
+    const numMembers = resultMembers.rows[0].num_members;
+
+    return {
+      id: com.id,
+      name: com.name,
+      numMembers,
+      categories,
+    }
+  }));
 
   res.json({
     communities,
