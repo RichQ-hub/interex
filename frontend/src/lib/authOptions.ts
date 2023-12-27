@@ -7,11 +7,6 @@ export const authOptions: NextAuthOptions = {
     Credentials({
       name: 'Interex Credentials',
       credentials: {
-        username: {
-          label: 'Username',
-          type: 'text',
-          placeholder: 'Your Username',
-        },
         email: {
           label: 'Email',
           type: 'email',
@@ -26,11 +21,12 @@ export const authOptions: NextAuthOptions = {
         const user = await AuthService.login(credentials?.email || '', credentials?.password || '');
         if (user) {
           return {
-            id: 'nah', // This will be set as the value for the 'sub' property in the JWT token.
-            email: 'bruh@gmail.com',
-            lol: 'what'
+            id: user.id, // This will be set as the value for the 'sub' property in the JWT token.
+            email: user.email
           };
         }
+
+        // Return null if we weren't able to log in.
         return null;
       }
     })

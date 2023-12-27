@@ -11,6 +11,9 @@ const fira = Fira_Sans({
 export const metadata: Metadata = {
   title: 'Interex',
   description: 'A social platform where communities of like-minded people share interests.',
+  icons: {
+    icon: '../../assets/logo2.svg'
+  }
 }
 
 export default function RootLayout({
@@ -20,9 +23,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${fira.className} antialiased`}>
+      <body className={`${fira.className} antialiased text-white`}>
         <Navbar />
-        {children}
+        <div className='min-h-screen mt-14 bg-gradient-to-b from-interex-bg-black to-interex-bg-blue to-15%'>
+          {children}
+        </div>
       </body>
     </html>
   )

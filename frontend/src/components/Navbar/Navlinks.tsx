@@ -1,6 +1,7 @@
 'use client'
 
 import { saira } from '@/fonts'
+import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -30,9 +31,14 @@ export default function NavLinks() {
             key={idx}
             className='h-full'>
             <Link
-              className='relative h-full flex items-center px-4 after:absolute after:bottom-0 after:left-0
-              after:right-0 after:bg-interex-blue after:w-full after:h-1 after:scale-x-0 after:transition-transform
-              after:duration-200 after:ease-in-out hover:after:scale-x-100'
+              className={clsx(
+                `relative h-full flex items-center px-4 after:absolute after:bottom-0 after:left-0 
+                after:right-0 after:bg-interex-blue after:w-full after:h-1 after:scale-x-0 after:transition-transform
+                after:duration-200 after:ease-in-out hover:after:scale-x-100`,
+                {
+                  'text-interex-blue after:scale-x-100': pathname === link.href
+                }
+              )}
               href={link.href}
             >
               {link.name}

@@ -7,7 +7,7 @@ import Navlinks from './Navlinks';
 const Navbar = () => {
   return (
     <nav
-      className='px-3 fixed top-0 left-0 right-0 h-14 bg-interex-nav flex items-center'
+      className='px-3 fixed top-0 left-0 right-0 h-14 bg-interex-nav flex items-center z-50'
     >
       {/* Logo Section */}
       <div className={`${nova.className} flex items-center h-full text-xl text-interex-brand`}>
