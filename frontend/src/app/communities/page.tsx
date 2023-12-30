@@ -4,6 +4,11 @@ import { saira } from '@/fonts';
 import { Metadata } from 'next';
 import SearchBar from '@/components/SearchBar';
 import CategoryFilter from '@/components/CategoryFilter';
+import SortButton from '@/components/SortButton';
+import PageSizeButton from '@/components/PageSizeButton';
+
+const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
+const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
 
 export const metadata: Metadata = {
   title: 'Communities',
@@ -14,6 +19,7 @@ export default async function CommunityFinderPage() {
   const session = await getServerSession(authOptions);
   // console.log('COMMUNITIES:');
   // console.log(session)
+
 
   return (
     <main className='min-h-screen'>
@@ -26,7 +32,7 @@ export default async function CommunityFinderPage() {
       </section>
       
       {/* Community Cards Section */}
-      <section className='max-w-7xl mx-auto grid grid-cols-comm-content grid-rows-comm-content'>
+      <section className='mt-6 max-w-7xl mx-auto grid grid-cols-comm-content grid-rows-comm-content'>
 
         {/* Sidebar */}
         <aside className='relative pr-6 col-start-1 col-end-2 row-start-2 row-end-3'>
@@ -36,8 +42,25 @@ export default async function CommunityFinderPage() {
           </div>
         </aside>
 
-        {/* Community Data */}
-        <div className='col-start-2 col-end-3 whitespace-pre-line'>nah</div>
+        {/* Community Header Data */}
+        <div className={`${saira.className} col-start-2 col-end-3 whitespace-pre-line`}>
+          <h2 className='font-semibold text-2xl mb-4'>10,032 Communities Found</h2>
+          
+          <div className='flex items-center'>
+            {/* Sort Button */}
+            <div className='flex gap-2 items-center mr-auto'>
+              <p>Sort by</p>
+              <SortButton options={SORT_OPTIONS} />
+            </div>
+
+            {/* Set items per page button */}
+            <div className='flex gap-2 items-center'>
+              <p>Show per page</p>
+              <PageSizeButton options={PAGE_SIZE_OPTIONS} />
+            </div>
+          </div>
+
+        </div>
 
         {/* Community Cards */}
         <div className='h-[3000px]'>huh</div>

@@ -11,6 +11,9 @@ const CategoryFilter = () => {
 
   const handleToggleCategory = (category: string, checked: boolean) => {
     const params = new URLSearchParams(searchParams);
+    
+    params.set('page', '1');
+
     if (checked) {
       params.append('category', category);
     } else {
@@ -20,6 +23,7 @@ const CategoryFilter = () => {
         params.append('category', cat);
       });
     }
+  
     router.replace(`${pathname}?${params.toString()}`);
   }
 

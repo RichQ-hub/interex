@@ -16,6 +16,7 @@ const config: Config = {
         'interex-bg-blue': '#1D2F49',
         'interex-category-aside': '#050c1ba6',
         'interex-comm-card': '#0F172A99',
+        'interex-light-blue': '#A6BFE352',
       },
       backgroundImage: {
         'comm-banner': "url('../assets/community-banner.png')"
