@@ -6,6 +6,8 @@ import SearchBar from '@/components/SearchBar';
 import CategoryFilter from '@/components/CategoryFilter';
 import SortButton from '@/components/SortButton';
 import PageSizeButton from '@/components/PageSizeButton';
+import CommunityCard from '@/components/CommunityCard';
+import { communities } from '@/data/communities';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -43,7 +45,7 @@ export default async function CommunityFinderPage() {
         </aside>
 
         {/* Community Header Data */}
-        <div className={`${saira.className} col-start-2 col-end-3 whitespace-pre-line`}>
+        <div className={`${saira.className} mb-4 col-start-2 col-end-3 whitespace-pre-line`}>
           <h2 className='font-semibold text-2xl mb-4'>10,032 Communities Found</h2>
           
           <div className='flex items-center'>
@@ -63,7 +65,19 @@ export default async function CommunityFinderPage() {
         </div>
 
         {/* Community Cards */}
-        <div className='h-[3000px]'>huh</div>
+        <ul className='h-[2000px] grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] auto-rows-max justify-items-center gap-8'>
+          {communities.map((com, idx) => {
+            return (
+              <CommunityCard
+                key={idx}
+                communityId={com.id}
+                name={com.name}
+                numThreads={com.numThreads}
+                categories={com.categories}
+              />
+            )
+          })}
+        </ul>
       </section>
     </main>
   )
