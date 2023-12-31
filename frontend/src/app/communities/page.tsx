@@ -65,7 +65,7 @@ export default async function CommunityFinderPage() {
         </div>
 
         {/* Community Cards */}
-        <ul className='h-[2000px] grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] auto-rows-max justify-items-center gap-8'>
+        <ul className='h-[2000px] grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] auto-rows-max justify-items-center gap-7'>
           {communities.map((com, idx) => {
             return (
               <CommunityCard

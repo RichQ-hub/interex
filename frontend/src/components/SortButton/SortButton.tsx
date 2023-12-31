@@ -16,11 +16,11 @@ const SortButton = ({
 
   return (
     <button
-      className='flex items-center justify-between relative bg-interex-light-blue px-4 py-2 w-48'
+      className='flex items-center justify-between relative bg-interex-light-blue px-4 py-2 min-w-[192px]'
       type='button'
       onClick={() => setIsOpen(!isOpen)}
     >
-      <p className='text-left'>{options[Number(searchParams.get('sortBy')) ?? 0]}</p>
+      <p className='text-left mr-2'>{options[Number(searchParams.get('sortBy')) ?? 0]}</p>
       {isOpen ? (
         <svg className='fill-white' xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><path d="M182.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>
       ) : (

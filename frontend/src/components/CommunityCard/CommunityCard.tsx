@@ -17,13 +17,13 @@ const CommunityCard = ({
 
 }) => {
   return (
-    <li className='group bg-interex-comm-card shadow-comm-card w-full max-w-[200px] transition-transform hover:shadow-comm-card-hover hover:scale-105'>
-      <Link href={`/communities/${communityId}`}>
-        <Image className='flex h-52' src={thumbnailImg} alt={`${name} Thumbnail`} />
+    <li className='group bg-interex-comm-card shadow-comm-card w-full max-w-[200px] transition-[transform,_shadow] duration-300 hover:shadow-comm-card-hover hover:scale-[1.02]'>
+      <Link href={`/communities/${communityId}/threads`}>
+        <Image className='flex h-52 object-cover' src={thumbnailImg} alt={`${name} Thumbnail`} />
         
         <div className='my-2 mx-3'>
           {/* Community Name */}
-          <h3 className={`${saira.className} font-semibold text-xl mb-2 group-hover:underline`}>{name}</h3>
+          <h3 className={`${saira.className} font-semibold text-xl mb-2 group-hover:underline group-hover:text-interex-blue`}>{name}</h3>
 
           {/* Thread Count */}
           <div className='flex gap-2 items-center mb-2'>

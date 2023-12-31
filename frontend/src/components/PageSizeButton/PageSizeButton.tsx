@@ -35,7 +35,7 @@ const PageSizeButton = ({
                     const params = new URLSearchParams(searchParams);
                     params.set('page', '1');
                     params.set('pageSize', opt);
-                    router.push(`${pathname}?${params.toString()}`);
+                    router.push(`${pathname}?${params.toString()}`, { scroll: false });
                   }}
                 >
                   {opt}

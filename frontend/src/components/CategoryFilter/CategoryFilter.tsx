@@ -23,8 +23,10 @@ const CategoryFilter = () => {
         params.append('category', cat);
       });
     }
-  
-    router.replace(`${pathname}?${params.toString()}`);
+    
+    // We use scroll = false, so that the scroll position doesn't reset to the top when we 
+    // update the search params.
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   return (
@@ -40,6 +42,7 @@ const CategoryFilter = () => {
                 className='mr-4 bg-gray-500'
                 type='checkbox'
                 name=''
+                checked={searchParams.getAll('category').includes(category)}
                 id={`checkbox-${category.toLowerCase()}`}
                 onChange={(e) => handleToggleCategory(category, e.target.checked)}
               />

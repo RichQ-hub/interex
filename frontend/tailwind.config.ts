@@ -23,10 +23,11 @@ const config: Config = {
       },
       boxShadow: {
         'comm-banner': '0px 8px 2px 0px rgba(0, 0, 0, 0.80)',
+        'comm-icon': '0px 4px 4px 0px rgba(0, 0, 0, 0.70)',
         'comm-searchbar': '0px 6px 4px 2px rgba(0, 0, 0, 0.60)',
         'comm-filter': '0px 4px 4px 0px rgba(0, 0, 0, 0.50)',
         'comm-card': '0px 5px 10px 0px #000',
-        'comm-card-hover': '0 8px 16px 3px #000'
+        'comm-card-hover': '0 8px 16px 3px #000',
       },
       gridTemplateColumns: {
         'comm-content': 'minmax(250px, 300px) 1fr'
