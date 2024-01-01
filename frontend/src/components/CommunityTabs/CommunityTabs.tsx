@@ -3,7 +3,6 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React from 'react';
 
 const LINKS = ['Threads', 'Description', 'Members'];
 
@@ -15,7 +14,7 @@ const CommunityTabs = ({
   const pathname = usePathname();
 
   return (
-    <ul className='flex items-center font-semibold border-b-2 border-b-[#66C0F440] box-content mb-6'>
+    <ul className='flex items-center font-semibold border-b-2 border-b-[#66C0F440] mb-4'>
       {LINKS.map((link, idx) => {
         const path = `/communities/${communityId}/${link.toLowerCase()}`;
         return (
@@ -27,7 +26,8 @@ const CommunityTabs = ({
               {
                 'after:scale-x-100 !text-zinc-100': pathname === path
               }
-            )} href={path}>
+            )}
+            href={path}>
               {link}
             </Link>
           </li>

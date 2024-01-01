@@ -36,7 +36,7 @@ export default function CommunityLayout({
         </div>
 
         {/* Community Aside */}
-        <aside className='col-start-2 col-end-3 row-start-2 row-end-3'>
+        <aside className='col-start-2 col-end-3 row-start-2 row-end-3 ml-6 bg-interex-bg-thread'>
           ASIDE
         </aside>
 

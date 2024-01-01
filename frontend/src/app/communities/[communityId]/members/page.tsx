@@ -1,4 +1,4 @@
-export default function CommunityMembersPage() {
+export default async function CommunityMembersPage() {
   return (
     <div>Community Members</div>
   )
