@@ -104,10 +104,10 @@ CREATE TABLE Thread_Votes (
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
   FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, thread_id)
-  -- Composite key ensures a user can only upvoate a specific thread only once, as
+  -- Composite key ensures a user can only upvote a specific thread only once, as
   -- the combination of user_id and thread_id is unique.
 
-  -- This heavily relates to 'Functional Dependencies' which promotes good database design (Look at your notes).
+  -- This heavily relates to 'Functional Dependencies' which promotes good database design (Look at your OneNote notes).
 );
 
 -- This models a many-many relationship.
@@ -119,6 +119,25 @@ CREATE TABLE Comment_Votes (
   FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
   FOREIGN KEY (comment_id) REFERENCES Comments(id) ON DELETE CASCADE,
   PRIMARY KEY (user_id, comment_id)
+);
+
+CREATE TABLE Flairs (
+  id SERIAL,
+  community_id INT NOT NULL,
+  name VARCHAR(50) UNIQUE NOT NULL,
+  hex_color VARCHAR(50) NOT NULL,
+
+  FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE Thread_Flairs (
+  thread_id INT NOT NULL,
+  flair_id INT NOT NULL,
+
+  FOREIGN KEY (thread_id) REFERENCES Threads(id) ON DELETE CASCADE,
+  FOREIGN KEY (flair_id) REFERENCES Flairs(id) ON DELETE CASCADE,
+  PRIMARY KEY (thread_id, flair_id)
 );
 
 --------------------------------------------------------------------------------------------------------------

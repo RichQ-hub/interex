@@ -1,32 +1,69 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { AccessError } from '../utils/error';
+import { assertCommunityModerator, assertThreadOwner, assertValidFlair } from '../utils/assert';
 
-const assertThreadOwner = async (userId: string, threadId: string) => {
-  const results = await db.query(`
-    SELECT  t.id
+// ===========================================================================
+// HELPERS
+// ===========================================================================
+
+const getThreadFlairs = async (threadId: string) => {
+  const result = await db.query(`
+    SELECT  f.name, f.hex_color
     FROM    Threads t
-            JOIN Users u ON u.id = t.author
-    WHERE   u.id = $1 AND t.id = $2;
-  `, [userId, threadId]);
+            JOIN Thread_Flairs tf ON tf.thread_id = t.id
+            JOIN Flairs f ON f.id = tf.flair_id
+    WHERE   t.id = $1;
+  `, [threadId]);
 
-  if (!results.rowCount) {
-    throw new AccessError('User is not the owner of this thread.');
-  }
+  // Map each query result object to just a string.
+  return result.rows.map((flair) => {
+    return {
+      name: flair.name,
+      hexColor: flair.hex_color,
+    }
+  });
 }
 
-export const getThreads = async (req: Request, res: Response) => {
+// ===========================================================================
+// CONTROLLERS
+// ===========================================================================
+
+export const getAllThreads = async (req: Request, res: Response) => {
   const { communityId } = req.params;
 
   const result = await db.query(`
-    SELECT  t.id, u.username as author, t.title, t.content, t.created_at
-    FROM    Threads t
-            JOIN Users u ON u.id = t.author
-    WHERE   t.community_id = $1;
+    SELECT
+      t.id,
+      u.username as author,
+      t.title,
+      t.created_at,
+      coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments,
+      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id), 0) as num_upvotes
+    FROM
+      Threads t
+      JOIN Users u ON u.id = t.author
+    WHERE
+      t.community_id = $1;
   `, [communityId]);
 
+  // Grab each thread's flairs in parallel.
+  const threads = await Promise.all(result.rows.map(async (thread) => {
+    const flairs = await getThreadFlairs(thread.id);
+
+    return {
+      id: thread.id,
+      title: thread.title,
+      author: thread.author,
+      createdAt: thread.created_at,
+      numComments: thread.num_comments,
+      numUpvotes: thread.num_upvotes,
+      flairs,
+    }
+  }));
+
   res.json({
-    threads: result.rows,
+    threads,
   })
 }
 
@@ -38,8 +75,6 @@ export const createThread = async (req: Request, res: Response) => {
     title,
     content
   } = req.body;
-
-  console.log(communityId, authorId, title, content)
 
   const results = await db.query(`
     INSERT INTO Threads (community_id, author, title, content)
@@ -178,24 +213,14 @@ export const pinThread = async (req: Request, res: Response) => {
 }
 
 export const unpinThread = async (req: Request, res: Response) => {
-  const { threadId } = req.params;
+  const { threadId, communityId } = req.params;
 
   const {
     userId
   } = req.body;
 
   // Check if the user is a moderator or admin 
-  const results = await db.query(`
-    SELECT  t.id
-    FROM    Threads t
-            JOIN Communities c on c.id = t.community_id
-            JOIN Community_Members m on m.member_id = c.id
-    WHERE   t.id = $1 AND n.member_id = $2 AND (m.role IN ('Admin', 'Moderator'));
-  `, [threadId, userId]);
-
-  if (!results.rowCount) {
-    throw new AccessError('User is not a moderator or admin to be able to unpin this thread.');
-  }
+  await assertCommunityModerator(communityId, userId);
 
   // We don't have to wrap in trycatch since setting pinned_by attr to null will not throw an
   // exception in our trigger.
@@ -211,4 +236,27 @@ export const unpinThread = async (req: Request, res: Response) => {
   res.json({
     unpinnedThread,
   })
+}
+
+export const addFlair = async (req: Request, res: Response) => {
+  const { communityId, threadId, flairId } = req.params;
+
+  const {
+    userId
+  } = req.body;
+
+  await assertThreadOwner(userId, threadId);
+  await assertValidFlair(communityId, flairId);
+
+  const result = await db.query(`
+    INSERT INTO Thread_Flairs (thread_id, flair_id)
+    VALUES ($1, $2)
+    RETURNING thread_id, flair_id;
+  `, [threadId, flairId]);
+
+  const addedFlair = result.rows[0];
+
+  res.json({
+    flair: addedFlair,
+  });
 }

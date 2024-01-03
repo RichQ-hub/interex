@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { InputError } from '../utils/error';
+import { assertValidCategory } from '../utils/assert';
+
+// ===========================================================================
+// HELPERS
+// ===========================================================================
 
 /**
  * Helper that obtains a community's categories.
@@ -17,6 +22,10 @@ const getCommunityCategories = async (communityId: string) => {
   // Map each query result object to just a string.
   return result.rows.map((category) => category.name as string);
 }
+
+// ===========================================================================
+// CONTROLLERS
+// ===========================================================================
 
 export const getAllCommunities = async (req: Request, res: Response) => {
   const allCommunities = await db.query(`
@@ -43,13 +52,23 @@ export const getAllCommunities = async (req: Request, res: Response) => {
   })
 }
 
-export const filterCommunitiesByCategory = async (req: Request, res: Response) => {
-  // This obtains the search params in the url.
-  const { category } = req.query;
+export const searchCommunities = async (req: Request, res: Response) => {
+  // Req.query obtains the search params in the url.
+  const {
+    query,
+    category,
+    page
+  } = req.query;
 
-  if (!category) {
-    throw new InputError('No categories were given.')
+  let currentPage = 1;
+  if (typeof page === 'string') {
+    currentPage = Number(page);
   }
+
+  const COMMUNITIES_PER_PAGE = 20;
+  const offset = (currentPage - 1) * COMMUNITIES_PER_PAGE;
+
+  const searchQueryRegexp = `^${query || ''}.*`;
 
   let categories: string[] = [];
   if (Array.isArray(category)) {
@@ -58,23 +77,53 @@ export const filterCommunitiesByCategory = async (req: Request, res: Response) =
     categories.push(category);
   }
 
-  let queryPlaceholderNum = 1;
-  const conditions: string[] = [];
-  categories.forEach(() => {
-    conditions.push(`$${queryPlaceholderNum}`);
-    queryPlaceholderNum += 1;
-  })
+  // Dynamically build the argument array that we pass to the query below.
+  const queryArgs: any[] = [searchQueryRegexp];
+  if (categories.length) {
+    queryArgs.push(categories, categories.length);
+  }
 
-  // Query explained in queries.sql
+  // Query explained for filtering by multiple categories in queries.sql
   const result = await db.query(`
-    SELECT  c.id, c.name
+    SELECT  c.id, c.name,
+            (SELECT count(*) FROM threads t WHERE t.community_id = c.id) AS num_threads
     FROM    Communities c
             LEFT OUTER JOIN Community_Categories cc ON cc.community_id = c.id
             LEFT OUTER JOIN Categories cat ON cat.id = cc.category_id
-    WHERE   cat.name IN (${conditions.join(', ')})
+    WHERE   c.name ~* $1 ${categories.length ? 'AND cat.name = ANY ($2)' : ''}
     GROUP BY c.id, c.name
-    HAVING  count(cat.id) = $${queryPlaceholderNum};
-  `, [...categories, categories.length]);
+    ${categories.length ? 'HAVING  count(cat.id) = $3' : ''}
+    LIMIT ${COMMUNITIES_PER_PAGE}
+    OFFSET ${offset}
+    ;
+  `, queryArgs);
+
+  /**
+   * Can insert an array into the query.
+   * Note that (= ANY (...)) is essentially the same as (IN (...)), but the ANY keyword can accept javascsript arrays in pg.
+   * 
+   * Resources:
+   * https://stackoverflow.com/questions/10720420/node-postgres-how-to-execute-where-col-in-dynamic-value-list-query
+   * https://github.com/brianc/node-postgres/wiki/FAQ#11-how-do-i-build-a-where-foo-in--query-to-find-rows-matching-an-array-of-values
+   */
+
+  /**
+   * NOTE: 
+   * Used pre-aggregation in a subquery in the select clause. (This is much faster than multiple joins).
+   * Could use this to count the number of members so that we don't have to create a separate query
+   * to fetch number the number of threads for each community, we can just do all of it in a single query.
+   * 
+   * How to think about it:
+   * All of the JOINS and GROUP BY clauses are executed first. We then execute the subquery with 
+   * uses the community id in the resulting tuples to grab the number of threads.
+   * 
+   * Resource:
+   * https://stackoverflow.com/questions/24788715/using-sql-aggregate-functions-with-multiple-joins
+   */
+
+  /**
+   * Could change LIMIT OFFSET to use keyset pagination in the future.
+   */
 
   // Grab each community's categories in parallel.
   const communities = await Promise.all(result.rows.map(async (com) => {
@@ -94,6 +143,7 @@ export const filterCommunitiesByCategory = async (req: Request, res: Response) =
       id: com.id,
       name: com.name,
       numMembers,
+      numThreads: com.num_threads,
       categories,
     }
   }));
@@ -160,4 +210,57 @@ export const deleteCommunity = async (req: Request, res: Response) => {
   res.json({
     community: deletedCommunity,
   })
+}
+
+export const createCategory = async (req: Request, res: Response) => {
+  const { name } = req.body;
+
+  const result = await db.query(`
+    INSERT INTO Categories (name)
+    VALUES ($1)
+    RETURNING name;
+  `, [name]);
+
+  const newCategory = result.rows[0];
+  res.json({
+    category: newCategory,
+  });
+}
+
+export const addCategory = async (req: Request, res: Response) => {
+  const { communityId, categoryId } = req.params;
+
+  await assertValidCategory(categoryId);
+
+  const result = await db.query(`
+    INSERT INTO Community_Categories (community_id, category_id)
+    VALUES ($1, $2)
+    RETURNING community_id, category_id;
+  `, [communityId, categoryId]);
+
+  const addedCategory = result.rows[0];
+  res.json({
+    category: addedCategory,
+  });
+}
+
+export const createFlair = async (req: Request, res: Response) => {
+  const { communityId } = req.params;
+
+  const {
+    name,
+    hexColor
+  } = req.body;
+
+  const result = await db.query(`
+    INESRT INTO Flairs (community_id, name, hex_color)
+    VALUES ($1, $2, $3)
+    RETURNING community_id, name, hex_color;
+  `, [communityId, name, hexColor]);
+
+  const newFlair = result.rows[0];
+
+  res.json({
+    flair: newFlair,
+  });
 }
