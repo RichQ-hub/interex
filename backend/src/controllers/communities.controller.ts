@@ -244,6 +244,24 @@ export const addCategory = async (req: Request, res: Response) => {
   });
 }
 
+export const getAllFlairs = async (req: Request, res: Response) => {
+  const { communityId } = req.params;
+
+  const results = await db.query(`
+    SELECT
+      name,
+      hex_color
+    FROM
+      Flairs
+    WHERE
+      community_id = $1;
+  `, [communityId]);
+
+  res.json({
+    flairs: results.rows,
+  })
+}
+
 export const createFlair = async (req: Request, res: Response) => {
   const { communityId } = req.params;
 
