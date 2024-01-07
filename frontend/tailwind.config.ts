@@ -30,6 +30,7 @@ const config: Config = {
         'comm-filter': '0px 4px 4px 0px rgba(0, 0, 0, 0.50)',
         'comm-card': '0px 5px 10px 0px #000',
         'comm-card-hover': '0 8px 16px 3px #000',
+        'thread-card-hover': '-6px 8px 2px 0px rgba(165, 199, 218, 0.30)',
       },
       gridTemplateColumns: {
         'comm-content': 'minmax(250px, 300px) 1fr'

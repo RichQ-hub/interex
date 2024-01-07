@@ -21,8 +21,9 @@ export const authOptions: NextAuthOptions = {
         const user = await AuthService.login(credentials?.email || '', credentials?.password || '');
         if (user) {
           return {
-            id: user.id, // This will be set as the value for the 'sub' property in the JWT token.
-            email: user.email
+            id: user.id, // This will be set as the value for the 'sub' property in the JWT token (the token object in JWT callback will have sub).
+            email: user.email,
+            accessToken: user.accessToken,
           };
         }
 
@@ -43,7 +44,8 @@ export const authOptions: NextAuthOptions = {
      */
     async jwt({ token, user }) {
       if (user) {
-        token.user_id = user.id;
+        token.userId = user.id;
+        token.accessToken = user.accessToken;
       }
       return token;
     },
@@ -59,7 +61,7 @@ export const authOptions: NextAuthOptions = {
      */
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.user_id || '';
+        session.user.accessToken = token.accessToken;
       }
       return session;
     }
