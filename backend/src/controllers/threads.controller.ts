@@ -11,6 +11,9 @@ import {
 // HELPERS
 // ===========================================================================
 
+/**
+ * Gets all the flairs applied to a thread.
+ */
 const getThreadFlairs = async (threadId: string) => {
   const result = await db.query(`
     SELECT  f.name, f.hex_color
@@ -33,6 +36,9 @@ const getThreadFlairs = async (threadId: string) => {
 // CONTROLLERS
 // ===========================================================================
 
+/**
+ * Grabs all the threads posted in a specific community.
+ */
 export const getAllThreads = async (req: Request, res: Response) => {
   const { communityId } = req.params;
 
@@ -168,7 +174,7 @@ export const deleteThread = async (req: Request, res: Response) => {
 }
 
 /**
- * 
+ * Upvotes/Downvotes on a specific thread.
  */
 export const voteThread = async (req: Request, res: Response) => {
   const { threadId } = req.params;
@@ -217,6 +223,9 @@ export const voteThread = async (req: Request, res: Response) => {
   // Could cache popular posts in redis.
 }
 
+/**
+ * Pin a specific thread.
+ */
 export const pinThread = async (req: Request, res: Response) => {
   const { threadId } = req.params;
   const userId = req.user || '';
@@ -243,6 +252,9 @@ export const pinThread = async (req: Request, res: Response) => {
   }
 }
 
+/**
+ * Unpin a specific thread.
+ */
 export const unpinThread = async (req: Request, res: Response) => {
   const { threadId, communityId } = req.params;
   const userId = req.user || '';
@@ -266,6 +278,9 @@ export const unpinThread = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Adds a flair to a specific thread.
+ */
 export const addFlair = async (req: Request, res: Response) => {
   const { communityId, threadId, flairId } = req.params;
   const userId = req.user || '';

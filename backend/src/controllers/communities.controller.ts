@@ -27,6 +27,9 @@ const getCommunityCategories = async (communityId: string) => {
 // CONTROLLERS
 // ===========================================================================
 
+/**
+ * Gets all the communities.
+ */
 export const getAllCommunities = async (req: Request, res: Response) => {
   const allCommunities = await db.query(`
     SELECT  c.id, c.name, count(m.member_id) as num_members
@@ -52,6 +55,9 @@ export const getAllCommunities = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Gets all the communities that satisfy certain filters.
+ */
 export const searchCommunities = async (req: Request, res: Response) => {
   // Req.query obtains the search params in the url.
   const {
@@ -153,6 +159,9 @@ export const searchCommunities = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Gets all the community details.
+ */
 export const getCommunityDetails = async (req: Request, res: Response) => {
   const { communityId } = req.params;
 
@@ -179,6 +188,9 @@ export const getCommunityDetails = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Creates a community.
+ */
 export const createCommunity = async (req: Request, res: Response) => {
   const {
     name,
@@ -197,6 +209,9 @@ export const createCommunity = async (req: Request, res: Response) => {
   });
 }
 
+/**
+ * Deletes a given community.
+ */
 export const deleteCommunity = async (req: Request, res: Response) => {
   const { communityId } = req.params;
 
@@ -212,6 +227,9 @@ export const deleteCommunity = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Creates a category to apply to categories.
+ */
 export const createCategory = async (req: Request, res: Response) => {
   const { name } = req.body;
 
