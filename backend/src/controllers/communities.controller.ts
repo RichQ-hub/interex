@@ -56,6 +56,24 @@ export const getAllCommunities = async (req: Request, res: Response) => {
 }
 
 /**
+ * Grabs all the categories that can be applied to ALL communities.
+ */
+export const getAllCategories = async (req: Request, res: Response) => {
+  const result = await db.query(`
+    SELECT
+      id,
+      name,
+      description
+    FROM
+      Categories;
+  `);
+
+  res.json({
+    categories: result.rows,
+  });
+}
+
+/**
  * Gets all the communities that satisfy certain filters.
  */
 export const searchCommunities = async (req: Request, res: Response) => {

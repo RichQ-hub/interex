@@ -33,10 +33,4 @@ const authorize = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-/**
- * NOTE:
- * The token is in the format described by clerk. When decoded, the userId
- * should be in the 'sub' property of the token payload.
- */
-
 export default authorize;

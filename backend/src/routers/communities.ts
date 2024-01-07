@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import { catchErrors } from '../utils/catchErrors';
 import authorize from '../middleware/authorize';
-
-// Controllers.
 import {
   createCommunity,
   deleteCommunity,
@@ -12,12 +10,14 @@ import {
   createCategory,
   addCategory,
   createFlair,
-  getAllFlairs
+  getAllFlairs,
+  getAllCategories
 } from '../controllers/communities.controller';
 
 const router = Router();
 
 router.get('/', catchErrors(getAllCommunities));
+router.get('/categories', catchErrors(getAllCategories));
 router.get('/search', catchErrors(searchCommunities));
 router.get('/:communityId', catchErrors(getCommunityDetails));
 router.post('/new', catchErrors(createCommunity));
