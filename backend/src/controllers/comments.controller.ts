@@ -257,11 +257,25 @@ export const voteComment = async (req: Request, res: Response) => {
  */
 export const replyComment = async (req: Request, res: Response) => {
   const { threadId, commentId } = req.params;
-
+  const userId = req.user || '';
   const {
-    userId,
     content
   } = req.body;
+
+  // Grab the community that this thread belongs to.
+  const communityResult = await db.query(`
+    SELECT
+      community_id
+    FROM
+      Threads
+    WHERE
+      id = $1;
+  `, [threadId]);
+
+  const communityId = communityResult.rows[0].community_id;
+
+  // Assert if the user is a member of this community.
+  await assertCommunityMember(communityId, userId);
 
   const result = await db.query(`
     INSERT INTO Comments (thread_id, author, content, reply_to)

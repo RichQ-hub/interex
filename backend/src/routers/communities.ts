@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { catchErrors } from '../utils/catchErrors';
+import authorize from '../middleware/authorize';
 
 // Controllers.
 import {
@@ -22,8 +23,8 @@ router.get('/:communityId', catchErrors(getCommunityDetails));
 router.post('/new', catchErrors(createCommunity));
 router.delete('/:communityId', catchErrors(deleteCommunity));
 router.post('/category/new', catchErrors(createCategory));
-router.post('/category/add/:communityId/:categoryId', catchErrors(addCategory));
+router.post('/category/add/:communityId/:categoryId', authorize, catchErrors(addCategory));
 router.get('/flair/:communityId', catchErrors(getAllFlairs));
-router.post('/flair/new/:communityId', catchErrors(createFlair));
+router.post('/flair/new/:communityId', authorize, catchErrors(createFlair));
 
 export default router;

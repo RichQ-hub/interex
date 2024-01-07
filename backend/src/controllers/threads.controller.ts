@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import db from '../db';
 import { AccessError, InputError } from '../utils/error';
 import {
+  assertCommunityMember,
   assertCommunityModerator,
   assertThreadOwner,
   assertValidFlair
@@ -90,6 +91,8 @@ export const createThread = async (req: Request, res: Response) => {
     title,
     content
   } = req.body;
+
+  await assertCommunityMember(communityId, userId);
 
   const results = await db.query(`
     INSERT INTO Threads (community_id, author, title, content)

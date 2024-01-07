@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { catchErrors } from '../utils/catchErrors';
+import authorize from '../middleware/authorize';
 import {
   createComment,
   deleteComment,
@@ -12,10 +13,10 @@ import {
 const router = Router();
 
 router.get('/:threadId', catchErrors(getComments));
-router.post('/:threadId', catchErrors(createComment));
-router.put('/:commentId', catchErrors(updateComment));
-router.delete('/:commentId', catchErrors(deleteComment));
-router.post('/vote/:commentId', catchErrors(voteComment));
-router.post('/reply/:threadId/:commentId', catchErrors(replyComment));
+router.post('/:threadId', authorize, catchErrors(createComment));
+router.put('/:commentId', authorize, catchErrors(updateComment));
+router.delete('/:commentId', authorize, catchErrors(deleteComment));
+router.post('/vote/:commentId', authorize, catchErrors(voteComment));
+router.post('/reply/:threadId/:commentId', authorize, catchErrors(replyComment));
 
 export default router;
