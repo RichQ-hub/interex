@@ -3,6 +3,11 @@ import { AccessError } from '../utils/error';
 import logger from '../utils/logger';
 import jwt from 'jsonwebtoken';
 
+interface TokenPayload {
+  userId: string;
+  email: string;
+}
+
 /**
  * Verifies that the incoming request contains a valid token (not expired).
  * An authorised user is able to access a specific route.
@@ -15,9 +20,9 @@ const authorize = (req: Request, res: Response, next: NextFunction) => {
       throw new AccessError('No token found. Authorization denied.');
     }
 
-    const payload = jwt.verify(token, process.env.CLERK_PEM_PUBLIC_KEY as string);
+    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as TokenPayload;
 
-    console.log(payload);
+    req.user = payload.userId;
 
     next();
   } catch (err) {

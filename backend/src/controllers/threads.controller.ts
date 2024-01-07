@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import db from '../db';
-import { AccessError } from '../utils/error';
-import { assertCommunityModerator, assertThreadOwner, assertValidFlair } from '../utils/assert';
+import { AccessError, InputError } from '../utils/error';
+import {
+  assertCommunityModerator,
+  assertThreadOwner,
+  assertValidFlair
+} from '../utils/assert';
 
 // ===========================================================================
 // HELPERS
@@ -38,6 +42,7 @@ export const getAllThreads = async (req: Request, res: Response) => {
       u.username as author,
       t.title,
       t.created_at,
+      t.pinned_by,
       coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments,
       coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id), 0) as num_upvotes
     FROM
@@ -56,6 +61,7 @@ export const getAllThreads = async (req: Request, res: Response) => {
       title: thread.title,
       author: thread.author,
       createdAt: thread.created_at,
+      pinnedBy: thread.pinned_by,
       numComments: thread.num_comments,
       numUpvotes: thread.num_upvotes,
       flairs,
@@ -67,11 +73,14 @@ export const getAllThreads = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Creates a new thread within a community, using the userId for an authorised user.
+ */
 export const createThread = async (req: Request, res: Response) => {
   const { communityId } = req.params;
+  const userId = req.user || '';
 
   const {
-    authorId,
     title,
     content
   } = req.body;
@@ -80,7 +89,7 @@ export const createThread = async (req: Request, res: Response) => {
     INSERT INTO Threads (community_id, author, title, content)
     VALUES ($1, $2, $3, $4)
     RETURNING *;
-  `, [communityId, authorId, title, content]);
+  `, [communityId, userId, title, content]);
 
   const newThread = results.rows[0];
 
@@ -89,11 +98,14 @@ export const createThread = async (req: Request, res: Response) => {
   });
 }
 
+/**
+ * Updates a specified thread only if the user is authorised. Only the thread owner that update the thread.
+ */
 export const updateThread = async (req: Request, res: Response) => {
   const { threadId } = req.params;
+  const userId = req.user || '';
 
   const {
-    userId,
     title,
     content,
   } = req.body;
@@ -115,12 +127,32 @@ export const updateThread = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Deletes a thread. Only the owners or moderators can delete a thread.
+ */
 export const deleteThread = async (req: Request, res: Response) => {
   const { threadId } = req.params;
+  const userId = req.user || '';
 
-  const { userId } = req.body;
+  try {
+    await assertThreadOwner(userId, threadId);
+  } catch (error) {
+    // Grab the communityId of the thread.
+    const result = await db.query(`
+      SELECT community_id
+      FROM Threads
+      WHERE id = $1;
+    `, [threadId]);
 
-  await assertThreadOwner(userId, threadId);
+    if (!result.rowCount) {
+      throw new InputError('Community where this thread belongs does not exist.');
+    }
+
+    const communityId = result.rows[0].community_id;
+
+    // If the user is not the thread owner, we check if they are admins or moderators in the community.
+    await assertCommunityModerator(communityId, userId);
+  }
 
   const results = await db.query(`
     DELETE FROM Threads
@@ -135,14 +167,16 @@ export const deleteThread = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * 
+ */
 export const voteThread = async (req: Request, res: Response) => {
   const { threadId } = req.params;
+  const userId = req.user || '';
 
   const {
-    userId,
     voteType,
   }: {
-    userId: string,
     voteType: 'Upvote' | 'Downvote',
   } = req.body;
 
@@ -185,10 +219,7 @@ export const voteThread = async (req: Request, res: Response) => {
 
 export const pinThread = async (req: Request, res: Response) => {
   const { threadId } = req.params;
-
-  const {
-    userId
-  } = req.body;
+  const userId = req.user || '';
 
   try {
     // If our sql trigger fails, it means that the user doesn't have the authorisation
@@ -214,10 +245,7 @@ export const pinThread = async (req: Request, res: Response) => {
 
 export const unpinThread = async (req: Request, res: Response) => {
   const { threadId, communityId } = req.params;
-
-  const {
-    userId
-  } = req.body;
+  const userId = req.user || '';
 
   // Check if the user is a moderator or admin 
   await assertCommunityModerator(communityId, userId);
@@ -240,10 +268,7 @@ export const unpinThread = async (req: Request, res: Response) => {
 
 export const addFlair = async (req: Request, res: Response) => {
   const { communityId, threadId, flairId } = req.params;
-
-  const {
-    userId
-  } = req.body;
+  const userId = req.user || '';
 
   await assertThreadOwner(userId, threadId);
   await assertValidFlair(communityId, flairId);

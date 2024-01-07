@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { InputError } from '../utils/error';
-import { assertValidCategory } from '../utils/assert';
+import { assertCommunityModerator, assertValidCategory } from '../utils/assert';
 
 // ===========================================================================
 // HELPERS
@@ -227,9 +227,14 @@ export const createCategory = async (req: Request, res: Response) => {
   });
 }
 
+/**
+ * Adds a category to a specific community.
+ */
 export const addCategory = async (req: Request, res: Response) => {
   const { communityId, categoryId } = req.params;
+  const userId = req.user || '';
 
+  await assertCommunityModerator(communityId, userId);
   await assertValidCategory(categoryId);
 
   const result = await db.query(`
@@ -244,6 +249,9 @@ export const addCategory = async (req: Request, res: Response) => {
   });
 }
 
+/**
+ * Gets all flairs available within a community.
+ */
 export const getAllFlairs = async (req: Request, res: Response) => {
   const { communityId } = req.params;
 
@@ -262,13 +270,19 @@ export const getAllFlairs = async (req: Request, res: Response) => {
   })
 }
 
+/**
+ * Creates a flair within a community.
+ */
 export const createFlair = async (req: Request, res: Response) => {
   const { communityId } = req.params;
+  const userId = req.user || '';
 
   const {
     name,
     hexColor
   } = req.body;
+
+  await assertCommunityModerator(communityId, userId);
 
   const result = await db.query(`
     INESRT INTO Flairs (community_id, name, hex_color)

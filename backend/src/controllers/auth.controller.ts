@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import db from '../db';
-import { InputError } from '../utils/error';
+import { AccessError, InputError } from '../utils/error';
 import logger from '../utils/logger';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response) => {
   const {
@@ -61,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
   `, [email]);
 
   if (!existingUser.rowCount) {
-    throw new Error('User details do not match a registered user.');
+    throw new AccessError('User details do not match a registered user.');
   }
 
   const user = existingUser.rows[0];
@@ -73,12 +74,18 @@ export const login = async (req: Request, res: Response) => {
     throw new InputError('Password is incorrect.');
   }
 
+  const tokenPayload = {
+    userId: user.id,
+    email: user.email
+  }
+
+  const accessToken = jwt.sign(tokenPayload, process.env.JWT_SECRET as string);
+
   // Return the user information back to the client for use by next-auth.
   res.json({
-    user: {
-      id: user.id,
-      email: user.email,
-    }
+    id: user.id,
+    email: user.email,
+    accessToken,
   });
 }
 

@@ -74,3 +74,34 @@ export const assertCommunityModerator = async (communityId: string, userId: stri
     throw new AccessError('User is not a moderator or admin to be able to unpin this thread.')
   }
 }
+
+export const assertCommunityMember = async (communityId: string, userId: string) => {
+  const results = await db.query(`
+    SELECT
+      m.member_id
+    FROM
+      Communities c
+      JOIN Community_Members m ON m.community_id = c.id
+    WHERE
+      c.id = $1 AND m.member_id = $2;
+  `, [communityId, userId]);
+
+  if (!results.rowCount) {
+    throw new AccessError('User is not a member of this community.')
+  }
+}
+
+export const assertCommentOwner = async (commentId: string, userId: string) => {
+  const results = await db.query(`
+    SELECT
+      c.id
+    FROM
+      Comments
+    WHERE
+      id = $1 AND author = $2;
+  `, [commentId, userId]);
+
+  if (!results.rowCount) {
+    throw new AccessError('User is not a member of this community.')
+  }
+}

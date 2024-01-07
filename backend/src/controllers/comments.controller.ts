@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db';
-import { AccessError } from '../utils/error';
+import { AccessError, InputError } from '../utils/error';
+import { assertCommentOwner, assertCommunityMember, assertCommunityModerator } from '../utils/assert';
 
 interface Comment {
   id: string;
@@ -105,11 +106,26 @@ export const getComments = async (req: Request, res: Response) => {
 
 export const createComment = async (req: Request, res: Response) => {
   const { threadId } = req.params;
+  const userId = req.user || '';
 
   const {
-    userId,
     content
   } = req.body;
+
+  // Grab the community that this thread belongs to.
+  const communityResult = await db.query(`
+    SELECT
+      community_id
+    FROM
+      Threads
+    WHERE
+      id = $1;
+  `, [threadId]);
+
+  const communityId = communityResult.rows[0].community_id;
+
+  // Assert if the user is a member of this community.
+  await assertCommunityMember(communityId, userId);
 
   const result = await db.query(`
     INSERT INTO Comments (thread_id, author, content)
@@ -126,8 +142,11 @@ export const createComment = async (req: Request, res: Response) => {
 
 export const updateComment = async (req: Request, res: Response) => {
   const { commentId } = req.params;
+  const userId = req.user || '';
 
   const { content } = req.body;
+
+  await assertCommentOwner(commentId, userId);
 
   const result = await db.query(`
     UPDATE Comments
@@ -145,6 +164,32 @@ export const updateComment = async (req: Request, res: Response) => {
 
 export const deleteComment = async (req: Request, res: Response) => {
   const { commentId } = req.params;
+  const userId = req.user || '';
+
+  try {
+    await assertCommentOwner(commentId, userId);
+  } catch (error) {
+    // Grab the communityId of the thread.
+    const result = await db.query(`
+      SELECT
+        ct.id as community_id
+      FROM
+        Comments c
+        JOIN Threads t ON t.id = c.thread_id
+        JOIN Communities ct ON ct.id = t.community_id
+      WHERE
+        c.id = $1;
+    `, [commentId]);
+
+    if (!result.rowCount) {
+      throw new InputError('Community where this thread belongs does not exist.');
+    }
+
+    const communityId = result.rows[0].community_id;
+
+    // If the user is not the thread owner, we check if they are admins or moderators in the community.
+    await assertCommunityModerator(communityId, userId);
+  }
 
   const result = await db.query(`
     DELETE FROM Comments
