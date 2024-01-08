@@ -11,7 +11,7 @@
 SET TIMEZONE TO 'Australia/NSW';
 
 CREATE DOMAIN EmailString AS VARCHAR(64) CHECK (VALUE ~ '^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$');
-CREATE TYPE MemberRole AS ENUM ('Admin', 'Moderator', 'Member');
+CREATE TYPE CommunityRole AS ENUM ('Owner', 'Admin', 'Moderator', 'Member');
 CREATE TYPE VoteType AS ENUM ('Upvote', 'Downvote');
 
 CREATE TABLE Users (
@@ -87,7 +87,7 @@ CREATE TABLE Community_Categories (
 CREATE TABLE Community_Members (
   community_id INT,
   member_id INT,
-  role MemberRole NOT NULL DEFAULT 'Member',
+  role CommunityRole NOT NULL DEFAULT 'Member',
   joined_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
 
   FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,

@@ -67,11 +67,11 @@ export const assertCommunityModerator = async (communityId: string, userId: stri
       Communities c
       JOIN Community_Members m ON m.community_id = c.id
     WHERE
-      c.id = $1 AND m.member_id = $2 AND (m.role IN ('Admin', 'Moderator'));
+      c.id = $1 AND m.member_id = $2 AND (m.role NOT IN ('Member'));
   `, [communityId, userId]);
 
   if (!results.rowCount) {
-    throw new AccessError('User is not a moderator or admin to be able to unpin this thread.')
+    throw new AccessError('User is not a moderator or admin in this community.')
   }
 }
 
@@ -102,6 +102,21 @@ export const assertCommentOwner = async (commentId: string, userId: string) => {
   `, [commentId, userId]);
 
   if (!results.rowCount) {
-    throw new AccessError('User is not a member of this community.')
+    throw new AccessError('User is not the owner of this comment.')
+  }
+}
+
+export const assertCommunityOwner = async (communityId: string, userId: string) => {
+  const results = await db.query(`
+    SELECT
+      community_id
+    FROM
+      Community_Members
+    WHERE
+      community_id = $1 AND member_id = $2 AND role = 'Owner';
+  `, [communityId, userId]);
+
+  if (!results.rowCount) {
+    throw new AccessError('User is not the owner of this community.');
   }
 }

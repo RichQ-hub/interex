@@ -5,6 +5,9 @@ import logger from '../utils/logger';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+/**
+ * Registers a user into the database.
+ */
 export const register = async (req: Request, res: Response) => {
   const {
     email,
@@ -48,6 +51,9 @@ export const register = async (req: Request, res: Response) => {
   });
 }
 
+/**
+ * Logs a user in and returns a JWT token.
+ */
 export const login = async (req: Request, res: Response) => {
   const {
     email,
@@ -89,6 +95,41 @@ export const login = async (req: Request, res: Response) => {
   });
 }
 
+/**
+ * (TEST) Returns true of the user is has a valid token.
+ */
 export const verifyToken = (req: Request, res: Response) => {
   res.json(true);
+}
+
+/**
+ * Grabs all registered users.
+ */
+export const getAllUsers = async (req: Request, res: Response) => {
+  const result = await db.query(`
+    SELECT *
+    FROM Users;
+  `);
+
+  res.json({
+    users: result.rows,
+  });
+}
+
+/**
+ * Delete a user.
+ */
+export const deleteUser = async (req: Request, res: Response) => {
+  const userId = req.user || '';
+
+  const result = await db.query(`
+    DELETE FROM Users
+    WHERE id = $1
+    RETURNING *;
+  `, [userId]);
+  
+  const deletedUser = result.rows[0];
+  res.json({
+    user: deletedUser,
+  })
 }

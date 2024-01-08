@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { InputError } from '../utils/error';
-import { assertCommunityModerator, assertValidCategory } from '../utils/assert';
+import { assertCommunityMember, assertCommunityModerator, assertCommunityOwner, assertValidCategory } from '../utils/assert';
 
 // ===========================================================================
 // HELPERS
@@ -21,6 +21,30 @@ const getCommunityCategories = async (communityId: string) => {
 
   // Map each query result object to just a string.
   return result.rows.map((category) => category.name as string);
+}
+
+/**
+ * Gets all the members of a given community.
+ */
+const getCommunityMembers = async (communityId: string) => {
+  const result = await db.query(`
+    SELECT
+      u.id, u.username, m.role
+    FROM
+      Communities c
+      JOIN Community_Members m ON m.community_id = c.id
+      JOIN Users u ON u.id = m.member_id
+    WHERE
+      c.id = $1;
+  `, [communityId]);
+
+  return result.rows.map((member) => {
+    return {
+      id: member.id as string,
+      username: member.username as string,
+      role: member.role as string,
+    }
+  });
 }
 
 // ===========================================================================
@@ -195,7 +219,8 @@ export const getCommunityDetails = async (req: Request, res: Response) => {
 
   const details = result.rows[0];
 
-  const categories = await getCommunityCategories(details.id);
+  const categories = await getCommunityCategories(communityId);
+  const members = await getCommunityMembers(communityId);
 
   res.json({
     id: details.id,
@@ -203,13 +228,15 @@ export const getCommunityDetails = async (req: Request, res: Response) => {
     description: details.description,
     createdAt: details.createdAt,
     categories,
-  })
+    members,
+  });
 }
 
 /**
  * Creates a community.
  */
 export const createCommunity = async (req: Request, res: Response) => {
+  const userId = req.user || '';
   const {
     name,
     description
@@ -218,10 +245,17 @@ export const createCommunity = async (req: Request, res: Response) => {
   const result = await db.query(`
     INSERT INTO Communities (name, description)
     VALUES ($1, $2)
-    RETURNING name, description;
+    RETURNING id, name, description;
   `, [name, description]);
 
   const newCommunity = result.rows[0];
+
+  // The user who created the community automatically becomes a member with the role of 'Owner'.
+  await db.query(`
+    INSERT INTO Community_Members (community_id, member_id, role)
+    VALUES ($1, $2, $3);
+  `, [newCommunity.id, userId, 'Owner']);
+
   res.json({
     community: newCommunity,
   });
@@ -231,7 +265,10 @@ export const createCommunity = async (req: Request, res: Response) => {
  * Deletes a given community.
  */
 export const deleteCommunity = async (req: Request, res: Response) => {
+  const userId = req.user || '';
   const { communityId } = req.params;
+
+  await assertCommunityOwner(communityId, userId);
 
   const result = await db.query(`
     DELETE FROM Communities
@@ -246,7 +283,7 @@ export const deleteCommunity = async (req: Request, res: Response) => {
 }
 
 /**
- * Creates a category to apply to categories.
+ * Creates a category to apply to ALL communities.
  */
 export const createCategory = async (req: Request, res: Response) => {
   const { name } = req.body;
@@ -330,5 +367,25 @@ export const createFlair = async (req: Request, res: Response) => {
 
   res.json({
     flair: newFlair,
+  });
+}
+
+/**
+ * Join a community with a default role of 'Member'.
+ */
+export const joinCommunity = async (req: Request, res: Response) => {
+  const userId = req.user || '';
+  const { communityId } = req.params;
+
+  const result = await db.query(`
+    INSERT INTO Community_Members (community_id, member_id)
+    VALUES ($1, $2)
+    RETURNING community_id, member_id;
+  `, [communityId, userId]);
+
+  const newMember = result.rows[0];
+
+  res.json({
+    communityMember: newMember,
   });
 }
