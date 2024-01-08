@@ -12,11 +12,13 @@ import {
   unpinThread,
   updateThread,
   addFlair,
+  getThreadDetails,
 } from '../controllers/threads.controller';
 
 const router = Router();
 
 router.get('/:communityId', catchErrors(getAllThreads));
+router.get('/details/:threadId', catchErrors(getThreadDetails));
 router.post('/:communityId', authorize, catchErrors(createThread));
 router.put('/:threadId', authorize, catchErrors(updateThread));
 router.delete('/:threadId', authorize, catchErrors(deleteThread));
