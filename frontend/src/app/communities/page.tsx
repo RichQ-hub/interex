@@ -1,5 +1,3 @@
-import { authOptions } from '@/lib/authOptions';
-import { getServerSession } from 'next-auth';
 import { saira } from '@/fonts';
 import { Metadata } from 'next';
 import SearchBar from '@/components/SearchBar';
@@ -7,7 +5,7 @@ import CategoryFilter from '@/components/CategoryFilter';
 import SortButton from '@/components/SortButton';
 import PageSizeButton from '@/components/PageSizeButton';
 import CommunityCard from '@/components/CommunityCard';
-import { communities } from '@/data/communities';
+import CommunityService from '@/services/CommunityService';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -18,10 +16,7 @@ export const metadata: Metadata = {
 }
 
 export default async function CommunityFinderPage() {
-  const session = await getServerSession(authOptions);
-  // console.log('COMMUNITIES:');
-  // console.log(session)
-
+  const communities = await CommunityService.getAllCommunities();
 
   return (
     <main className='min-h-screen'>
