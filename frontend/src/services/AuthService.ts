@@ -33,7 +33,7 @@ class AuthService {
     };
 
     const response = await parseJSON(`${BASE_URL}/login`, options);
-    return response.user;
+    return response;
   }
 }
 

@@ -13,7 +13,7 @@ const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - Hi
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
 
 export const metadata: Metadata = {
-  title: 'Communities',
+  title: 'Communities | Interex',
   description: 'Search for communities or create your own!',
 }
 

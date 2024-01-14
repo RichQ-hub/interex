@@ -67,9 +67,9 @@ export const authOptions: NextAuthOptions = {
     }
   },
   // This pages property allows us to create custom sign in pages that we define.
-  // pages: {
-  //   signIn: '/login',
-  // }
+  pages: {
+    signIn: '/login',
+  }
 }
 
 /**
