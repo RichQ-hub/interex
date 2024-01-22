@@ -1,3 +1,5 @@
+// This is exactly the same as page.tsx. (This file is explained inside of layout.tsx)
+
 import { saira } from '@/fonts';
 import { Metadata } from 'next';
 import SearchBar from '@/components/SearchBar';

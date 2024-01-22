@@ -2,7 +2,7 @@
 
 import { saira } from '@/fonts';
 import React from 'react';
-import AuthInput from '../AuthInput';
+import AuthInput from '../TextInput';
 import useFormInputText from '@/hooks/useFormInputText';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';

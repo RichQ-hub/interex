@@ -12,6 +12,7 @@ const config: Config = {
         'interex-nav': '#0E141B',
         'interex-brand': '#F942FD',
         'interex-blue': '#66C0F4',
+        'interex-blue-light': '#66c0f467',
         'interex-bg-black': '#040011',
         'interex-bg-blue': '#1D2F49',
         'interex-category-aside': '#050c1ba6',

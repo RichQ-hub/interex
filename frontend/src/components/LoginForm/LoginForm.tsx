@@ -1,10 +1,8 @@
 'use client'
 
 import useFormInputText from '@/hooks/useFormInputText';
-import AuthService from '@/services/AuthService';
-import { useRouter } from 'next/navigation';
 import React from 'react';
-import AuthInput from '../AuthInput';
+import AuthInput from '../TextInput';
 import { saira } from '@/fonts';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
@@ -15,8 +13,6 @@ const LoginForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // const user = await AuthService.login(email.value, password.value);
 
     await signIn('credentials', {
       email: email.value,

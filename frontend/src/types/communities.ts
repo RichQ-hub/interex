@@ -4,3 +4,8 @@ export interface Community {
   numThreads: string;
   categories: string[];
 }
+
+export interface CreateCommunityPayload {
+  name: string;
+  description: string;
+}
