@@ -1,7 +1,12 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { InputError } from '../utils/error';
-import { assertCommunityMember, assertCommunityModerator, assertCommunityOwner, assertValidCategory } from '../utils/assert';
+import format from 'pg-format';
+import {
+  assertCommunityModerator,
+  assertCommunityOwner,
+  assertValidCategory
+} from '../utils/assert';
 
 // ===========================================================================
 // HELPERS
@@ -56,9 +61,9 @@ const getCommunityMembers = async (communityId: string) => {
  */
 export const getAllCommunities = async (req: Request, res: Response) => {
   const allCommunities = await db.query(`
-    SELECT  c.id, c.name, count(m.member_id) as num_members
+    SELECT  c.id, c.name, count(t.id) as num_threads
     FROM    Communities c
-            LEFT OUTER JOIN Community_Members m ON m.community_id = c.id
+            LEFT OUTER JOIN Threads t ON t.community_id = c.id
     GROUP BY c.id, c.name;
   `);
 
@@ -69,7 +74,7 @@ export const getAllCommunities = async (req: Request, res: Response) => {
     return {
       id: com.id,
       name: com.name,
-      numMembers: com.num_members,
+      numThreads: com.num_threads,
       categories,
     }
   }));
@@ -239,8 +244,14 @@ export const createCommunity = async (req: Request, res: Response) => {
   const userId = req.user || '';
   const {
     name,
-    description
+    description,
+    categories, // A list of category ids.
   } = req.body;
+
+  // Assert all categories are valid.
+  await Promise.all(categories.map(async (category: string) => {
+    return await assertValidCategory(category);
+  }))
 
   const result = await db.query(`
     INSERT INTO Communities (name, description)
@@ -256,9 +267,73 @@ export const createCommunity = async (req: Request, res: Response) => {
     VALUES ($1, $2, $3);
   `, [newCommunity.id, userId, 'Owner']);
 
+  const categoryTuples = categories.map((categoryId: string) => {
+    return [newCommunity.id, categoryId]
+  });
+
+  // Add the categories.
+  await db.query(format(`
+    INSERT INTO Community_Categories (community_id, category_id)
+    VALUES %L;
+  `, categoryTuples));
+
   res.json({
     community: newCommunity,
   });
+}
+
+/**
+ * Edits a community.
+ */
+export const editCommunity = async (req: Request, res: Response) => {
+  const userId = req.user || '';
+  const { communityId } = req.params;
+  const {
+    name,
+    description,
+    categories,
+  } = req.body;
+
+  // Assert all categories are valid.
+  await Promise.all(categories.map(async (category: string) => {
+    return await assertValidCategory(category);
+  }))
+
+  // Assert the user is authorised to edit this community.
+  await assertCommunityModerator(communityId, userId);
+
+  // Update the name and description of this community.
+  const result = await db.query(`
+    UPDATE Communities
+    SET
+      name = $1,
+      description = $2
+    WHERE
+      id = $3
+    RETURNING id, name, description;
+  `, [name, description, communityId]);
+
+  const editedCommunity = result.rows[0];
+
+  // Delete all categories of this community.
+  await db.query(`
+    DELETE FROM Community_Categories
+    WHERE community_id = $1;
+  `, [communityId]);
+
+  // Add all the new categories to this community.
+  const categoryTuples = categories.map((categoryId: string) => {
+    return [communityId, categoryId]
+  });
+
+  await db.query(format(`
+    INSERT INTO Community_Categories (community_id, category_id)
+    VALUES %L;
+  `, categoryTuples)); 
+
+  res.json({
+    editedCommunity,
+  })
 }
 
 /**

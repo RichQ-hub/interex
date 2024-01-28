@@ -55,10 +55,13 @@ export const assertValidCategory = async (categoryId: string) => {
   `, [categoryId]);
 
   if (!results.rowCount) {
-    throw new InputError('Category does not exist.');
+    throw new InputError(`Category with id = '${categoryId}' does not exist.`);
   }
 }
 
+/**
+ * Ensures that the user is a moderator or higher in terms of rank in the community.
+ */
 export const assertCommunityModerator = async (communityId: string, userId: string) => {
   const results = await db.query(`
     SELECT
