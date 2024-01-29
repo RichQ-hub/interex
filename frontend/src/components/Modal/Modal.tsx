@@ -15,7 +15,7 @@ const Modal = ({
 
   return (
     <div className='fixed top-0 bg-[#00000053] flex justify-center items-center w-full h-screen z-50 backdrop-blur-sm'>
-      <div className='block w-[480px] bg-[#0f1a2c] shadow-comm-filter px-8 py-4 border-[#5a7f9c] border-[1px]'>
+      <dialog open className='block w-[480px] bg-[#0f1a2c] shadow-comm-filter px-8 py-4 border-[#5a7f9c] border-[1px]'>
         {/* Header */}
         <div className='flex items-center mb-4'>
           <h2 className={`${saira.className} text-interex-blue font-semibold text-xl`}>{title}</h2>
@@ -32,7 +32,7 @@ const Modal = ({
 
         {/* Body */}
         {children}
-      </div>
+      </dialog>
     </div>
   )
 }

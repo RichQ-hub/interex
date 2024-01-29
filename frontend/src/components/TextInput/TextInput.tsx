@@ -19,14 +19,14 @@ const TextInput = ({
 }) => {
   return (
     <div className='mb-4'>
-      <h2 className={`${saira.className} font-semibold text-lg mb-2`}>{title}</h2>
+      <h2 className={`${saira.className} font-semibold text-lg mb-2 text-white`}>{title}</h2>
 
       {/* Input Wrapper */}
       <div className='relative'>
         {icon && <div className='absolute fill-white left-0 top-0 bottom-0 flex items-center px-3'>{icon}</div>}
         <input
           className={clsx(
-            `bg-[#A6BFE326] h-9 w-full px-3`,
+            `bg-interex-input h-9 w-full px-3 text-white`,
             {
               'pl-9': icon
             }

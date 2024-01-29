@@ -1,6 +1,8 @@
 
 export const BACKEND_URL = 'http://localhost:4000/api/v1';
 
+export type Token = string | undefined;
+
 export const parseJSON = async (url: string, options: any) => {
   /**
    * Cache 'no-store' signals to nextjs that we don't want to cache this

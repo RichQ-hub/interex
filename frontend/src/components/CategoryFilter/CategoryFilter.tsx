@@ -35,11 +35,11 @@ const CategoryFilter = () => {
         return (
           <li key={idx}>
             <label
-              className='px-2 block cursor-pointer hover:bg-black text-lg'
+              className='px-2 block cursor-pointer text-lg hover:bg-interex-input'
               htmlFor={`checkbox-${category.toLowerCase()}`}
             >
               <input
-                className='mr-4 bg-gray-500'
+                className='mr-4 accent-interex-blue'
                 type='checkbox'
                 name=''
                 checked={searchParams.getAll('category').includes(category)}

@@ -20,6 +20,7 @@ const config: Config = {
         'interex-light-blue': '#A6BFE352',
         'interex-bg-thread': '#0F172A99',
         'interex-aqua': '#10F0F0',
+        'interex-input': '#A6BFE326',
       },
       backgroundImage: {
         'comm-banner': "url('../assets/community-banner.png')"

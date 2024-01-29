@@ -1,5 +1,5 @@
 import { Community, CreateCommunityPayload } from '@/types/communities';
-import { BACKEND_URL, parseJSON } from './helpers';
+import { BACKEND_URL, Token, parseJSON } from './helpers';
 
 const BASE_URL = `${BACKEND_URL}/communities`;
 
@@ -28,7 +28,7 @@ class CommunityService {
     return response.categories;
   }
 
-  createCommunity = async (token: string, payload: CreateCommunityPayload) => {
+  createCommunity = async (token: Token, payload: CreateCommunityPayload) => {
     const options = {
       method: 'POST',
       headers: {
