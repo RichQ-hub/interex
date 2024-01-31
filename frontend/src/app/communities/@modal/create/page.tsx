@@ -1,8 +1,10 @@
 import CreateCommunityModal from '@/components/CreateCommunityModal';
+import CommunityService from '@/services/CommunityService';
 
 export default async function CommunityModal() {
+  const categories = await CommunityService.getAllCategories();
   return (
-    <CreateCommunityModal />
+    <CreateCommunityModal categories={categories} />
   )
 }
 

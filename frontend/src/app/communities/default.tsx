@@ -9,7 +9,6 @@ import PageSizeButton from '@/components/PageSizeButton';
 import CommunityCard from '@/components/CommunityCard';
 import CommunityService from '@/services/CommunityService';
 import Link from 'next/link';
-import { communities } from '@/data/communities';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
 }
 
 export default async function CommunityFinderPage() {
-  // const communities = await CommunityService.getAllCommunities();
+  const communities = await CommunityService.getAllCommunities();
   const session = await getServerSession(authOptions);
 
   return (

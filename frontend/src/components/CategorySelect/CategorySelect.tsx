@@ -1,4 +1,5 @@
 import { saira } from '@/fonts';
+import { Category } from '@/types/communities';
 import React, { useState } from 'react';
 
 const dummyCategories = [
@@ -21,11 +22,13 @@ const dummyCategories = [
 ]
 
 const CategorySelect = ({
+  categories,
   selectedCategories,
   handleToggleCategory,
 }: {
-  selectedCategories: number[];
-  handleToggleCategory: (categoryId: number, checked: boolean) => void;
+  categories: Category[];
+  selectedCategories: string[];
+  handleToggleCategory: (categoryId: string, checked: boolean) => void;
 }) => {
   const [hovered, setHovered] = useState<boolean>(false);
 
@@ -42,11 +45,11 @@ const CategorySelect = ({
         <dialog open className='absolute top-0 bottom-0 left-full p-4 bg-[#0f1a2c] border-[#5a7f9c] border-[1px] text-white'>
           <h2 className={`${saira.className} font-semibold text-lg mb-1`}>Categories</h2>
           <ul>
-            {dummyCategories.map((category) => {
+            {categories.map((category) => {
               return (
                 <li key={category.id}>
                   <label
-                    className='flex items-center cursor-pointer hover:bg-interex-input w-full px-2'
+                    className='flex items-center cursor-pointer hover:bg-interex-input px-2'
                     htmlFor={`category-select-${category.id}`}
                   >
                     <input

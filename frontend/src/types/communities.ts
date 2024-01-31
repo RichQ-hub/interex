@@ -8,10 +8,11 @@ export interface Community {
 export interface CreateCommunityPayload {
   name: string;
   description: string;
-  categories: number[];
+  categories: string[];
 }
 
 export interface Category {
   id: string;
   name: string;
+  description: string;
 }
