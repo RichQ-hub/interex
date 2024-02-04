@@ -1,9 +1,3 @@
-INSERT INTO Users (username, email, password)
-VALUES
-  ('mike', '2@gmail.com', 'no'),
-  ('sarah', 'sarah@gmail.com', 'no')
-;
-
 INSERT INTO Communities (name)
 VALUES
   ('Minecraft'),

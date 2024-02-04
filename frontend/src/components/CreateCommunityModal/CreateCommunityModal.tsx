@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { saira } from '@/fonts';
 import CategorySelect from '../CategorySelect';
 import { Category } from '@/types/communities';
+import { revalidatePath } from 'next/cache';
 
 const CreateCommunityModal = ({
   categories
@@ -29,13 +30,17 @@ const CreateCommunityModal = ({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    await CommunityService.createCommunity(session?.user.accessToken, {
+    const newComm = await CommunityService.createCommunity(session?.user.accessToken, {
       name: name.value,
       description: description.value,
       categories: selectedCategories,
     })
 
-    router.push('/communities');
+    // Refetches the data for communities.
+    router.refresh();
+
+    // Closes the modal (for some reason router.push('communities') does not work).
+    router.back();
   }
 
   const handleToggleCategory = (categoryId: string, checked: boolean) => {

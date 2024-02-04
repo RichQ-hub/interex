@@ -245,12 +245,14 @@ export const createCommunity = async (req: Request, res: Response) => {
   const {
     name,
     description,
-    categories, // A list of category ids.
+    categories,
   } = req.body;
 
+  console.log(req.body)
+
   // Assert all categories are valid.
-  await Promise.all(categories.map(async (category: string) => {
-    return await assertValidCategory(category);
+  await Promise.all(categories.map(async (categoryId: string) => {
+    await assertValidCategory(categoryId);
   }))
 
   const result = await db.query(`

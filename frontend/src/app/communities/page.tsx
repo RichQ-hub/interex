@@ -4,11 +4,11 @@ import SearchBar from '@/components/SearchBar';
 import CategoryFilter from '@/components/CategoryFilter';
 import SortButton from '@/components/SortButton';
 import PageSizeButton from '@/components/PageSizeButton';
-import CommunityCard from '@/components/CommunityCard';
-import CommunityService from '@/services/CommunityService';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
+import { Suspense } from 'react';
+import CommunitiesList from '@/components/CommunitiesList';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -18,12 +18,21 @@ export const metadata: Metadata = {
   description: 'Search for communities or create your own!',
 }
 
-export default async function CommunityFinderPage() {
-  const communities = await CommunityService.getAllCommunities();
+export default async function CommunityFinderPage({
+  searchParams
+}: {
+  searchParams?: {
+    query?: string;
+    sortBy?: string;
+  }
+}) {
   const session = await getServerSession(authOptions);
 
+  const query = searchParams?.query || '';
+  const sortBy = searchParams?.sortBy || '';
+
   return (
-    <main className='min-h-screen'>
+    <main>
       {/* Banner Section */}
       <section
         className='w-full h-64 shadow-comm-banner bg-comm-banner bg-no-repeat bg-cover bg-center flex items-center justify-center gap-6 flex-col'
@@ -36,10 +45,26 @@ export default async function CommunityFinderPage() {
       <section className='mt-6 max-w-7xl mx-auto grid grid-cols-comm-content grid-rows-comm-content'>
 
         {/* Sidebar */}
+
         <aside className='relative pr-6 col-start-1 col-end-2 row-start-2 row-end-3'>
           <div className='sticky p-4 bg-interex-category-aside top-20 shadow-comm-filter'>
-            <h2 className={`${saira.className} pb-2 text-2xl font-semibold`}>Categories</h2>
-            <CategoryFilter />
+            {/* Sidebar Header */}
+            <div className='mb-2 flex items-center'>
+              <h2 className={`${saira.className} text-2xl font-semibold`}>Categories</h2>
+
+              {
+                session &&
+                <Link
+                  className='flex items-center justify-center w-8 h-8 ml-auto hover:bg-interex-input rounded-full'
+                  href='/communities/category'
+                >
+                  <svg className='fill-white w-1/3' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
+                </Link>
+              }
+            </div>
+            <Suspense fallback={<>nooooooooooooooooooooooooooooooooooooooooooo</>}>
+              <CategoryFilter />
+            </Suspense>
           </div>
         </aside>
 
@@ -80,19 +105,9 @@ export default async function CommunityFinderPage() {
         </div>
 
         {/* Community Cards */}
-        <ul className='h-[2000px] grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] auto-rows-max justify-items-center gap-7'>
-          {communities.map((com, idx) => {
-            return (
-              <CommunityCard
-                key={idx}
-                communityId={com.id}
-                name={com.name}
-                numThreads={com.numThreads}
-                categories={com.categories}
-              />
-            )
-          })}
-        </ul>
+        <Suspense key={query + sortBy} fallback={<>Loading Communities</>}>
+          <CommunitiesList query={query} sortBy={sortBy} />
+        </Suspense>
       </section>
     </main>
   )

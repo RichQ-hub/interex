@@ -14,7 +14,9 @@ const Modal = ({
   const router = useRouter();
 
   return (
-    <div className='fixed top-0 bg-[#00000053] flex justify-center items-center w-full h-screen z-50 backdrop-blur-sm'>
+    <div
+      className='fixed top-0 bg-[#00000053] flex justify-center items-center w-full h-screen z-50 backdrop-blur-sm overscroll-contain'
+    >
       <dialog open className='block w-[480px] bg-[#0f1a2c] shadow-comm-filter px-8 py-4 border-[#5a7f9c] border-[1px]'>
         {/* Header */}
         <div className='flex items-center mb-4'>

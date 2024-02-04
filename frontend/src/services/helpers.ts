@@ -20,8 +20,9 @@ export const parseJSON = async (url: string, options: any) => {
   const data = await response.json();
 
   if (data.error) {
+    console.log('ERROR')
     console.log(data.error);
-    throw new Error(data.error);
+    // throw new Error(data.error);
   }
 
   return data;

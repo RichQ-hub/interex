@@ -16,7 +16,7 @@ const TextareaInput = ({
     <div className='mb-4'>
       <h2 className={`${saira.className} font-semibold text-lg mb-2 text-white`}>{title}</h2>
       <textarea
-        className='bg-interex-input px-3 py-1 w-full resize-y min-h-[100px] text-white'
+        className='bg-interex-input px-3 py-1 w-full resize-y min-h-[100px] max-h-[300px] text-white'
         required={required}
         value={value}
         onChange={handleInputChange}
