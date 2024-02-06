@@ -9,6 +9,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { Suspense } from 'react';
 import CommunitiesList from '@/components/CommunitiesList';
+import CommunityCardSkeleton from '@/skeletons/CommunityCardSkeleton';
+import Skeleton from 'react-loading-skeleton';
+import CommunityCard from '@/components/CommunityCard';
+import CommunitiesListSkeleton from '@/skeletons/CommunitiesListSkeleton';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -24,12 +28,15 @@ export default async function CommunityFinderPage({
   searchParams?: {
     query?: string;
     sortBy?: string;
+    pageSize?: string;
+    category?: string[];
   }
 }) {
   const session = await getServerSession(authOptions);
 
   const query = searchParams?.query || '';
   const sortBy = searchParams?.sortBy || '';
+  const pageSize = searchParams?.pageSize || '';
 
   return (
     <main>
@@ -99,14 +106,16 @@ export default async function CommunityFinderPage({
               <p>Show per page</p>
               <PageSizeButton options={PAGE_SIZE_OPTIONS} />
             </div>
-
           </div>
-
         </div>
 
         {/* Community Cards */}
-        <Suspense key={query + sortBy} fallback={<>Loading Communities</>}>
-          <CommunitiesList query={query} sortBy={sortBy} />
+        <Suspense key={query + sortBy} fallback={<CommunitiesListSkeleton />}>
+          <CommunitiesList
+            query={query}
+            sortBy={sortBy}
+            pageSize={pageSize}
+          />
         </Suspense>
       </section>
     </main>

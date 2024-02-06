@@ -55,6 +55,23 @@ class CommunityService {
     const response = await parseJSON(`${BASE_URL}/category/new`, options);
     return response.category;
   }
+
+  searchCommunities = async (query: string, sortBy: string, pageSize: string) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      }
+    };
+
+    const searchParams = new URLSearchParams();
+    searchParams.set('query', query);
+    searchParams.set('sortBy', sortBy);
+    searchParams.set('pageSize', pageSize);
+
+    const response = await parseJSON(`${BASE_URL}/search?${searchParams.toString()}`, options);
+    return response.communities as Community[];
+  }
 }
 
 export default new CommunityService();

@@ -4,7 +4,7 @@ import useFormInputText from '@/hooks/useFormInputText';
 import CommunityService from '@/services/CommunityService';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import Modal from '../Modal';
 import TextInput from '../TextInput';
 
@@ -12,10 +12,12 @@ const CreateCategoryModal = () => {
   const { data: session } = useSession();
 
   const name = useFormInputText();
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     await CommunityService.createCategory(session?.user.accessToken, {
       name: name.value,
@@ -40,7 +42,16 @@ const CreateCategoryModal = () => {
           handleInputChange={name.handleChange}
         />
 
-        <button className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm'>Create</button>
+        <button
+          className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm'
+          disabled={loading ? true : false}
+        >
+          {loading ? (
+            <p>Submitting...</p>
+          ) : (
+            <p>Create</p>
+          )}
+        </button>
       </form>
     </Modal>
   )

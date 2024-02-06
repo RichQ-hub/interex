@@ -20,6 +20,7 @@ const CreateCommunityModal = ({
 }) => {
   const name = useFormInputText();
   const description = useFormInputText();
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const router = useRouter();
 
@@ -29,8 +30,9 @@ const CreateCommunityModal = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    const newComm = await CommunityService.createCommunity(session?.user.accessToken, {
+    await CommunityService.createCommunity(session?.user.accessToken, {
       name: name.value,
       description: description.value,
       categories: selectedCategories,
@@ -81,7 +83,16 @@ const CreateCommunityModal = ({
           <CategorySelect categories={categories} handleToggleCategory={handleToggleCategory} selectedCategories={selectedCategories} />
         </div>
 
-        <button className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm'>Create</button>
+        <button
+          className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm'
+          disabled={loading ? true : false}
+        >
+          {loading ? (
+            <p>Submitting...</p>
+          ) : (
+            <p>Create</p>
+          )}
+        </button>
       </form>
     </Modal>
   )

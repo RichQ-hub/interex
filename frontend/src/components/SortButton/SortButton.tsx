@@ -1,5 +1,6 @@
 'use client'
 
+import clsx from 'clsx';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -16,9 +17,15 @@ const SortButton = ({
 
   return (
     <button
-      className='flex items-center justify-between relative bg-interex-light-blue px-4 py-2 min-w-[192px]'
+      className={clsx(
+        'flex w-max items-center justify-between relative bg-interex-light-blue px-4 py-2 min-w-[192px]',
+        {
+          'outline outline-1 outline-white': isOpen,
+        }
+      )}
       type='button'
       onClick={() => setIsOpen(!isOpen)}
+      onMouseLeave={() => setIsOpen(false)}
     >
       <p className='text-left mr-2'>{options[Number(searchParams.get('sortBy')) ?? 0]}</p>
       {isOpen ? (
@@ -29,7 +36,7 @@ const SortButton = ({
 
       {/* Dropdown Menu */}
       {isOpen &&
-        <ul className='absolute top-[100%] right-0 left-0 z-10 bg-[#242526]'>
+        <ul className='absolute top-[calc(100%+1px)] right-0 left-0 bg-[#242526]'>
           {options.map((opt, idx) => {
             return (
               <li key={idx}>
