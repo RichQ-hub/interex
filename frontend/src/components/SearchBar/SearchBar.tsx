@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -10,7 +10,7 @@ const SearchBar = () => {
 
   const [query, setQuery] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const params = new URLSearchParams(searchParams);
@@ -22,7 +22,8 @@ const SearchBar = () => {
     } else {
       params.delete('query');
     }
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    console.log(params.toString())
+    router.replace(`${pathname}?${params.toString()}`);
   }
 
   return (

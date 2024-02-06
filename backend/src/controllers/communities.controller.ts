@@ -110,16 +110,32 @@ export const searchCommunities = async (req: Request, res: Response) => {
   const {
     query,
     category,
+    sortBy,
+    pageSize,
     page
   } = req.query;
+
+  const sortOptions = [
+    'c.name ASC',
+    'num_threads DESC, c.name ASC',
+    'num_threads ASC, c.name ASC',
+  ];
+
+  let selectedSortOpt = sortOptions[0];
+  if (typeof sortBy === 'string') {
+    selectedSortOpt = sortOptions[Number(sortBy)];
+  }
 
   let currentPage = 1;
   if (typeof page === 'string') {
     currentPage = Number(page);
   }
 
-  const COMMUNITIES_PER_PAGE = 20;
-  const offset = (currentPage - 1) * COMMUNITIES_PER_PAGE;
+  let currPageSize = 10;
+  if (pageSize && typeof pageSize === 'string') {
+    currPageSize = Number(pageSize);
+  }
+  const offset = (currentPage - 1) * currPageSize;
 
   const searchQueryRegexp = `^${query || ''}.*`;
 
@@ -146,7 +162,8 @@ export const searchCommunities = async (req: Request, res: Response) => {
     WHERE   c.name ~* $1 ${categories.length ? 'AND cat.name = ANY ($2)' : ''}
     GROUP BY c.id, c.name
     ${categories.length ? 'HAVING  count(cat.id) = $3' : ''}
-    LIMIT ${COMMUNITIES_PER_PAGE}
+    ORDER BY ${selectedSortOpt}
+    LIMIT ${currPageSize}
     OFFSET ${offset}
     ;
   `, queryArgs);

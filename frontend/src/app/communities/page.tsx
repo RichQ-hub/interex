@@ -9,10 +9,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { Suspense } from 'react';
 import CommunitiesList from '@/components/CommunitiesList';
-import CommunityCardSkeleton from '@/skeletons/CommunityCardSkeleton';
-import Skeleton from 'react-loading-skeleton';
-import CommunityCard from '@/components/CommunityCard';
 import CommunitiesListSkeleton from '@/skeletons/CommunitiesListSkeleton';
+import CategoryFilterSkeleton from '@/skeletons/CategoryFilterSkeleton';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -29,7 +27,8 @@ export default async function CommunityFinderPage({
     query?: string;
     sortBy?: string;
     pageSize?: string;
-    category?: string[];
+    page?: string;
+    category?: string[] | string;
   }
 }) {
   const session = await getServerSession(authOptions);
@@ -37,6 +36,8 @@ export default async function CommunityFinderPage({
   const query = searchParams?.query || '';
   const sortBy = searchParams?.sortBy || '';
   const pageSize = searchParams?.pageSize || '';
+  const page = searchParams?.page || '';
+  const category = searchParams?.category ?? '';
 
   return (
     <main>
@@ -69,7 +70,7 @@ export default async function CommunityFinderPage({
                 </Link>
               }
             </div>
-            <Suspense fallback={<>nooooooooooooooooooooooooooooooooooooooooooo</>}>
+            <Suspense fallback={<CategoryFilterSkeleton />}>
               <CategoryFilter />
             </Suspense>
           </div>
@@ -110,11 +111,12 @@ export default async function CommunityFinderPage({
         </div>
 
         {/* Community Cards */}
-        <Suspense key={query + sortBy} fallback={<CommunitiesListSkeleton />}>
+        <Suspense key={query + sortBy + pageSize} fallback={<CommunitiesListSkeleton />}>
           <CommunitiesList
             query={query}
             sortBy={sortBy}
             pageSize={pageSize}
+            category={category}
           />
         </Suspense>
       </section>

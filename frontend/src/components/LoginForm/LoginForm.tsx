@@ -54,7 +54,7 @@ const LoginForm = () => {
       </button>
 
       <p className={`${saira.className} font-semibold text-lg text-center mt-2`}>
-        Don't have an account? &nbsp;
+        {`Don't have an account?`} &nbsp;
         <Link href='/register' className='text-interex-aqua hover:underline'>Sign Up</Link>
       </p>
     </form>

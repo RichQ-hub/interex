@@ -26,4 +26,16 @@ body {
     rgb(var(--background-start-rgb));
 } */
 
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 0.4rem;
+    padding: 0 0.2rem;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+    outline: 1px solid slategrey;
+    border-radius: 100px;
+  }
+}
 

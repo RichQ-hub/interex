@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 const NAV_LINKS = [
   {
     name: 'COMMUNITY',
-    href: '/communities',
+    href: '/communities?sortBy=0',
   },
   {
     name: 'TEAMS',

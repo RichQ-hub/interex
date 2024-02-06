@@ -5,7 +5,7 @@ const CategoryFilter = async () => {
   const categories = await CommunityService.getAllCategories();
 
   // Simulates a loading state.
-  // await new Promise((resolve) => setTimesout(resolve, 2000)); 
+  await new Promise((resolve) => setTimeout(resolve, 2000)); 
 
   return (
     <CategoryFilterList categories={categories} />

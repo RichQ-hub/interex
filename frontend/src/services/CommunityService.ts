@@ -56,7 +56,7 @@ class CommunityService {
     return response.category;
   }
 
-  searchCommunities = async (query: string, sortBy: string, pageSize: string) => {
+  searchCommunities = async (query: string, sortBy: string, pageSize: string, category: string | string[]) => {
     const options = {
       method: 'GET',
       headers: {
@@ -69,9 +69,19 @@ class CommunityService {
     searchParams.set('sortBy', sortBy);
     searchParams.set('pageSize', pageSize);
 
+    if (Array.isArray(category)) {
+      category.forEach((cat) => {
+        searchParams.append('category', cat);
+      });
+    } else if (category) {
+      searchParams.set('category', category);
+    }
+
     const response = await parseJSON(`${BASE_URL}/search?${searchParams.toString()}`, options);
     return response.communities as Community[];
   }
 }
 
-export default new CommunityService();
+const service = new CommunityService();
+
+export default service;

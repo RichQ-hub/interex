@@ -1,9 +1,7 @@
-'use client'
+'use client';
 
 import { Category } from '@/types/communities';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-
-const CATEGORIES = ['Gaming', 'Housing', 'News', 'Politics', 'Food', 'Education', 'IRL', 'Sports'];
 
 const CategoryFilterList = ({
   categories,
@@ -35,7 +33,7 @@ const CategoryFilterList = ({
   }
 
   return (
-    <ul className='max-h-[200px] overflow-y-auto'>
+    <ul className='max-h-[200px] overflow-y-auto scrollbar'>
       {categories.map((category, idx) => {
         return (
           <li key={idx}>

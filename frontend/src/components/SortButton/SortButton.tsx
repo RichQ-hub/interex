@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import clsx from 'clsx';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
@@ -40,9 +40,8 @@ const SortButton = ({
           {options.map((opt, idx) => {
             return (
               <li key={idx}>
-                <button
+                <div
                   className='flex justify-start w-full px-4 py-2 hover:bg-[#525357]'
-                  type='button'
                   onClick={() => {
                     const params = new URLSearchParams(searchParams);
                     params.set('page', '1');
@@ -51,7 +50,7 @@ const SortButton = ({
                   }}
                 >
                   {opt}
-                </button>
+                </div>
               </li>
             )
           })}
