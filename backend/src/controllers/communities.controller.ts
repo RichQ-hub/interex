@@ -161,7 +161,7 @@ export const searchCommunities = async (req: Request, res: Response) => {
             LEFT OUTER JOIN Categories cat ON cat.id = cc.category_id
     WHERE   c.name ~* $1 ${categories.length ? 'AND cat.name = ANY ($2)' : ''}
     GROUP BY c.id, c.name
-    ${categories.length ? 'HAVING  count(cat.id) = $3' : ''}
+    ${categories.length ? 'HAVING count(cat.id) = $3' : ''}
     ORDER BY ${selectedSortOpt}
     LIMIT ${currPageSize}
     OFFSET ${offset}
