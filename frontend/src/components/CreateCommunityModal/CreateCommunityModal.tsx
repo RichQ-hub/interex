@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation';
 import { saira } from '@/fonts';
 import CategorySelect from '../CategorySelect';
 import { Category } from '@/types/communities';
-import { revalidatePath } from 'next/cache';
 
 const CreateCommunityModal = ({
   categories
