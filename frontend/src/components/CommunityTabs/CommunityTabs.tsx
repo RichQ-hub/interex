@@ -14,7 +14,7 @@ const CommunityTabs = ({
   const pathname = usePathname();
 
   return (
-    <ul className='flex items-center font-semibold border-b-2 border-b-[#66C0F440] mb-4'>
+    <ul className='flex items-center font-semibold border-b-2 border-b-[#66C0F440]'>
       {LINKS.map((link, idx) => {
         const path = `/communities/${communityId}/${link.toLowerCase()}`;
         return (

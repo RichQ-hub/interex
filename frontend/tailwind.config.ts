@@ -22,6 +22,9 @@ const config: Config = {
         'interex-bg-thread': '#0F172A99',
         'interex-aqua': '#10F0F0',
         'interex-input': '#A6BFE326',
+        'interex-owner': '#FFF50C',
+        'interex-admin': '#FF41F7',
+        'interex-moderator': '#FF0C0C',
       },
       backgroundImage: {
         'comm-banner': "url('../assets/community-banner.png')"

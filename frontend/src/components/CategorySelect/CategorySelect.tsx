@@ -49,7 +49,7 @@ const CategorySelect = ({
         hovered &&
         <dialog
           open
-          className='absolute top-0 bottom-0 left-full p-4 bg-[#0f1a2c] border-[#5a7f9c] border-[1px] text-white'
+          className='absolute w-max top-0 bottom-0 left-full p-4 bg-[#0f1a2c] border-[#5a7f9c] border-[1px] text-white'
         >
           {/* Tooltip Triange */}
           <div className='absolute top-0 bottom-0 right-full flex items-center'>

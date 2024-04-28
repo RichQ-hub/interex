@@ -21,7 +21,7 @@ export default async function CommunityThreadsPage({
   return (
     <section>
       {/* Header */}
-      <div className={`${saira.className} flex justify-between items-center mb-4`}>
+      <div className={`${saira.className} flex justify-between items-center my-4`}>
         <h2 className='text-xl font-semibold'>6,923 Threads</h2>
         <div className='flex items-center gap-2'>
           <p>Sort by</p>

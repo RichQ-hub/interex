@@ -29,7 +29,7 @@ export default async function RootLayout({
 
   return (
     <html lang='en'>
-      <body className={`${fira.className} antialiased text-white`}>
+      <body className={`${fira.className} antialiased text-white box-border`}>
         <Provider session={session}>
           <Navbar />
           <div className='min-h-screen mt-14 bg-gradient-to-b from-interex-bg-black to-interex-bg-blue to-15%'>
