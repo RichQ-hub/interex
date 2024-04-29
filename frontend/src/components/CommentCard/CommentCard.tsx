@@ -4,6 +4,9 @@ import React from 'react';
 import avatar from '../../assets/avatar.jpg';
 import CommentsList from '../CommentsList';
 
+/** Works alongside CommentsList component, which also recursively renders the replies
+ * by rendering CommentCard component again.
+ */
 const CommentCard = ({
   id,
   author,
