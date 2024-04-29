@@ -1,16 +1,10 @@
-import type { Metadata } from 'next'
-import { Fira_Sans } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from 'next';
+import './globals.css';
 import Navbar from '@/components/Navbar';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
-import { SessionProvider } from 'next-auth/react';
 import Provider from '@/lib/sessionContext';
-
-const fira = Fira_Sans({
-  weight: ['400', '500', '700'],
-  subsets: ['latin'],
-})
+import { fira } from '@/fonts';
 
 export const metadata: Metadata = {
   title: 'Interex',

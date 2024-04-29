@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { saira } from '@/fonts'
-import clsx from 'clsx'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { saira } from '@/fonts';
+import clsx from 'clsx';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
   {
