@@ -5,7 +5,8 @@ import format from 'pg-format';
 import {
   assertCommunityModerator,
   assertCommunityOwner,
-  assertValidCategory
+  assertValidCategory,
+  assertValidCommunity
 } from '../utils/assert';
 
 // ===========================================================================
@@ -48,6 +49,28 @@ const getCommunityMembers = async (communityId: string) => {
       id: member.id as string,
       username: member.username as string,
       role: member.role as string,
+    }
+  });
+}
+
+/**
+ * Get all the flairs in a given community.
+ */
+const getCommunityFlairs = async (communityId: string) => {
+  const result = await db.query(`
+  SELECT
+    name,
+    hex_color
+  FROM
+    Flairs
+  WHERE
+    community_id = $1;
+  `, [communityId]);
+
+  return result.rows.map((flair) => {
+    return {
+      name: flair.name as string,
+      hexColor: flair.hex_color as string,
     }
   });
 }
@@ -243,6 +266,7 @@ export const getCommunityDetails = async (req: Request, res: Response) => {
 
   const categories = await getCommunityCategories(communityId);
   const members = await getCommunityMembers(communityId);
+  const flairs = await getCommunityFlairs(communityId);
 
   res.json({
     id: details.id,
@@ -251,6 +275,7 @@ export const getCommunityDetails = async (req: Request, res: Response) => {
     createdAt: details.createdAt,
     categories,
     members,
+    flairs,
   });
 }
 
@@ -424,6 +449,7 @@ export const getAllFlairs = async (req: Request, res: Response) => {
 
   const results = await db.query(`
     SELECT
+      id,
       name,
       hex_color
     FROM
@@ -449,12 +475,13 @@ export const createFlair = async (req: Request, res: Response) => {
     hexColor
   } = req.body;
 
+  await assertValidCommunity(communityId);
   await assertCommunityModerator(communityId, userId);
 
   const result = await db.query(`
-    INESRT INTO Flairs (community_id, name, hex_color)
+    INSERT INTO Flairs (community_id, name, hex_color)
     VALUES ($1, $2, $3)
-    RETURNING community_id, name, hex_color;
+    RETURNING *;
   `, [communityId, name, hexColor]);
 
   const newFlair = result.rows[0];
