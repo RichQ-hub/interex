@@ -69,6 +69,7 @@ export default async function ThreadPage({
       </div>
 
       {/* Comments */}
+      <h3 className={`${saira.className} text-xl font-semibold py-4`}>Comments</h3>
       <CommentsList comments={commentsData}/>
 
     </section>
