@@ -1,4 +1,4 @@
-import { Community, CreateCategoryPayload, CreateCommunityPayload } from '@/types/communities';
+import { Community, CommunityDetails, CreateCategoryPayload, CreateCommunityPayload } from '@/types/communities';
 import { BACKEND_URL, Token, parseJSON } from './helpers';
 
 const BASE_URL = `${BACKEND_URL}/communities`;
@@ -14,6 +14,18 @@ class CommunityService {
 
     const response = await parseJSON(`${BASE_URL}/`, options);
     return response.communities as Community[];
+  }
+
+  getCommunityDetails = async (communityId: string) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      },
+    };
+
+    const response = await parseJSON(`${BASE_URL}/${communityId}`, options);
+    return response as CommunityDetails;
   }
 
   getAllCategories = async () => {
