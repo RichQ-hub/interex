@@ -59,6 +59,7 @@ const getCommunityMembers = async (communityId: string) => {
 const getCommunityFlairs = async (communityId: string) => {
   const result = await db.query(`
   SELECT
+    id,
     name,
     hex_color
   FROM
@@ -69,6 +70,7 @@ const getCommunityFlairs = async (communityId: string) => {
 
   return result.rows.map((flair) => {
     return {
+      id: flair.id as string,
       name: flair.name as string,
       hexColor: flair.hex_color as string,
     }
