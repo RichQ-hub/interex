@@ -6,6 +6,7 @@ import CommunityTabs from '@/components/CommunityTabs';
 import { Suspense } from 'react';
 import CommunityTitle from '@/components/CommunityTitle';
 import CommunityAside from '@/components/CommunityAside';
+import Link from 'next/link';
 
 export default function CommunityLayout({
   params,
@@ -31,8 +32,16 @@ export default function CommunityLayout({
               <CommunityTitle communityId={params.communityId}/>
             </Suspense>
 
+            {/* Create Post Button */}
+            <Link
+              href={`/communities/${params.communityId}/threads/create`}
+              className='px-6 py-1 ml-auto outline outline-1 outline-white font-medium rounded-full hover:bg-slate-600'
+            >
+              + Create New Thread
+            </Link>
+
             {/* Join Button */}
-            <button type='button' className='ml-auto px-6 py-1 bg-[#3673AB] font-semibold text-lg rounded-lg'>
+            <button type='button' className='px-6 py-1 ml-4 bg-[#3673AB] font-semibold text-lg rounded-lg hover:opacity-80'>
               Join
             </button>
           </div>

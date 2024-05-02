@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import useFormInputText from '@/hooks/useFormInputText';
 import React from 'react';
