@@ -84,30 +84,43 @@ export const getAllThreads = async (req: Request, res: Response) => {
 }
 
 /**
- * 
+ * Gets all the details of a specific thread.
  */
 export const getThreadDetails = async (req: Request, res: Response) => {
   const { threadId } = req.params;
 
   const result = await db.query(`
     SELECT
-      id,
-      community_id,
-      author,
-      pinned_by,
-      title,
-      content,
-      created_at
+      t.id,
+      u.username,
+      m.role,
+      t.pinned_by,
+      t.title,
+      t.content,
+      t.created_at,
+      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id), 0) as num_upvotes
     FROM
-      Threads
+      Threads t
+      JOIN Users u ON u.id = t.author
+      JOIN Communities c ON c.id = t.community_id
+      JOIN Community_Members m ON m.member_id = t.author AND m.community_id = c.id
     WHERE
-      id = $1;
+      t.id = $1;
   `, [threadId]);
 
   const thread = result.rows[0];
 
   res.json({
-    thread,
+    thread: {
+      id: thread.id,
+      author: thread.username,
+      role: thread.role,
+      pinnedBy: thread.pinned_by,
+      title: thread.title,
+      content: thread.content,
+      createdAt: thread.created_at,
+      numUpvotes: thread.num_upvotes,
+    },
   });
 }
 

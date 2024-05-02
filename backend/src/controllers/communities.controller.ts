@@ -453,7 +453,7 @@ export const getAllFlairs = async (req: Request, res: Response) => {
     SELECT
       id,
       name,
-      hex_color
+      hex_color as hexColor
     FROM
       Flairs
     WHERE
