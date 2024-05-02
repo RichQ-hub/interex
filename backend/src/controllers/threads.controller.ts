@@ -18,7 +18,7 @@ import {
  */
 const getThreadFlairs = async (threadId: string) => {
   const result = await db.query(`
-    SELECT  f.name, f.hex_color
+    SELECT  f.id, f.name, f.hex_color
     FROM    Threads t
             JOIN Thread_Flairs tf ON tf.thread_id = t.id
             JOIN Flairs f ON f.id = tf.flair_id
@@ -28,6 +28,7 @@ const getThreadFlairs = async (threadId: string) => {
   // Map each query result object to just a string.
   return result.rows.map((flair) => {
     return {
+      id: flair.id,
       name: flair.name,
       hexColor: flair.hex_color,
     }
