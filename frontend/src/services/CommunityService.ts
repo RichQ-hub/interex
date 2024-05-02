@@ -1,4 +1,4 @@
-import { Community, CommunityDetails, CreateCategoryPayload, CreateCommunityPayload } from '@/types/communities';
+import { Community, CommunityDetails, CreateCategoryPayload, CreateCommunityPayload, FlairDetails } from '@/types/communities';
 import { BACKEND_URL, Token, parseJSON } from './helpers';
 
 const BASE_URL = `${BACKEND_URL}/communities`;
@@ -91,6 +91,18 @@ class CommunityService {
 
     const response = await parseJSON(`${BASE_URL}/search?${searchParams.toString()}`, options);
     return response.communities as Community[];
+  }
+
+  getAllFlairs = async (communityId: string) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json',
+      }
+    };
+
+    const response = await parseJSON(`${BASE_URL}/flair/${communityId}}`, options);
+    return response.flairs as FlairDetails[];
   }
 }
 

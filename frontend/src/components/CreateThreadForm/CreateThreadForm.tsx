@@ -5,15 +5,18 @@ import useFormInputText from '@/hooks/useFormInputText';
 import React from 'react';
 import TextInput from '../TextInput';
 import TextareaInput from '../TextareaInput';
+import { FlairDetails } from '@/types/communities';
 
-const CreateThreadForm = () => {
+const CreateThreadForm = ({
+  communityFlairs,
+}: {
+  communityFlairs: FlairDetails[];
+}) => {
   const title = useFormInputText();
   const content = useFormInputText();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    
   }
 
   return (
