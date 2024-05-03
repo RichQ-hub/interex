@@ -11,7 +11,7 @@ export default async function CreateThreadPage({
   const communityFlairs = await CommunityService.getAllFlairs(params.communityId);
   return (
     <section className='bg-interex-bg-thread py-6 px-8'>
-      <CreateThreadForm communityFlairs={communityFlairs} />
+      <CreateThreadForm communityFlairs={communityFlairs} communityId={params.communityId} />
     </section>
   )
 }

@@ -101,7 +101,7 @@ class CommunityService {
       }
     };
 
-    const response = await parseJSON(`${BASE_URL}/flair/${communityId}}`, options);
+    const response = await parseJSON(`${BASE_URL}/flair/${communityId}`, options);
     return response.flairs as FlairDetails[];
   }
 }
