@@ -1,7 +1,7 @@
 import SortButton from '@/components/SortButton';
-import ThreadCard from '@/components/ThreadCard';
-import { threads } from '@/data/threads';
+import ThreadsList from '@/components/ThreadsList';
 import { saira } from '@/fonts';
+import { Suspense } from 'react';
 
 const SORT_OPTIONS = [
   'Alphabetical',
@@ -30,23 +30,9 @@ export default async function CommunityThreadsPage({
       </div>
 
       {/* Threads List */}
-      <ul>
-        {threads.map((thread, idx) => {
-          return (
-            <ThreadCard
-              key={idx}
-              id={thread.id}
-              communityId={params.communityId}
-              name={thread.name}
-              author={thread.author}
-              postedOn={thread.postedOn}
-              numComments={thread.numComments}
-              numUpvotes={thread.numUpvotes}
-              flairs={thread.flairs}
-            />
-          )
-        })}
-      </ul>
+      <Suspense fallback={<h2>Loading...</h2>}>
+        <ThreadsList communityId={params.communityId} />
+      </Suspense>
     </section>
   )
 }

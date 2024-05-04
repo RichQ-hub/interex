@@ -31,4 +31,5 @@ export interface ThreadCard {
 export interface CreateThreadPayload {
   title: string;
   content: string;
+  flairs: string[];
 }

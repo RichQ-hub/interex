@@ -10,7 +10,6 @@ const CommunityAside = async ({
 }) => {
   // Recall fetch calls are memoized (so the fetch call in CommunityTitle.tsx is not called again).
   const communityDetails = await CommunityService.getCommunityDetails(communityId);
-  const flairs = await CommunityService.getAllFlairs(communityId);
   const createDate = new Date(communityDetails.createdAt);
 
   // Simulate 2s loading time.
@@ -49,7 +48,7 @@ const CommunityAside = async ({
         </Link>
       </div>
       <ul className='flex flex-wrap gap-2'>
-        {flairs.map((flair) => {
+        {communityDetails.flairs.map((flair) => {
           return (
             <li
               key={flair.id}

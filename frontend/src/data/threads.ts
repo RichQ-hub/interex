@@ -1,3 +1,5 @@
+import { ThreadCard, ThreadDetails } from '@/types/threads'
+
 const colors = {
   purple: '#9939D4',
   green: '#39D46E',
@@ -5,76 +7,88 @@ const colors = {
   yellow: '#DFE224'
 }
 
-export const threads = [
+export const threads: ThreadCard[] = [
   {
     id: '1',
-    name: '[UPDATE] New changes to this thread!',
+    title: '[UPDATE] New changes to this thread!',
     author: 'SorbetMaster102',
-    postedOn: 'Dec 12, 2023',
+    createdAt: 'Dec 12, 2023',
+    pinnedBy: null,
     numComments: '127',
     numUpvotes: '82',
     flairs: [
       {
+        id: '1',
         name: 'Help',
-        color: colors.purple
+        hexColor: colors.purple
       },
       {
+        id: '2',
         name: 'Support Main',
-        color: colors.green
+        hexColor: colors.green
       }
     ]
   },
   {
     id: '2',
-    name: 'How can I improve as a support main?',
+    title: 'How can I improve as a support main?',
     author: 'SorbetMaster102',
-    postedOn: 'Dec 12, 2023',
+    pinnedBy: null,
+    createdAt: 'Dec 12, 2023',
     numComments: '127',
     numUpvotes: '82',
     flairs: [
       {
+        id: '1',
         name: 'Help',
-        color: colors.purple
+        hexColor: colors.purple
       },
       {
+        id: '2',
         name: 'Support Main',
-        color: colors.green
+        hexColor: colors.green
       }
     ]
   },
   {
     id: '3',
-    name: '[OFFICIAL] New fiddlesticks skin set to release next year!',
+    title: '[OFFICIAL] New fiddlesticks skin set to release next year!',
     author: 'SorbetMaster102',
-    postedOn: 'Dec 12, 2023',
+    createdAt: 'Dec 12, 2023',
+    pinnedBy: null,
     numComments: '127',
     numUpvotes: '82',
     flairs: [
       {
+        id: '3',
         name: 'News',
-        color: colors.red
+        hexColor: colors.red
       },
       {
+        id: '4',
         name: 'Skin',
-        color: colors.yellow
+        hexColor: colors.yellow
       }
     ]
   },
   {
     id: '4',
-    name: 'What do you guys think of the new map changes?',
+    title: 'What do you guys think of the new map changes?',
     author: 'Holobrah',
-    postedOn: 'Dec 12, 2023',
+    createdAt: 'Dec 12, 2023',
+    pinnedBy: null,
     numComments: '127',
     numUpvotes: '82',
     flairs: [
       {
+        id: '1',
         name: 'Help',
-        color: colors.purple
+        hexColor: colors.purple
       },
       {
+        id: '2',
         name: 'Support Main',
-        color: colors.green
+        hexColor: colors.green
       }
     ]
   },

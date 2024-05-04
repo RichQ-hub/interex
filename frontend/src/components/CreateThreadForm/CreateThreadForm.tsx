@@ -32,6 +32,7 @@ const CreateThreadForm = ({
     await ThreadService.createThread(session?.user.accessToken, communityId, {
       title: title.value,
       content: content.value,
+      flairs: selectedFlairIds,
     })
 
     router.back();
