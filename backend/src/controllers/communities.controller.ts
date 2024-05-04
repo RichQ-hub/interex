@@ -453,7 +453,7 @@ export const getAllFlairs = async (req: Request, res: Response) => {
     SELECT
       id,
       name,
-      hex_color as hexColor
+      hex_color
     FROM
       Flairs
     WHERE
@@ -461,7 +461,13 @@ export const getAllFlairs = async (req: Request, res: Response) => {
   `, [communityId]);
 
   res.json({
-    flairs: results.rows,
+    flairs: results.rows.map((f) => {
+      return {
+        id: f.id,
+        name: f.name,
+        hexColor: f.hex_color,
+      }
+    }),
   })
 }
 
