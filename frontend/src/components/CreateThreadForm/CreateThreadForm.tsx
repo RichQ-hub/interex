@@ -10,40 +10,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import FlairSelect from '../FlairSelect';
 
-// FOR TESTING ========================================
-
-const colors = {
-  purple: '#9939D4',
-  green: '#39D46E',
-  red: '#D43939',
-  yellow: '#DFE224'
-}
-
-const flairs = [
-  {
-    id: '1',
-    name: 'Help',
-    hexColor: colors.purple
-  },
-  {
-    id: '2',
-    name: 'News',
-    hexColor: colors.red
-  },
-  {
-    id: '3',
-    name: 'Skin',
-    hexColor: colors.yellow
-  },
-  {
-    id: '4',
-    name: 'Support Main',
-    hexColor: colors.green
-  },
-]
-
-// ====================================================
-
 const CreateThreadForm = ({
   communityId,
   communityFlairs,
@@ -106,7 +72,7 @@ const CreateThreadForm = ({
 
       {/* Flair Select */}
       <FlairSelect
-        flairs={flairs}
+        flairs={communityFlairs}
         selectedFlairIds={selectedFlairIds}
         handleToggleFlair={handleToggleFlair}
       />

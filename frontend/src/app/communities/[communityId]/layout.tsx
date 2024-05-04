@@ -11,11 +11,13 @@ import Link from 'next/link';
 export default function CommunityLayout({
   params,
   children,
+  modal,
 }: {
   params: {
     communityId: string;
   }
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   return (
     <main>
@@ -62,6 +64,9 @@ export default function CommunityLayout({
           {children}
         </div>
       </section>
+
+      {/* Modal */}
+      {modal}
     </main>
   )
 }

@@ -50,3 +50,8 @@ export interface CreateCommunityPayload {
 export interface CreateCategoryPayload {
   name: string;
 }
+
+export interface CreateFlairPayload {
+  name: string;
+  hexColor: string;
+}

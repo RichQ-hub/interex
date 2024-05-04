@@ -1,36 +1,7 @@
 import React from 'react';
 import CommunityService from '@/services/CommunityService';
 import { saira } from '@/fonts';
-
-// FOR TESTING ========================================
-
-const colors = {
-  purple: '#9939D4',
-  green: '#39D46E',
-  red: '#D43939',
-  yellow: '#DFE224'
-}
-
-const flairs = [
-  {
-    name: 'Help',
-    color: colors.purple
-  },
-  {
-    name: 'News',
-    color: colors.red
-  },
-  {
-    name: 'Skin',
-    color: colors.yellow
-  },
-  {
-    name: 'Support Main',
-    color: colors.green
-  },
-]
-
-// ====================================================
+import Link from 'next/link';
 
 const CommunityAside = async ({
   communityId,
@@ -39,6 +10,7 @@ const CommunityAside = async ({
 }) => {
   // Recall fetch calls are memoized (so the fetch call in CommunityTitle.tsx is not called again).
   const communityDetails = await CommunityService.getCommunityDetails(communityId);
+  const flairs = await CommunityService.getAllFlairs(communityId);
   const createDate = new Date(communityDetails.createdAt);
 
   // Simulate 2s loading time.
@@ -67,14 +39,22 @@ const CommunityAside = async ({
       </div>
 
       {/* Flairs */}
-      <h2 className={`${saira.className} py-4 font-semibold text-2xl border-t-2 border-t-[#ffffff33]`}>Flairs</h2>
+      <div className='pt-4 mb-4 flex items-center border-t-2 border-t-[#ffffff33]'>
+        <h2 className={`${saira.className} font-semibold text-2xl`}>Flairs</h2>
+        <Link
+          className='flex items-center justify-center w-8 h-8 ml-auto hover:bg-interex-input rounded-full'
+          href={`/communities/${communityId}/flair`}
+        >
+          <svg className='fill-white w-1/3' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
+        </Link>
+      </div>
       <ul className='flex flex-wrap gap-2'>
-        {flairs.map((flair, idx) => {
+        {flairs.map((flair) => {
           return (
             <li
-              key={idx}
+              key={flair.id}
               className='font-medium text-sm text-black rounded-xl px-3 py-1'
-              style={{ backgroundColor: `${flair.color}` }}
+              style={{ backgroundColor: `${flair.hexColor}` }}
             >
               {flair.name}
             </li>
