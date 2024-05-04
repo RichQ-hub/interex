@@ -314,7 +314,7 @@ export const createCommunity = async (req: Request, res: Response) => {
   `, [newCommunity.id, userId, 'Owner']);
 
   const categoryTuples = categories.map((categoryId: string) => {
-    return [newCommunity.id, categoryId]
+    return [newCommunity.id, categoryId];
   });
 
   // Add the categories.

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import db from '../db';
+import format from 'pg-format';
 import { AccessError, InputError } from '../utils/error';
 import {
   assertCommunityMember,
@@ -134,18 +135,29 @@ export const createThread = async (req: Request, res: Response) => {
 
   const {
     title,
-    content
+    content,
+    flairs
   } = req.body;
 
   await assertCommunityMember(communityId, userId);
 
-  const results = await db.query(`
+  const result = await db.query(`
     INSERT INTO Threads (community_id, author, title, content)
     VALUES ($1, $2, $3, $4)
     RETURNING *;
   `, [communityId, userId, title, content]);
 
-  const newThread = results.rows[0];
+  const newThread = result.rows[0];
+
+  // Add the flairs.
+  const flairTuples = flairs.map((flairId: string) => {
+    return [newThread.id, flairId];
+  })
+
+  await db.query(format(`
+    INSERT INTO Thread_Flairs (thread_id, flair_id)
+    VALUES %L;
+  `, flairTuples));
 
   res.json({
     newThread,
