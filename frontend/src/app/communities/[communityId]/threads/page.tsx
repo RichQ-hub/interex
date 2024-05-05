@@ -1,7 +1,7 @@
 import SortButton from '@/components/SortButton';
-import ThreadsList from '@/components/ThreadsList';
+import ThreadCard from '@/components/ThreadCard';
 import { saira } from '@/fonts';
-import { Suspense } from 'react';
+import ThreadService from '@/services/ThreadService';
 
 const SORT_OPTIONS = [
   'Alphabetical',
@@ -18,11 +18,12 @@ export default async function CommunityThreadsPage({
     communityId: string;
   }
 }) {
+  const threads = await ThreadService.getAllThreads(params.communityId);
   return (
     <section>
       {/* Header */}
       <div className={`${saira.className} flex justify-between items-center my-4`}>
-        <h2 className='text-xl font-semibold'>6,923 Threads</h2>
+        <h2 className='text-xl font-semibold'>{threads.length} Threads</h2>
         <div className='flex items-center gap-2'>
           <p>Sort by</p>
           <SortButton options={SORT_OPTIONS} />
@@ -30,9 +31,16 @@ export default async function CommunityThreadsPage({
       </div>
 
       {/* Threads List */}
-      <Suspense fallback={<h2>Loading...</h2>}>
-        <ThreadsList communityId={params.communityId} />
-      </Suspense>
+      <ul>
+        {threads.map((thread) => {
+          return (
+            <ThreadCard
+              key={thread.id}
+              details={thread}
+            />
+          )
+        })}
+      </ul>
     </section>
   )
 }

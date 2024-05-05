@@ -33,7 +33,9 @@ const CreateThreadForm = ({
       title: title.value,
       content: content.value,
       flairs: selectedFlairIds,
-    })
+    });
+
+    router.refresh();
 
     router.back();
   }
