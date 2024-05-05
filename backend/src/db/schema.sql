@@ -124,8 +124,12 @@ CREATE TABLE Comment_Votes (
 CREATE TABLE Flairs (
   id SERIAL,
   community_id INT NOT NULL,
-  name VARCHAR(50) UNIQUE NOT NULL,
+  name VARCHAR(50) NOT NULL,
   hex_color VARCHAR(50) NOT NULL,
+
+  UNIQUE (community_id, name), -- Constraint so that these 2 properties CANNOT together be repeated.
+  -- This is needed so that 'name' attribute is unique only within a specific community, not all communities.
+  -- https://stackoverflow.com/questions/14221775/in-postgresql-force-unique-on-combination-of-two-columns
 
   FOREIGN KEY (community_id) REFERENCES Communities(id) ON DELETE CASCADE,
   PRIMARY KEY (id)
