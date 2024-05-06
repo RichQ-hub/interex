@@ -113,16 +113,14 @@ export const getThreadDetails = async (req: Request, res: Response) => {
   const thread = result.rows[0];
 
   res.json({
-    thread: {
-      id: thread.id,
-      author: thread.username,
-      role: thread.role,
-      pinnedBy: thread.pinned_by,
-      title: thread.title,
-      content: thread.content,
-      createdAt: thread.created_at,
-      numUpvotes: thread.num_upvotes,
-    },
+    id: thread.id,
+    author: thread.username,
+    role: thread.role,
+    pinnedBy: thread.pinned_by,
+    title: thread.title,
+    content: thread.content,
+    createdAt: thread.created_at,
+    numUpvotes: thread.num_upvotes,
   });
 }
 

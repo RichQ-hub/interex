@@ -62,7 +62,7 @@ export const login = async (req: Request, res: Response) => {
 
   // Check if the user is registered.
   const existingUser = await db.query(`
-    SELECT id, email, password
+    SELECT id, email, password, username
     FROM Users
     WHERE email = $1;
   `, [email]);
@@ -90,6 +90,7 @@ export const login = async (req: Request, res: Response) => {
   // Return the user information back to the client for use by next-auth.
   res.json({
     id: user.id,
+    name: user.username,
     email: user.email,
     accessToken,
   });
