@@ -1,23 +1,22 @@
 import React from 'react';
 import CommentCard from '../CommentCard';
-import { Comment } from '@/types/comments';
+import CommentService from '@/services/CommentService';
 
-const CommentsList = ({
-  comments,
+const CommentsList = async ({
+  threadId,
 }: {
-  comments: Comment[];
+  threadId: string;
 }) => {
+  const comments = await CommentService.getComments(threadId);
   return (
     <ul>
       {/* Comment */}
-      {comments.map((comment, idx) => {
+      {comments.map((comment) => {
         return (
           <CommentCard
-            key={idx}
-            id={comment.id}
-            author={comment.author}
-            content={comment.content}
-            replies={comment.replies}
+            key={comment.id}
+            threadId={threadId}
+            details={comment}
           />
         ) 
       })}

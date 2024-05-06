@@ -31,6 +31,22 @@ class CommentService {
     const response = await parseJSON(`${BASE_URL}/${threadId}`, options);
     return response.comment;
   }
+
+  replyComment = async (token: Token, threadId: string, commentId: string, content: string) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        content,
+      })
+    };
+
+    const response = await parseJSON(`${BASE_URL}/reply/${threadId}/${commentId}`, options);
+    return response.comment;
+  }
 }
 
 const service = new CommentService();

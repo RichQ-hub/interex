@@ -6,5 +6,7 @@ export interface Comment {
   authorRole: CommunityRole;
   posted: string;
   content: string;
+  numUpvotes: string;
+  numDownvotes: string;
   replies: Comment[];
 }

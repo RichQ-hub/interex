@@ -15,6 +15,7 @@ const ThreadCard = ({
 }) => {
   const pathname = usePathname();
   const [hovered, setHovered] = useState<boolean>(false);
+  const createdDate = new Date(details.createdAt);
 
   return (
     <li>
@@ -57,7 +58,7 @@ const ThreadCard = ({
           {/* Posted Date */}
           <div className='border-l-2 border-l-white flex items-center mb-1'>
             <svg className='fill-white mx-2' xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
-            <p className='m text-sm'><span className='font-bold underline'>Posted on:</span> Dec 12, 2023</p>
+            <p className='m text-sm'><span className='font-bold underline'>Posted on:</span> {createdDate.toLocaleString('default', { month: 'short', year: 'numeric', day: 'numeric' })}</p>
           </div>
 
           {/* Thread Title */}

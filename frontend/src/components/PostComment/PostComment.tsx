@@ -27,6 +27,9 @@ const PostComment = ({
 
     // Refetches the data for communities.
     router.refresh();
+
+    // Clear comment box.
+    comment.setValue('');
   
     setLoading(false);
   }

@@ -10,6 +10,7 @@ import ThreadService from '@/services/ThreadService';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import PostComment from '@/components/PostComment';
+import { Suspense } from 'react';
 
 export default async function ThreadPage({
   params,
@@ -88,7 +89,9 @@ export default async function ThreadPage({
 
       {/* Comments */}
       <h3 className={`${saira.className} text-xl font-semibold mb-4`}>Comments</h3>
-      <CommentsList comments={commentsData}/>
+      <Suspense fallback={<h1>Loading Comments...</h1>}>
+        <CommentsList threadId={params.threadId}/>
+      </Suspense>
 
     </section>
   )
