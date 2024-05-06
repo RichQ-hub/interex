@@ -9,6 +9,8 @@ interface Comment {
   authorRole: string;
   posted: string;
   content: string;
+  numUpvotes: string;
+  numDownvotes: string;
   replies: Comment[];
 }
 
@@ -50,14 +52,23 @@ export const getComments = async (req: Request, res: Response) => {
   const getReplies = async (commentId: string) => {
     // We use left outer join since some comments may not have authors.
     const results = await db.query(`
-      SELECT  c2.id, c2.content, c2.created_at, u.username, mem.role
-      FROM    Comments c1
-              JOIN Comments c2 ON c2.reply_to = c1.id
-              LEFT OUTER JOIN Users u ON c2.author = u.id
-              JOIN Threads t ON t.id = c2.thread_id
-              JOIN Communities com ON com.id = t.community_id
-              JOIN Community_Members mem ON mem.member_id = c2.author AND mem.community_id = com.id
-      WHERE c1.id = $1;
+      SELECT
+        c2.id,
+        c2.content,
+        c2.created_at,
+        u.username,
+        mem.role,
+        coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c2.id AND v.type = 'Upvote'), 0) as num_upvotes,
+        coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c2.id AND v.type = 'Downvote'), 0) as num_downvotes
+      FROM
+        Comments c1
+        JOIN Comments c2 ON c2.reply_to = c1.id
+        LEFT OUTER JOIN Users u ON c2.author = u.id
+        JOIN Threads t ON t.id = c2.thread_id
+        JOIN Communities com ON com.id = t.community_id
+        JOIN Community_Members mem ON mem.member_id = c2.author AND mem.community_id = com.id
+      WHERE
+        c1.id = $1;
     `, [commentId]);
 
     const replies: Comment[] = [];
@@ -73,6 +84,8 @@ export const getComments = async (req: Request, res: Response) => {
         authorRole: reply.role,
         posted: reply.created_at,
         content: reply.content,
+        numUpvotes: reply.num_upvotes,
+        numDownvotes: reply.num_downvotes,
         replies: replyReplies,
       });
     }));
@@ -86,13 +99,23 @@ export const getComments = async (req: Request, res: Response) => {
 
   // Get all top level comments (no parent replies).
   const commentResults = await db.query(`
-    SELECT  c.id, c.content, c.created_at, u.username, mem.role
-    FROM    Comments c
-            LEFT OUTER JOIN Users u ON c.author = u.id
-            JOIN Threads t ON t.id = c.thread_id
-            JOIN Communities com ON com.id = t.community_id
-            JOIN Community_Members mem ON mem.member_id = c.author AND mem.community_id = com.id
-    WHERE   c.thread_id = $1 AND c.reply_to IS NULL;
+    SELECT
+      c.id,
+      c.content,
+      c.created_at,
+      u.username,
+      mem.role,
+      coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c.id AND v.type = 'Upvote'), 0) as num_upvotes,
+      coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c.id AND v.type = 'Downvote'), 0) as num_downvotes
+
+    FROM
+      Comments c
+      LEFT OUTER JOIN Users u ON c.author = u.id
+      JOIN Threads t ON t.id = c.thread_id
+      JOIN Communities com ON com.id = t.community_id
+      JOIN Community_Members mem ON mem.member_id = c.author AND mem.community_id = com.id
+    WHERE
+      c.thread_id = $1 AND c.reply_to IS NULL;
   `, [threadId]);
 
   // Get each top-level comment and their replies.
@@ -105,6 +128,8 @@ export const getComments = async (req: Request, res: Response) => {
           authorRole: comment.role,
           posted: comment.created_at,
           content: comment.content,
+          numUpvotes: comment.num_upvotes,
+          numDownvotes: comment.num_downvotes,
           replies: repliesList
         });
         return;

@@ -56,7 +56,7 @@ export const getAllThreads = async (req: Request, res: Response) => {
       t.created_at,
       t.pinned_by,
       coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments,
-      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id), 0) as num_upvotes
+      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes
     FROM
       Threads t
       JOIN Users u ON u.id = t.author
@@ -100,7 +100,7 @@ export const getThreadDetails = async (req: Request, res: Response) => {
       t.title,
       t.content,
       t.created_at,
-      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id), 0) as num_upvotes
+      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes
     FROM
       Threads t
       JOIN Users u ON u.id = t.author
