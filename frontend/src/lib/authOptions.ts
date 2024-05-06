@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id, // This will be set as the value for the 'sub' property in the JWT token (the token object in JWT callback will have sub).
             email: user.email,
             accessToken: user.accessToken,
+            name: user.name,
           };
         }
 
@@ -46,6 +47,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.userId = user.id;
         token.accessToken = user.accessToken;
+        token.name = user.name;
       }
       return token;
     },
@@ -62,6 +64,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.accessToken = token.accessToken;
+        session.user.name = token.name;
       }
       return session;
     }

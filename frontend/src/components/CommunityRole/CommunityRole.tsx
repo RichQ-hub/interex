@@ -1,3 +1,4 @@
+import { CommunityRole as CommunityRoleType } from '@/types/communities';
 import React from 'react';
 
 const ROLE_COLORS = {
@@ -17,7 +18,7 @@ const ROLE_ICONS = {
 const CommunityRole = ({
   role,
 }: {
-  role: 'Owner' | 'Admin' | 'Moderator' | 'Member';
+  role: CommunityRoleType;
 }) => {
   return (
     <div className='flex items-center font-medium text-base gap-2' style={{ color: ROLE_COLORS[role] }}>

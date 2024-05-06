@@ -1,5 +1,5 @@
 import { Comment } from '@/types/comments';
-import { BACKEND_URL, parseJSON } from './helpers';
+import { BACKEND_URL, Token, parseJSON } from './helpers';
 
 const BASE_URL = `${BACKEND_URL}/comments`;
 
@@ -14,6 +14,22 @@ class CommentService {
 
     const response = await parseJSON(`${BASE_URL}/${threadId}`, options);
     return response.comments as Comment[];
+  }
+
+  createComment = async (token: Token, threadId: string, content: string) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        content,
+      })
+    };
+
+    const response = await parseJSON(`${BASE_URL}/${threadId}`, options);
+    return response.comment;
   }
 }
 
