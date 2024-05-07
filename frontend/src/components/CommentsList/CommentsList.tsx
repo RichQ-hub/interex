@@ -1,6 +1,7 @@
 import React from 'react';
-import CommentCard from '../CommentCard';
+import CommentCard from '@/components/CommentCard';
 import CommentService from '@/services/CommentService';
+// import { commentsData } from '@/data/comments';
 
 const CommentsList = async ({
   threadId,

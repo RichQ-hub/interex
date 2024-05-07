@@ -5,9 +5,9 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import avatar from '../../assets/avatar.jpg';
 import { saira } from '@/fonts';
-import CommentRepliesList from '../CommentRepliesList';
-import CommunityRole from '../CommunityRole';
-import ReplyComment from '../ReplyComment';
+import CommentRepliesList from '@/components/CommentRepliesList';
+import CommunityRole from '@/components/CommunityRole';
+import ReplyComment from '@/components/ReplyComment';
 
 /** Works alongside CommentRepliesList component, which also recursively renders the replies
  * by rendering CommentCard component again.
@@ -37,7 +37,7 @@ const CommentCard = ({
           <CommunityRole role={details.authorRole}/>
 
           {/* Posted Date */}
-          <span className='ml-auto italic text-sm'><span className='underline'>Posted</span>: {postedDate.toLocaleString('default', { month: 'short', year: 'numeric', day: 'numeric' })}</span>
+          <span className='ml-auto italic text-sm'><span className='underline'>Posted</span>: 6 May 2024</span>
         </div>
 
         {/* Content */}

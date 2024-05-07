@@ -1,6 +1,6 @@
 import { Comment } from '@/types/comments';
-import React from 'react';
-import CommentCard from '../CommentCard';
+import React from 'react'
+import CommentCard from '@/components/CommentCard';
 
 const CommentRepliesList = ({
   threadId,
@@ -10,7 +10,6 @@ const CommentRepliesList = ({
   replies: Comment[];
 }) => {
   return (
-    // Shifted to the right to give a sense of hierarchy.
     <ul className='ml-5'>
       {/* Comment */}
       {replies.map((reply) => {
