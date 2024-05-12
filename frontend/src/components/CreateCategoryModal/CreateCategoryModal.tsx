@@ -1,56 +1,32 @@
-'use client';
-
-import useFormInputText from '@/hooks/useFormInputText';
-import CommunityService from '@/services/CommunityService';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import React, { FormEvent, useState } from 'react';
+import React from 'react';
 import Modal from '../Modal';
 import TextInput from '../TextInput';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+import { createCategory } from '@/actions/community';
 
-const CreateCategoryModal = () => {
-  const { data: session } = useSession();
-
-  const name = useFormInputText();
-  const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    await CommunityService.createCategory(session?.user.accessToken, {
-      name: name.value,
-    })
-
-    // Refetches the data for communities.
-    router.refresh();
-
-    // Closes the modal (for some reason router.push('communities') does not work).
-    router.back();
-  }
+const CreateCategoryModal = async () => {
+  const session = await getServerSession(authOptions);
+  const createCategoryAction = createCategory.bind(null, session?.user.accessToken);
 
   return (
     <Modal title='Create New Category'>
-      <form onSubmit={handleSubmit}>
+      <form action={createCategoryAction}>
         <TextInput
           title='Name'
-          inputType='text'
+          id='create-category-name'
+          name='name'
+          type='text'
           icon={null}
           required={true}
-          value={name.value}
-          handleInputChange={name.handleChange}
+          defaultValue=''
         />
 
         <button
           className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm'
-          disabled={loading ? true : false}
+          type='submit'
         >
-          {loading ? (
-            <p>Submitting...</p>
-          ) : (
-            <p>Create</p>
-          )}
+          Create
         </button>
       </form>
     </Modal>

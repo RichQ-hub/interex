@@ -1,53 +1,31 @@
-'use client';
-
-import useFormInputText from '@/hooks/useFormInputText';
-import { useSession } from 'next-auth/react';
-import React, { FormEvent, useState } from 'react';
+import React from 'react';
 import Modal from '../Modal';
 import TextInput from '../TextInput';
 import { saira } from '@/fonts';
-import CommunityService from '@/services/CommunityService';
-import { useRouter } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+import { createFlair } from '@/actions/community';
 
-const CreateFlairModal = ({
+const CreateFlairModal = async ({
   communityId,
 }: {
   communityId: string;
 }) => {
-  const { data: session } = useSession();
-  const router = useRouter();
-
-  const name = useFormInputText();
-  const hexColor = useFormInputText('#000000');
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    await CommunityService.createFlair(session?.user.accessToken, communityId, {
-      name: name.value,
-      hexColor: hexColor.value,
-    })
-
-    // Refetches the data for communities.
-    router.refresh();
-
-    // Closes the modal (for some reason router.push('communities') does not work).
-    router.back();
-  }
+  const session = await getServerSession(authOptions);
+  const createFlairAction = createFlair.bind(null, session?.user.accessToken, communityId);
 
   return (
     <Modal title='Create New Flair'>
-      <form onSubmit={handleSubmit}>
+      <form action={createFlairAction}>
         {/* Flair Name */}
         <TextInput
           title='Name'
-          inputType='text'
+          id='create-flair-name'
+          name='name'
+          type='text'
           icon={null}
           required={true}
-          value={name.value}
-          handleInputChange={name.handleChange}
+          defaultValue=''
         />
 
         {/* Color Picker */}
@@ -58,24 +36,18 @@ const CreateFlairModal = ({
           Colour
         </label>
         <input
-          className='block colo'
+          className='block'
           type='color'
-          value={hexColor.value}
+          name='color'
           id='flair-color-picker'
-          onChange={hexColor.handleChange}
         />
 
         {/* Submit */}
         <button
           className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm'
-          disabled={loading ? true : false}
           type='submit'
         >
-          {loading ? (
-            <p>Submitting...</p>
-          ) : (
-            <p>Create</p>
-          )}
+          Create
         </button>
       </form>
     </Modal>

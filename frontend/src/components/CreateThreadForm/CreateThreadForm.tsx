@@ -1,83 +1,48 @@
-'use client';
-
-import useFormInputText from '@/hooks/useFormInputText';
-import React, { useState } from 'react';
-import TextInput from '../TextInput';
-import TextareaInput from '../TextareaInput';
+import React from 'react';
 import { FlairDetails } from '@/types/communities';
-import ThreadService from '@/services/ThreadService';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import TextInput from '../TextInput';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+import { createThread } from '@/actions/thread';
+import TextareaInput from '../TextareaInput';
 import FlairSelect from '../FlairSelect';
 
-const CreateThreadForm = ({
+const CreateThreadForm = async ({
   communityId,
   communityFlairs,
 }: {
   communityId: string;
   communityFlairs: FlairDetails[];
 }) => {
-  // We simply extract the data property using object destructuring and then assign it a
-  // different name 'session'.
-  const { data: session } = useSession();
-  const router = useRouter();
-
-  const title = useFormInputText();
-  const content = useFormInputText();
-  const [selectedFlairIds, setSelectedFlairIds] = useState<string[]>([]);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    await ThreadService.createThread(session?.user.accessToken, communityId, {
-      title: title.value,
-      content: content.value,
-      flairs: selectedFlairIds,
-    });
-
-    router.refresh();
-
-    router.back();
-  }
-
-  const handleToggleFlair = (flairId: string, checked: boolean) => {
-    const newFlairs = selectedFlairIds.slice();
-    if (checked) {
-      newFlairs.push(flairId);
-      setSelectedFlairIds(newFlairs);
-    } else {
-      setSelectedFlairIds(newFlairs.filter((f) => {
-        return f !== flairId;
-      }));
-    }
-  }
+  const session = await getServerSession(authOptions);
+  
+  const createThreadAction = createThread.bind(null, session?.user.accessToken, communityId);
 
   return (
     <form
-      action=''
-      onSubmit={handleSubmit}
+      action={createThreadAction}
     >
       <TextInput
         title='Title'
-        inputType='text'
+        id='create-thread-title'
+        name='title'
+        type='text'
         icon={null}
         required={true}
-        value={title.value}
-        handleInputChange={title.handleChange}
+        defaultValue=''
       />
 
-      <TextareaInput 
+      <TextareaInput
         title='Content'
+        id='create-thread-content'
+        name='content'
         required={true}
-        value={content.value}
-        handleInputChange={content.handleChange}
+        defaultValue=''
       />
 
       {/* Flair Select */}
       <FlairSelect
         flairs={communityFlairs}
-        selectedFlairIds={selectedFlairIds}
-        handleToggleFlair={handleToggleFlair}
       />
 
       <button

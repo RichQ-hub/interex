@@ -1,25 +1,29 @@
 import { saira } from '@/fonts';
-import React from 'react'
+import React from 'react';
 
 const TextareaInput = ({
   title,
+  id,
+  name,
   required,
-  value,
-  handleInputChange,
+  defaultValue,
 }: {
   title: string;
+  id: string;
+  name: string;
   required: boolean;
-  value: string;
-  handleInputChange: (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  defaultValue: string;
 }) => {
+
   return (
     <div className='mb-4'>
-      <h2 className={`${saira.className} font-semibold text-lg mb-2 text-white`}>{title}</h2>
+      <label htmlFor={id} className={`${saira.className} font-semibold text-lg mb-2 text-white`}>{title}</label>
       <textarea
         className='bg-interex-input px-3 py-1 w-full resize-y min-h-[100px] max-h-[300px] text-white'
+        id={id}
+        name={name}
         required={required}
-        value={value}
-        onChange={handleInputChange}
+        defaultValue={defaultValue}
       />
     </div>
   )

@@ -1,15 +1,13 @@
-import { fira, saira } from '@/fonts';
+'use client';
+
+import { saira } from '@/fonts';
 import { FlairDetails } from '@/types/communities';
 import React, { useState } from 'react';
 
 const FlairSelect = ({
   flairs,
-  selectedFlairIds,
-  handleToggleFlair
 }: {
   flairs: FlairDetails[];
-  selectedFlairIds: string[];
-  handleToggleFlair: (flairId: string, checked: boolean) => void;
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -47,8 +45,8 @@ const FlairSelect = ({
                     className='mr-2'
                     type='checkbox'
                     id={`flair-select-${flair.id}`}
-                    checked={selectedFlairIds.includes(flair.id)}
-                    onChange={(e) => handleToggleFlair(flair.id, e.currentTarget.checked)}
+                    name='flairs'
+                    value={flair.id}
                   />
                   <div
                     className='text-sm text-black rounded-xl px-3'

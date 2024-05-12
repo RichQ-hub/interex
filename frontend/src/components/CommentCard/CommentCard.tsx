@@ -8,6 +8,7 @@ import { saira } from '@/fonts';
 import CommentRepliesList from '@/components/CommentRepliesList';
 import CommunityRole from '@/components/CommunityRole';
 import ReplyComment from '@/components/ReplyComment';
+import dayjs from 'dayjs';
 
 /** Works alongside CommentRepliesList component, which also recursively renders the replies
  * by rendering CommentCard component again.
@@ -20,7 +21,7 @@ const CommentCard = ({
   details: Comment;
 }) => {
   const [replyOpen, setReplyOpen] = useState<boolean>(false);
-  const postedDate = new Date(details.posted);
+  const postedDate = dayjs(details.posted);
 
   return (
     <li className='border-l-2 border-l-interex-comment-bg'>
@@ -37,7 +38,7 @@ const CommentCard = ({
           <CommunityRole role={details.authorRole}/>
 
           {/* Posted Date */}
-          <span className='ml-auto italic text-sm'><span className='underline'>Posted</span>: 6 May 2024</span>
+          <span className='ml-auto italic text-sm'><span className='underline'>Posted</span>: {postedDate.format('MMM D, YYYY')}</span>
         </div>
 
         {/* Content */}

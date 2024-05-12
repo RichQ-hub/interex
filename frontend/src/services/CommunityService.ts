@@ -1,4 +1,4 @@
-import { Community, CommunityDetails, CreateCategoryPayload, CreateCommunityPayload, CreateFlairPayload, FlairDetails } from '@/types/communities';
+import { Category, Community, CommunityDetails, CreateCategoryPayload, CreateCommunityPayload, CreateFlairPayload, FlairDetails } from '@/types/communities';
 import { BACKEND_URL, Token, parseJSON } from './helpers';
 
 const BASE_URL = `${BACKEND_URL}/communities`;
@@ -37,7 +37,7 @@ class CommunityService {
     };
 
     const response = await parseJSON(`${BASE_URL}/categories`, options);
-    return response.categories;
+    return response.categories as Category[];
   }
 
   createCommunity = async (token: Token, payload: CreateCommunityPayload) => {

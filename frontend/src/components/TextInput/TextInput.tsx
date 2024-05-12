@@ -4,22 +4,29 @@ import React from 'react';
 
 const TextInput = ({
   title,
-  inputType,
+  id,
+  name,
+  type,
   icon,
   required,
-  value,
-  handleInputChange,
+  defaultValue,
 }: {
   title: string;
-  inputType: 'text' | 'password' | 'email';
+  id: string;
+  name: string;
+  type: 'text' | 'password' | 'email';
   icon: React.ReactNode;
   required: boolean;
-  value: string;
-  handleInputChange: (e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  defaultValue: string;
 }) => {
   return (
     <div className='mb-4'>
-      <h2 className={`${saira.className} font-semibold text-lg mb-2 text-white`}>{title}</h2>
+      <label
+        htmlFor={id}
+        className={`${saira.className} font-semibold text-lg mb-2 text-white`}
+      >
+        {title}
+      </label>
 
       {/* Input Wrapper */}
       <div className='relative'>
@@ -31,10 +38,11 @@ const TextInput = ({
               'pl-9': icon
             }
           )}
-          type={inputType}
+          id={id}
+          name={name}
+          type={type}
           required={required}
-          value={value}
-          onChange={handleInputChange}
+          defaultValue={defaultValue}
         />
       </div>
     </div>

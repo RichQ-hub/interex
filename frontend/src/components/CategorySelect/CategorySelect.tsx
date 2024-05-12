@@ -1,3 +1,5 @@
+'use client';
+
 import { saira } from '@/fonts';
 import { Category } from '@/types/communities';
 import React, { useState } from 'react';
@@ -24,12 +26,8 @@ const dummyCategories = [
 
 const CategorySelect = ({
   categories,
-  selectedCategories,
-  handleToggleCategory,
 }: {
   categories: Category[];
-  selectedCategories: string[];
-  handleToggleCategory: (categoryId: string, checked: boolean) => void;
 }) => {
   const [hovered, setHovered] = useState<boolean>(false);
 
@@ -71,8 +69,8 @@ const CategorySelect = ({
                         className='mr-2'
                         type='checkbox'
                         id={`category-select-${category.id}`}
-                        checked={selectedCategories.includes(category.id)}
-                        onChange={(e) => handleToggleCategory(category.id, e.currentTarget.checked)}
+                        name='categories'
+                        value={category.id}
                       />  
                       {category.name}
                     </label>

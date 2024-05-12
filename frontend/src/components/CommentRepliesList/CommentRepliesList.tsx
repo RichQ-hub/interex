@@ -1,6 +1,6 @@
 import { Comment } from '@/types/comments';
-import React from 'react'
-import CommentCard from '@/components/CommentCard';
+import React from 'react';
+import CommentCard from '../CommentCard/CommentCard';
 
 const CommentRepliesList = ({
   threadId,

@@ -2,6 +2,7 @@ import React from 'react';
 import CommunityService from '@/services/CommunityService';
 import { saira } from '@/fonts';
 import Link from 'next/link';
+import dayjs from 'dayjs';
 
 const CommunityAside = async ({
   communityId,
@@ -10,10 +11,7 @@ const CommunityAside = async ({
 }) => {
   // Recall fetch calls are memoized (so the fetch call in CommunityTitle.tsx is not called again).
   const communityDetails = await CommunityService.getCommunityDetails(communityId);
-  const createDate = new Date(communityDetails.createdAt);
-
-  // Simulate 2s loading time.
-  // await new Promise((resolve) => setTimeout(resolve, 6000)); 
+  const createDate = dayjs(communityDetails.createdAt);
 
   return (
     <>
@@ -23,7 +21,7 @@ const CommunityAside = async ({
       {/* Creation Date. */}
       <div className='mb-4 flex items-center font-medium gap-2'>
         <svg className='w-12 h-8 fill-white' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm80 64c-8.8 0-16 7.2-16 16v96c0 8.8 7.2 16 16 16h96c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80z"/></svg>
-        Created {createDate.toLocaleString('default', { month: 'short', year: 'numeric', day: 'numeric' })}
+        Created {createDate.format('MMM D, YYYY')}
       </div>
 
       {/* Num Members */}
