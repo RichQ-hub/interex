@@ -318,10 +318,12 @@ export const createCommunity = async (req: Request, res: Response) => {
   });
 
   // Add the categories.
-  await db.query(format(`
-    INSERT INTO Community_Categories (community_id, category_id)
-    VALUES %L;
-  `, categoryTuples));
+  if (categoryTuples) {
+    await db.query(format(`
+      INSERT INTO Community_Categories (community_id, category_id)
+      VALUES %L;
+    `, categoryTuples));
+  }
 
   res.json({
     community: newCommunity,

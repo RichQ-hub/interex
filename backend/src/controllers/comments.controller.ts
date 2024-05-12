@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import db from '../db';
-import { AccessError, InputError } from '../utils/error';
+import { InputError } from '../utils/error';
 import { assertCommentOwner, assertCommunityMember, assertCommunityModerator } from '../utils/assert';
 
 interface Comment {
@@ -68,7 +68,9 @@ export const getComments = async (req: Request, res: Response) => {
         JOIN Communities com ON com.id = t.community_id
         JOIN Community_Members mem ON mem.member_id = c2.author AND mem.community_id = com.id
       WHERE
-        c1.id = $1;
+        c1.id = $1
+      ORDER BY
+        c2.created_at ASC;
     `, [commentId]);
 
     const replies: Comment[] = [];
@@ -115,7 +117,9 @@ export const getComments = async (req: Request, res: Response) => {
       JOIN Communities com ON com.id = t.community_id
       JOIN Community_Members mem ON mem.member_id = c.author AND mem.community_id = com.id
     WHERE
-      c.thread_id = $1 AND c.reply_to IS NULL;
+      c.thread_id = $1 AND c.reply_to IS NULL
+    ORDER BY
+      c.created_at ASC;
   `, [threadId]);
 
   // Get each top-level comment and their replies.

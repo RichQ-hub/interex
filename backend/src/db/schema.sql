@@ -37,7 +37,6 @@ CREATE TABLE Communities (
 CREATE TABLE Categories (
   id SERIAL,
   name VARCHAR(50) UNIQUE NOT NULL,
-  description TEXT,
 
   PRIMARY KEY (id)
 );
