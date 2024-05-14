@@ -1,12 +1,12 @@
-import CreateCommunityModal from '@/components/CreateCommunityModal';
-import CommunityService from '@/services/CommunityService';
+// import CreateCommunityModal from '@/components/CreateCommunityModal';
+// import CommunityService from '@/services/CommunityService';
 
-export default async function CommunityModal() {
-  const categories = await CommunityService.getAllCategories();
-  return (
-    <CreateCommunityModal categories={categories} />
-  )
-}
+// export default async function CommunityModal() {
+//   const categories = await CommunityService.getAllCategories();
+//   return (
+//     <CreateCommunityModal categories={categories} />
+//   )
+// }
 
 /**
  * This uses a concept known as parallel routing, where we can essentially

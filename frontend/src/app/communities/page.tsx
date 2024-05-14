@@ -4,13 +4,16 @@ import SearchBar from '@/components/SearchBar';
 import CategoryFilter from '@/components/CategoryFilter';
 import SortButton from '@/components/SortButton';
 import PageSizeButton from '@/components/PageSizeButton';
-import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { Suspense } from 'react';
 import CommunitiesList from '@/components/CommunitiesList';
 import CommunitiesListSkeleton from '@/skeletons/CommunitiesListSkeleton';
 import CategoryFilterSkeleton from '@/skeletons/CategoryFilterSkeleton';
+import AddCommunityButton from '@/components/AddCommunityButton';
+import CreateCommunityModal from '@/components/CreateCommunityModal';
+import CreateCategoryModal from '@/components/CreateCategoryModal';
+import AddCategoryButton from '@/components/AddCategoryButton';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -29,6 +32,8 @@ export default async function CommunityFinderPage({
     pageSize?: string;
     page?: string;
     category?: string[] | string;
+    createCommunityModal?: string;
+    createCategoryModal?: string;
   }
 }) {
   const session = await getServerSession(authOptions);
@@ -62,12 +67,7 @@ export default async function CommunityFinderPage({
 
               {
                 session &&
-                <Link
-                  className='flex items-center justify-center w-8 h-8 ml-auto hover:bg-interex-input rounded-full'
-                  href='/communities/category'
-                >
-                  <svg className='fill-white w-1/3' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
-                </Link>
+                <AddCategoryButton />
               }
             </div>
             <Suspense fallback={<CategoryFilterSkeleton />}>
@@ -85,12 +85,7 @@ export default async function CommunityFinderPage({
             {/* Add Community Button */}
             {
               session &&
-              <Link
-                className='flex h-8 w-8 ml-auto rounded-full border-[1px] border-interex-blue items-center justify-center hover:bg-interex-blue-light'
-                href='/communities/create'
-              >
-                <svg className='fill-interex-blue w-1/3' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
-              </Link>
+              <AddCommunityButton />
             }
           </div>
           
@@ -120,6 +115,12 @@ export default async function CommunityFinderPage({
           />
         </Suspense>
       </section>
+
+      {/* Create Community Modal */}
+      {searchParams?.createCommunityModal && <CreateCommunityModal />}
+      
+      {/* Create Category Modal */}
+      {searchParams?.createCategoryModal && <CreateCategoryModal />}
     </main>
   )
 }

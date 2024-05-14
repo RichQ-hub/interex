@@ -11,16 +11,16 @@ export const createCommunity = async (token: Token, formData: FormData) => {
   const categories = formData.getAll('categories').map((c) => c.toString());
   console.log(categories);
 
-  // await CommunityService.createCommunity(token, {
-  //   name,
-  //   description,
-  //   categories,
-  // });
+  await CommunityService.createCommunity(token, {
+    name,
+    description,
+    categories,
+  });
 
-  // // After a successful creation, we refetch the communities with the newly created community.
-  // const returnPath = '/communities';
-  // revalidatePath(returnPath);
-  // redirect(returnPath);
+  // After a successful creation, we refetch the communities with the newly created community.
+  const returnPath = '/communities';
+  revalidatePath(returnPath);
+  redirect(returnPath);
 }
 
 export const createCategory = async (token: Token, formData: FormData) => {

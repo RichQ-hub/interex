@@ -11,6 +11,12 @@ export default async function Layout(props: {
 }
 
 /**
+ * NO LONGER USED!
+ * We are no longer using parallel routing for @modal due to the bugs occuring when
+ * calling redirect() in next actions, which seems to break the parallel routing.
+ */
+
+/**
  * Since the 'children' prop inside of the layout.tsx file is considered a slot like @modal,
  * then it must also have a default.tsx file that gets rendered when refreshing the page.
  * 

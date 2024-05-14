@@ -22,7 +22,7 @@ const SearchBar = () => {
     } else {
       params.delete('query');
     }
-    console.log(params.toString())
+
     router.replace(`${pathname}?${params.toString()}`);
   }
 

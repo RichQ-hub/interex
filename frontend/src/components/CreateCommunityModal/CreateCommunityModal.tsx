@@ -4,18 +4,16 @@ import TextInput from '../TextInput';
 import TextareaInput from '../TextareaInput';
 import { saira } from '@/fonts';
 import CategorySelect from '../CategorySelect';
-import { Category } from '@/types/communities';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { createCommunity } from '@/actions/community';
+import CommunityService from '@/services/CommunityService';
 
-const CreateCommunityModal = async ({
-  categories
-}: {
-  categories: Category[];
-}) => {
+const CreateCommunityModal = async () => {
+  // const session = await getServerSession(authOptions);
   const session = await getServerSession(authOptions);
   const createCommunityAction = createCommunity.bind(null, session?.user.accessToken);
+  const categories = await CommunityService.getAllCategories();
 
   return (
     <Modal
