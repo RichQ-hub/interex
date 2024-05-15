@@ -4,8 +4,6 @@ import React from 'react';
 import Modal from '../Modal';
 import TextInput from '../TextInput';
 import { saira } from '@/fonts';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/authOptions';
 import { createFlair } from '@/actions/community';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
