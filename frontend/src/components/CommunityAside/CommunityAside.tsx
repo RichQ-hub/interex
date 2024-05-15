@@ -1,8 +1,10 @@
 import React from 'react';
 import CommunityService from '@/services/CommunityService';
 import { saira } from '@/fonts';
-import Link from 'next/link';
 import dayjs from 'dayjs';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+import AddFlairButton from '../AddFlairButton';
 
 const CommunityAside = async ({
   communityId,
@@ -12,6 +14,7 @@ const CommunityAside = async ({
   // Recall fetch calls are memoized (so the fetch call in CommunityTitle.tsx is not called again).
   const communityDetails = await CommunityService.getCommunityDetails(communityId);
   const createDate = dayjs(communityDetails.createdAt);
+  const session = await getServerSession(authOptions);
 
   return (
     <>
@@ -38,12 +41,9 @@ const CommunityAside = async ({
       {/* Flairs */}
       <div className='pt-4 mb-4 flex items-center border-t-2 border-t-[#ffffff33]'>
         <h2 className={`${saira.className} font-semibold text-2xl`}>Flairs</h2>
-        <Link
-          className='flex items-center justify-center w-8 h-8 ml-auto hover:bg-interex-input rounded-full'
-          href={`/communities/${communityId}/flair`}
-        >
-          <svg className='fill-white w-1/3' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
-        </Link>
+        {session &&
+          <AddFlairButton />
+        }
       </div>
       <ul className='flex flex-wrap gap-2'>
         {communityDetails.flairs.map((flair) => {

@@ -19,6 +19,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const user = await AuthService.login(credentials?.email || '', credentials?.password || '');
+        console.log(user);
         if (!(user.error || null)) {
           return {
             id: user.id, // This will be set as the value for the 'sub' property in the JWT token (the token object in JWT callback will have sub).

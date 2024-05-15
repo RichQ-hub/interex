@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 import CommunityTitle from '@/components/CommunityTitle';
 import CommunityAside from '@/components/CommunityAside';
 import Link from 'next/link';
+import CreateFlairModal from '@/components/CreateFlairModal';
 
 export default function CommunityLayout({
   params,
@@ -14,9 +15,10 @@ export default function CommunityLayout({
 }: {
   params: {
     communityId: string;
-  }
+  };
   children: React.ReactNode;
 }) {
+
   return (
     <main>
       <Image className='w-full h-48 object-cover shadow-comm-banner' src={banner} alt='banner' />
@@ -62,6 +64,8 @@ export default function CommunityLayout({
           {children}
         </div>
       </section>
+
+      <CreateFlairModal communityId={params.communityId} />
     </main>
   )
 }
