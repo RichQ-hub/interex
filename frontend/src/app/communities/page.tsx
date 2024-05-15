@@ -64,7 +64,6 @@ export default async function CommunityFinderPage({
             {/* Sidebar Header */}
             <div className='mb-2 flex items-center'>
               <h2 className={`${saira.className} text-2xl font-semibold`}>Categories</h2>
-
               {
                 session &&
                 <AddCategoryButton />
