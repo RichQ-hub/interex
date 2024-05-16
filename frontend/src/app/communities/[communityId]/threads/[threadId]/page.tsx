@@ -81,7 +81,7 @@ export default async function ThreadPage({
         <PostComment threadId={params.threadId} />
       ) : (
         <div className={`${saira.className} font-semibold border-[1px] border-interex-blue bg-[#091123e6] py-2 px-3 mb-4`}>
-          To post a comment, please <Link href='/login' className='underline text-interex-blue'>login</Link>.
+          To post a comment, please <Link href='/login' className='text-interex-blue hover:underline'>login</Link>.
         </div>
       )}
 

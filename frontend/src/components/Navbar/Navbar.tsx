@@ -15,17 +15,20 @@ const Navbar = async () => {
       className='px-3 fixed top-0 left-0 right-0 h-14 bg-interex-nav flex items-center z-50'
     >
       {/* Logo Section */}
-      <div className={`${nova.className} flex items-center h-full text-xl text-interex-brand`}>
+      <Link href='/' className={`${nova.className} flex items-center h-full text-xl text-interex-brand`}>
         <Image src={logoImg} alt='Interex Logo' className='h-5/6'/>
         interex
-      </div>
+      </Link>
 
       {/* Navlinks Section */}
       <Navlinks />
 
       {/* Auth Section. */}
       {session ? (
-        <LogoutButton />
+        <>
+          <p className='ml-auto text-interex-aqua mr-3'>@{session.user.name}</p>
+          <LogoutButton />
+        </>
       ) : (
         <Link
           href='/login'
