@@ -6,6 +6,10 @@ import teamIcon from '@/assets/team-icon.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import divider from '@/assets/divider-jewel.png';
+import HeroCard from '@/components/HeroCard';
+import teamChecklistImg from '@/assets/team-checklist.svg';
+import groupDiscImg from '@/assets/group-discussion.svg';
+import profilingImg from '@/assets/profiling.svg';
 
 export default function HomePage() {
   return (
@@ -70,10 +74,33 @@ export default function HomePage() {
 
       {/* Hero Links Section */}
       <section className='my-8 px-4'>
-        <h2 className={`${saira.className} font-bold text-interex-blue text-4xl mx-auto text-center`}>Explore</h2>
+        <h2 className={`${saira.className} font-bold text-interex-blue text-4xl mx-auto text-center mb-6`}>Explore</h2>
         {/* Hero Links */}
-        <ul>
-          
+        <ul className='flex items-center justify-evenly gap-8'>
+          <HeroCard
+            title='Teams'
+            content='Join a collaborative framework that millions of users partake. Have access to team management tools, planners, and more!'
+            link='/teams'
+            bgColor='#66BF47'
+            textColor='#92D58C'
+            bgImg={teamChecklistImg}
+          />
+          <HeroCard
+            title='Community'
+            content='Discover endless communities with thousands of discussions, or even share some of your own!'
+            link='/communities'
+            bgColor='#6BBAF3'
+            textColor='#52ACE2'
+            bgImg={groupDiscImg}
+          />
+          <HeroCard
+            title='Profile'
+            content='Customise your own profile!'
+            link='/profile'
+            bgColor='#CE79E3'
+            textColor='#ab3ac7'
+            bgImg={profilingImg}
+          />
         </ul>
       </section>
     </main>

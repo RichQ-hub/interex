@@ -38,6 +38,7 @@ const config: Config = {
         'comm-card': '0px 5px 10px 0px #000',
         'comm-card-hover': '0 8px 16px 3px #000',
         'thread-card-hover': '-6px 8px 2px 0px rgba(165, 199, 218, 0.30)',
+        'hero-card-hover': '-8px 8px 0px 0px #676060c0',
       },
       gridTemplateColumns: {
         'comm-content': 'minmax(250px, 300px) 1fr'
