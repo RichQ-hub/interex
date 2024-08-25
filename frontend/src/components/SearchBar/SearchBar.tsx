@@ -27,7 +27,10 @@ const SearchBar = () => {
   }
 
   return (
-    <form className='w-full flex justify-center' onSubmit={handleSubmit}>
+    <form
+      className='w-full flex justify-center'
+      onSubmit={handleSubmit}
+    >
       <input
         className='w-3/4 h-12 px-6 bg-[#051A33EB] shadow-comm-searchbar text-zinc-300'
         type='text'
