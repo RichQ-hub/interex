@@ -20,4 +20,5 @@ By specifying - /app/node_modules without a corresponding host path, you’re in
 
 **References**
 
+- https://stackoverflow.com/questions/54269442/why-does-docker-create-empty-node-modules-and-how-to-avoid-it (IMPORTANT)
 - https://www.digitalocean.com/community/tutorials/containerizing-a-node-js-application-for-development-with-docker-compose#step-4-defining-services-with-docker-compose
