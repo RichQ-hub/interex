@@ -1,0 +1,51 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5555:4000" # mapping the external port 5555 to container's internal port 5000 (on your computer use localhost:5555)
+    volumes:
+      - ./backend:/app # similar to below, this means when we make flask changes, it reloads in container
+      - /app/node_modules
+    depends_on:
+      - db
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app
+          ignore:
+            - ./backend/node_modules/
+
+  # frontend:
+  #   build: ./frontend
+  #   ports:
+  #     - "3333:3000" # mapping the external port 3333 to container's internal port 3000 (on your computer use localhost:3333)
+  #   volumes: # every time you make a change, this will reload the changes in the container
+  #     - ./frontend:/usr/src/app # write these as ./<path to folder>:/<path to folder in container>
+  #     - /usr/src/app/node_modules
+  #   environment:
+  #     - BACKEND_URL=http://localhost:5555 # this defines the URL the frontend makes requests to
+  #   develop:
+  #     watch:
+  #       - action: sync
+  #         path: ./frontend
+  #         target: /usr/src/app
+  #         ignore:
+  #           - ./frontend/node_modules/
+    
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment: # For these env variables to be available (${VARIABLE}), the .env file must be in the SAME folder as docker-compose.yml.
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      # Persist database data.
+      - data:/var/lib/postgresql/data
+      # Copy the sql script to create tables. The first time the service starts, sql files inside
+      # the /docker-entrypoint-initb.d folder will be imported and executed.
+      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+volumes:
+  data:

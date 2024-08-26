@@ -140,6 +140,8 @@ export const searchCommunities = async (req: Request, res: Response) => {
     page
   } = req.query;
 
+  console.log('nice')
+
   const sortOptions = [
     'c.name ASC',
     'num_threads DESC, c.name ASC',
@@ -292,8 +294,6 @@ export const createCommunity = async (req: Request, res: Response) => {
     categories,
   } = req.body;
 
-  console.log(req.body)
-
   // Assert all categories are valid.
   await Promise.all(categories.map(async (categoryId: string) => {
     await assertValidCategory(categoryId);
@@ -321,7 +321,7 @@ export const createCommunity = async (req: Request, res: Response) => {
   if (categoryTuples) {
     await db.query(format(`
       INSERT INTO Community_Categories (community_id, category_id)
-      VALUES %L;
+      VALUES (%L);
     `, categoryTuples));
   }
 
