@@ -13,6 +13,10 @@ jobs:
   backend-ci:
     name: Backend tests
     runs-on: ubuntu-latest
+    # Sets the ./backend directory as the workdir for all steps in this job.
+    defaults:
+      run:
+        working-directory: ./backend
 
     steps:
       - name: Checkout repository code.
