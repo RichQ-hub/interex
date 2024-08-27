@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: 22.7.0
           cache: 'yarn'
+          cache-dependency-path: './backend/yarn.lock'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile # Equivalent to `npm ci`.
