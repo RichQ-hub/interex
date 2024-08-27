@@ -27,7 +27,8 @@ jobs:
         with:
           node-version: 22.7.0
           cache: 'yarn'
-          cache-dependency-path: './backend/yarn.lock'
+          cache-dependency-path: './backend/yarn.lock' # Include location of the yarn.lock file. This is needed for a nested lock file.
+          # https://stackoverflow.com/questions/68639588/github-actions-dependencies-lock-file-is-not-found-in-runners-path
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile # Equivalent to `npm ci`.
