@@ -32,6 +32,8 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile # Equivalent to `npm ci`.
+        # https://stackoverflow.com/questions/52499617/what-is-the-difference-between-npm-install-and-npm-ci
+        # https://stackoverflow.com/questions/69459919/what-exactly-does-npm-ci-command-does-why-is-it-used-in-all-ci-pipelines-inste (IMPORTANT)
 
       - name: Run integration tests
         run: yarn test
