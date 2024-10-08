@@ -8,7 +8,7 @@ import { createFlair } from '@/actions/community';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 
-const CreateFlairModal = async ({
+const CreateFlairModal = ({
   communityId,
 }: {
   communityId: string;
