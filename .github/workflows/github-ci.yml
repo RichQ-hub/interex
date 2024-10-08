@@ -9,6 +9,14 @@ on:
     branches:
       - main
 
+# Postgres credentials need not be private for integration testing.
+env:
+  DB_HOST: localhost 
+  DB_PORT: 5432 # Postgres natively exposes the port 5432.
+  DB_USER: postgres
+  DB_PASSWORD: mikey098
+  DB_NAME: test_db
+
 jobs:
   backend-ci:
     name: Backend tests
@@ -18,7 +26,23 @@ jobs:
       run:
         working-directory: ./backend
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          - POSTGRES_DB: ${{ env.DB_NAME }}
+          - POSTGRES_USER: ${{ env.DB_USER }}
+          - POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
+      # Downloads a copy of the code in your repository before running CI tests
       - name: Checkout repository code.
         uses: actions/checkout@v4
   
@@ -37,3 +61,5 @@ jobs:
 
       - name: Run integration tests
         run: yarn test
+        env:
+          NODE_ENV: test

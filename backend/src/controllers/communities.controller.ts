@@ -321,7 +321,7 @@ export const createCommunity = async (req: Request, res: Response) => {
   if (categoryTuples) {
     await db.query(format(`
       INSERT INTO Community_Categories (community_id, category_id)
-      VALUES (%L);
+      VALUES %L;
     `, categoryTuples));
   }
 

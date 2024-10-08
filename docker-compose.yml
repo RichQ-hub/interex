@@ -2,10 +2,12 @@ services:
   backend:
     build: ./backend
     ports:
-      - "5555:4000" # mapping the external port 5555 to container's internal port 5000 (on your computer use localhost:5555)
+      - "5555:4000" # mapping the external port 5555 to container's internal port 4000 (on your computer use localhost:5555)
     volumes:
-      - ./backend:/app # similar to below, this means when we make flask changes, it reloads in container
-      - /app/node_modules
+      # Bind mount. This means when we make changes in ./backend on the host, it syncs the changes in the
+      # container ./app (./app is the same as the WORKDIR in the Dockerfile).
+      - ./backend:/app
+      - /app/node_modules # Explained below.
     depends_on:
       - db
     develop:
@@ -47,5 +49,44 @@ services:
       # the /docker-entrypoint-initb.d folder will be imported and executed.
       - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
+  db_test:
+    image: postgres:16-alpine
+    ports:
+      - "7777:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    profiles: [test]
+    volumes:
+      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
 volumes:
   data:
+
+# -------------------------------------------------------------------------------------------------------------------
+
+# PURPOSE OF MOUNTING NODE_MODULES AS A VOLUME:
+
+# By default, when you mount a host directory (like ./backend) into a Docker container, the contents of
+# that directory on the host will override the corresponding directory in the container (./app). This can be
+# a problem if you bind-mount the entire project root, because the node_modules folder installed inside
+# the container (during the build process) could get replaced by whatever is on the host — often, the host
+# might not even have a node_modules folder or it might have an incompatible one.
+# 
+# Mapping the node_modules directory specifically as a named volume (or leaving it unmounted, which is the
+# case above) allows the container to manage node_modules independently of the host system once it is
+# installed via the Dockerfile. This ensures the integrity of the dependencies inside the container.
+
+# Resource: https://medium.com/@sudiptob2/properly-setting-up-react-development-environment-using-docker-a2de46464d0b
+
+# -------------------------------------------------------------------------------------------------------------------
+
+# DIFFERENCE BETWEEN WATCH AND BIND-MOUNT:
+
+# Bind mounts only sync files between host and container. Watch rebuilds the container whenever a change is made on
+# the host. Say you installed a new package on the host which updates package.json. Then bind mount will only
+# update the package.json with the new dependency without rebuilding the container, so the container essentially DOESN'T
+# install the dependency. Watch rebuilds the container so that it runs `yarn install` so it should contain
+# the dependency.
+
+# -------------------------------------------------------------------------------------------------------------------
