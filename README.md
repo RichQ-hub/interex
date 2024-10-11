@@ -20,3 +20,9 @@ docker-compose up --watch
 > Note: Frontend has docker watch enable to allow automatic updates as you edit and save your files.  
 > 
 > More details here: https://docs.docker.com/compose/file-watch/
+
+### Deleting Hanging Images
+
+Make sure to delete images marked as **unused** to free up storage space, as well as unneeded volumes.
+
+> Note: You should periodically run `docker system prune --all` to cleanse unseen docker files installed as you tear down and rebuild images. 

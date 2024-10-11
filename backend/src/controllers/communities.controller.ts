@@ -116,8 +116,7 @@ export const getAllCategories = async (req: Request, res: Response) => {
   const result = await db.query(`
     SELECT
       id,
-      name,
-      description
+      name
     FROM
       Categories;
   `);
