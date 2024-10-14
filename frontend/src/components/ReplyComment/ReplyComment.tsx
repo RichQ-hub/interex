@@ -45,7 +45,7 @@ const ReplyComment = ({
           src={avatar}
           alt='avatar'
         />
-        <h4 className={`${saira.className} font-semibold text-lg`}>{session?.user.name}</h4>
+        <h4 className={`${saira.className} font-semibold text-lg`}>{session?.user.username}</h4>
         {/* Close box */}
         <button
           className='flex items-center justify-center ml-auto w-6 h-6 border-[1px] border-zinc-500 hover:bg-zinc-100'

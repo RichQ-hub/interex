@@ -26,7 +26,7 @@ const Navbar = async () => {
       {/* Auth Section. */}
       {session ? (
         <>
-          <p className='ml-auto text-interex-aqua mr-3'>@{session.user.name}</p>
+          <p className='ml-auto text-interex-aqua mr-3'>@{session.user.username}</p>
           <LogoutButton />
         </>
       ) : (

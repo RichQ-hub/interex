@@ -38,7 +38,7 @@ export const register = async (req: Request, res: Response) => {
   const result = await db.query(`
     INSERT INTO Users (email, username, password)
     VALUES ($1, $2, $3)
-    RETURNING *;
+    RETURNING id, username, email;
   `, [email, username, passwordHash]);
 
   const newUser = result.rows[0];
@@ -47,7 +47,9 @@ export const register = async (req: Request, res: Response) => {
 
   // Return the new user information back to the client for use by next-auth.
   res.json({
-    user: newUser,
+    id: newUser.id,
+    username: newUser.username,
+    email: newUser.email,
   });
 }
 
@@ -90,7 +92,7 @@ export const login = async (req: Request, res: Response) => {
   // Return the user information back to the client for use by next-auth.
   res.json({
     id: user.id,
-    name: user.username,
+    username: user.username,
     email: user.email,
     accessToken,
   });

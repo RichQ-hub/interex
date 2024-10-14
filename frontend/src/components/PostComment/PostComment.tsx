@@ -43,7 +43,7 @@ const PostComment = ({
           src={avatar}
           alt='avatar'
         />
-        <h4 className={`${saira.className} font-semibold text-lg`}>{session?.user.name}</h4>
+        <h4 className={`${saira.className} font-semibold text-lg`}>{session?.user.username}</h4>
         {/* Submit */}
         <button
           className='block ml-auto px-2 py-1 bg-interex-blue rounded-sm font-semibold text-sm text-black'

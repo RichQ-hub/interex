@@ -22,8 +22,6 @@ describe('Community Routes', () => {
   });
 
   test('Test registering a new user', async () => {
-
-
     const username = 'fakeUser';
     const password = 'fakeUserPwd';
     const email = 'fakers@gmail.com';
@@ -37,18 +35,11 @@ describe('Community Routes', () => {
         password
       });
     
-      expect(res.body).toMatchObject({
-        user: {
-          username: 'mate',
-        }
-      })
+    expect(res.body).toMatchObject({
+      username: 'fakeUser',
+      email: 'fakers@gmail.com',
+    })
     
-    // expect(res.statusCode).toEqual(200);
-    // expect(res.body).toMatchObject({
-    //     id: user.id,
-    //     username: user.username,
-    //     email: user.email,
-    // });
-    // expect(res.headers['set-cookie']).toBeDefined();
+    expect(res.statusCode).toEqual(200);
   });
 });
