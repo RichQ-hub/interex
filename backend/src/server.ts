@@ -9,7 +9,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // This means that if the environment variable for port doesn't exist, we
 // set it to the default value of 3000.
-const port = process.env.PORT || 3000;
+const port = process.env.BACKEND_PORT || 3000;
 
 const app = createServer();
 

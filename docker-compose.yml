@@ -7,10 +7,10 @@ services:
       - "3333:3000" # mapping the external port 3333 to container's internal port 3000 (on your computer use localhost:3333)
     environment:
       - BACKEND_URL=http://172.18.0.1:5555 # this defines the URL the frontend makes requests to. https://stackoverflow.com/questions/67326850/react-next-js-docker-build-failing-when-trying-to-reach-out-to-local-api-endpoin
-    depends_on:
-      backend:
-        condition: service_healthy
-        restart: true
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
+    #     restart: true
     develop:
       watch:
         - action: sync
@@ -23,14 +23,9 @@ services:
     build: ./backend
     ports:
       - "5555:4000" # mapping the external port 5555 to container's internal port 4000 (on your computer use localhost:5555)
-    # These env variables refer to the active db (not the test db). These extract variables from your local .env which must
-    # be in the same directory as docker-compose.yml, since we run docker locally.
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_PORT=${DB_PORT}
+    # Exposes the local .env variable (in the same directory as docker-compose.yml) to the backend container.
+    env_file:
+      - .env
     volumes:
       # Bind mount. This means when we make changes in ./backend on the host, it syncs the changes in the
       # container ./app (./app is the same as the WORKDIR in the Dockerfile).
@@ -38,12 +33,11 @@ services:
       - /app/node_modules # Explained below.
     depends_on:
       - db
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://172.18.0.1:5555/api/v1/communities/search"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://172.18.0.1:5555/api/v1/communities/search"]
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 10s
     develop:
       watch:
         - action: sync
@@ -73,6 +67,7 @@ services:
     ports:
       - "${TEST_DB_PORT}:5432"
     environment:
+      - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${TEST_DB_NAME}
     profiles: [test]

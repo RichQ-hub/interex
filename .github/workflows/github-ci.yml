@@ -11,11 +11,11 @@ on:
 
 # Postgres credentials need not be private for integration testing.
 env:
-  DB_HOST: localhost 
+  TEST_DB_HOST: localhost 
   DB_PORT: 5432 # Postgres natively exposes the port 5432.
   DB_USER: postgres
   DB_PASSWORD: mikey098
-  DB_NAME: test_db
+  TEST_DB_NAME: test_db
 
 jobs:
   backend-ci:
@@ -34,7 +34,7 @@ jobs:
           - POSTGRES_USER: ${{ env.DB_USER }}
           - POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
         ports:
-          - 5432:5432
+          - ${{  }}:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -63,3 +63,9 @@ jobs:
         run: yarn test
         env:
           NODE_ENV: test
+          TEST_DB_HOST: ${{ env.TEST_DB_HOST }}
+          DB_PORT: ${{ env.DB_PORT }}
+          TEST_DB_NAME: ${{ env.TEST_DB_NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+

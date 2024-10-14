@@ -15,7 +15,6 @@ export const parseJSON = async (url: string, options: any) => {
    * By default, Next.js automatically caches the returned values of fetch in the Data Cache on the server.
    * This means that the data can be fetched at build time or request time, cached, and reused on each data request.
    */
-  console.log(`envvvv = ${process.env.BACKEND_URL}`);
   const response = await fetch(url, { ...options, cache: 'no-store' });
   const data = await response.json();
 

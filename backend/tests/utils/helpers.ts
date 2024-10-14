@@ -1,5 +1,6 @@
-import { createServer } from 'http';
+import createServer from '../../src/config/server';
 import fs from 'fs';
+import db from '../../src/db';
 
 export const createTestServer = async (port: number = 7777) => {
   const server = createServer();
@@ -7,6 +8,7 @@ export const createTestServer = async (port: number = 7777) => {
 }
 
 export const clearDatabase = async () => {
-  const cleanupScript = fs.readFileSync('../../src/db/cleanup.sql');
-  
+  const cleanupScript = fs.readFileSync('../../src/db/cleartables.sql').toString();
+  await db.query(cleanupScript);
 }
+

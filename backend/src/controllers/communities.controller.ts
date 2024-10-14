@@ -139,8 +139,6 @@ export const searchCommunities = async (req: Request, res: Response) => {
     page
   } = req.query;
 
-  console.log('nice')
-
   const sortOptions = [
     'c.name ASC',
     'num_threads DESC, c.name ASC',
