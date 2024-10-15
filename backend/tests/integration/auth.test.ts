@@ -2,6 +2,8 @@ import type { Server } from 'http';
 import { clearDatabase, createTestServer, initialiseDatabase } from '../utils/helpers';
 import request from 'supertest';
 
+const BASE_URL = '/api/v1/auth';
+
 let server: Server;
 
 beforeAll(async () => {
@@ -28,7 +30,28 @@ describe('Community Routes', () => {
     const email = 'fakers@gmail.com';
 
     const res = await request(server)
-      .post('/api/v1/auth/register')
+      .post(`${BASE_URL}/register`)
+      .send({
+        email,
+        username,
+        password
+      });
+    
+    expect(res.body).toMatchObject({
+      username: 'fakeUser',
+      email: 'fakers@gmail.com',
+    })
+    
+    expect(res.statusCode).toEqual(200);
+  });
+
+  test('Verify database clears by registering the same user.', async () => {
+    const username = 'fakeUser';
+    const password = 'fakeUserPwd';
+    const email = 'fakers@gmail.com';
+
+    const res = await request(server)
+      .post(`${BASE_URL}/register`)
       .send({
         email,
         username,
