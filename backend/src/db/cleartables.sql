@@ -12,4 +12,4 @@ TRUNCATE
   Comment_Votes,
   Thread_Flairs,
   Flairs
-;
+CASCADE;

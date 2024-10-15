@@ -30,7 +30,7 @@ describe('Community Routes', () => {
     // const res = await request(server).post('/api/auth/login').send({ login: username, password });
     try {
       const res = await request(server)
-        .post('api/v1/auth/register')
+        .post('/api/v1/auth/register')
         .send({
           email,
           username,
