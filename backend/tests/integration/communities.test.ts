@@ -27,24 +27,19 @@ describe('Community Routes', () => {
     const password = 'fakeUserPwd';
     const email = 'fakers@gmail.com';
 
-    // const res = await request(server).post('/api/auth/login').send({ login: username, password });
-    try {
-      const res = await request(server)
-        .post('/api/v1/auth/register')
-        .send({
-          email,
-          username,
-          password
-        });
-      
-      expect(res.body).toMatchObject({
-        username: 'fakeUser',
-        email: 'fakers@gmail.com',
-      })
-      
-      expect(res.statusCode).toEqual(200);
-    } catch (error) {
-      console.log(error)
-    }
+    const res = await request(server)
+      .post('/api/v1/auth/register')
+      .send({
+        email,
+        username,
+        password
+      });
+    
+    expect(res.body).toMatchObject({
+      username: 'fakeUser',
+      email: 'fakers@gmail.com',
+    })
+    
+    expect(res.statusCode).toEqual(200);
   });
 });
