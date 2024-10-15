@@ -8,7 +8,7 @@ export const createTestServer = async (port: number = 7777) => {
 }
 
 export const clearDatabase = async () => {
-  const cleanupScript = fs.readFileSync(__dirname + '../../src/db/cleartables.sql').toString();
+  const cleanupScript = fs.readFileSync(__dirname + '/../../src/db/cleartables.sql').toString();
   await db.query(cleanupScript);
 }
 
