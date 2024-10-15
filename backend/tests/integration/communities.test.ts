@@ -1,11 +1,12 @@
 import type { Server } from 'http';
-import { clearDatabase, createTestServer } from '../utils/helpers';
+import { clearDatabase, createTestServer, initialiseDatabase } from '../utils/helpers';
 import request from 'supertest';
 
 let server: Server;
 
 beforeAll(async () => {
   server = await createTestServer();
+  await initialiseDatabase();
 });
 
 afterAll(() => {
