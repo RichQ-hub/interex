@@ -5,6 +5,10 @@ import logger from '../utils/logger';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+export const testConnection = async (req: Request, res: Response) => {
+  res.status(400).send('Connection Valid.');
+}
+
 /**
  * Registers a user into the database.
  */

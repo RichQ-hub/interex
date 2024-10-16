@@ -1,25 +1,28 @@
 services:
   # We cannot use volumes here to map ./frontend:/usr/src/app, since it will overwrite the /usr/src/app which already
   # contains the .standalone folder, which ./frontend does not have.
-  # frontend:
-  #   build: ./frontend
-  #   ports:
-  #     - "3333:3000" # mapping the external port 3333 to container's internal port 3000 (on your computer use localhost:3333)
-  #   environment:
-  #     - BACKEND_URL=http://172.18.0.1:5555 # this defines the URL the frontend makes requests to. https://stackoverflow.com/questions/67326850/react-next-js-docker-build-failing-when-trying-to-reach-out-to-local-api-endpoin
-  #   # depends_on:
-  #   #   backend:
-  #   #     condition: service_healthy
-  #   #     restart: true
-  #   develop:
-  #     watch:
-  #       - action: sync
-  #         path: ./frontend
-  #         target: /usr/src/app
-  #         ignore:
-  #           - ./frontend/node_modules/
+  frontend:
+    profiles: [prod]
+    build: ./frontend
+    ports:
+      - "3333:3000" # mapping the external port 3333 to container's internal port 3000 (on your computer use localhost:3333)
+    environment:
+      - BACKEND_URL=http://172.18.0.1:5555 # this defines the URL the frontend makes requests to. https://stackoverflow.com/questions/67326850/react-next-js-docker-build-failing-when-trying-to-reach-out-to-local-api-endpoin
+    depends_on:
+      backend:
+        condition: service_healthy
+        restart: true
+        required: false
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /usr/src/app
+          ignore:
+            - ./frontend/node_modules/
 
   backend:
+    profiles: [prod, test]
     build: ./backend
     ports:
       - "5555:4000" # mapping the external port 5555 to container's internal port 4000 (on your computer use localhost:5555)
@@ -31,13 +34,18 @@ services:
       # container ./app (./app is the same as the WORKDIR in the Dockerfile).
       - ./backend:/app
       - /app/node_modules # Explained below.
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://172.18.0.1:5555/api/v1/auth/test"]
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     depends_on:
-      - db
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://172.18.0.1:5555/api/v1/communities/search"]
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 10s
+      db:
+        condition: service_healthy
+        required: false
+      db_test:
+        condition: service_healthy
+        required: false
     develop:
       watch:
         - action: sync
@@ -47,6 +55,7 @@ services:
             - ./backend/node_modules/
     
   db:
+    profiles: [prod]
     image: postgres:16-alpine
     ports:
       # 5432 is the default port that postgres container exposes.
@@ -61,8 +70,15 @@ services:
       # Copy the sql script to create tables. The first time the service starts, sql files inside
       # the /docker-entrypoint-initb.d folder will be imported and executed.
       - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
   db_test:
+    profiles: [test]
     image: postgres:16-alpine
     ports:
       - "${TEST_DB_PORT}:5432"
@@ -70,9 +86,12 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${TEST_DB_NAME}
-    profiles: [test]
-    volumes:
-      - ./backend/src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${TEST_DB_NAME}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
 
 volumes:
   data:

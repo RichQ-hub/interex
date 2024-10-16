@@ -65,4 +65,40 @@ describe('Community Routes', () => {
     
     expect(res.statusCode).toEqual(200);
   });
+
+  test('Registering a user twice.', async () => {
+    const username = 'fakeUser';
+    const password = 'fakeUserPwd';
+    const email = 'fakers@gmail.com';
+
+    const res1 = await request(server)
+      .post(`${BASE_URL}/register`)
+      .send({
+        email,
+        username,
+        password
+      });
+    
+    expect(res1.body).toMatchObject({
+      username: 'fakeUser',
+      email: 'fakers@gmail.com',
+    })
+    
+    expect(res1.statusCode).toEqual(200);
+
+    const res2 = await request(server)
+      .post(`${BASE_URL}/register`)
+      .send({
+        email,
+        username,
+        password
+      });
+
+    expect(res2.statusCode).toEqual(400);
+
+    expect(res2.body).toMatchObject({
+      error: 'InputError: User with the email fakers@gmail.com already exists.'
+    })
+      
+  });
 });

@@ -10,7 +10,7 @@
 -- Set the timezone of this database.
 SET TIMEZONE TO 'Australia/NSW';
 
-CREATE DOMAIN EmailString AS VARCHAR(64) CHECK (VALUE ~ '^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$');
+-- CREATE DOMAIN EmailString AS VARCHAR(64) CHECK (VALUE ~ '^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$');
 CREATE TYPE CommunityRole AS ENUM ('Owner', 'Admin', 'Moderator', 'Member');
 CREATE TYPE VoteType AS ENUM ('Upvote', 'Downvote');
 

@@ -15,4 +15,4 @@ RUN apk --no-cache add curl
 # expose port 3000 to the outside world (required to access the app at port 3000 however, we map this internal 3000 to an external port in the docker-compose file)
 EXPOSE 4000
 # command that is run to start the app (can be overriden in the docker-compose file)
-CMD ["yarn", "start"]
+CMD ["sh", "-c", "if [ \"$NODE_ENV\" = 'test' ]; then yarn test; else yarn start; fi"]
