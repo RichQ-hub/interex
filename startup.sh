@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Automates docker setup and cleanup. As of now, must be run on linux terminals.
+
 USAGE_MSG="Usage: $0 [-p <prod|test>] [-c] [-h]
 
 where:
