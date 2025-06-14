@@ -56,7 +56,8 @@ git clone git@github.com:RichQ-hub/interex.git
 ./startup.sh -p prod
 ```
 
-> Note: You must have docker desktop running!
+> [!IMPORTANT]
+> You must have docker desktop running!
 
 This starts the backend, frontend and postgresql containers with `docker-compose up` inside 
 the startup script. The frontend server will be running on `http://localhost:3333`, while the
@@ -103,7 +104,8 @@ where:
 The script must contain at least 1 of the above options.
 ```
 
-> Note: If your terminal complains with the error `Error: cannot execute: required file not
+> [!NOTE]
+> If your terminal complains with the error `Error: cannot execute: required file not
 > found`, startup.sh could have CRLF line endings. To fix this, ensure LF line endings are
 > used instead.
 
@@ -149,4 +151,5 @@ prune --all` to cleanse unseen docker files installed as you tear down and rebui
 | TEST_DB_HOST | Test database host.                                                       | ❌        |               |
 | TEST_DB_PORT | Database port.                                                            | ❌        | 5432          |
 
-> Note: **DB_NAME** refers to the database name defined in the env variable POSTGRES_DB for the postgres image.
+> [!NOTE]
+> **DB_NAME** refers to the database name defined in the env variable POSTGRES_DB for the postgres image.
