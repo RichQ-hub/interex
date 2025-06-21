@@ -5,20 +5,20 @@ communities, threads, comments, etc.
 
 ## Table of Contents
 
-- [Planned Features](#planned-features)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Startup Script](#startup-script)
-- [Environment Variables](#environment-vairables)
+- [1. Planned Features](#1-planned-features)
+- [2. Technology Stack](#2-technology-stack)
+- [3. Getting Started](#3-getting-started)
+- [4. Startup Script](#4-startup-script)
+- [5. Environment Variables](#5-environment-vairables)
 
-## Planned Features
+## 1. Planned Features
 
 - [ ] Add a docker watch feature in **startup.sh** to watch for file changes during development.
   - Could include the note in the relevant README section: Frontend has docker
     watch enabled to allow automatic updates as you edit and save your files. 
     More details here: https://docs.docker.com/compose/file-watch/
 
-## Technology Stack
+## 2. Technology Stack
 
 **Frontend**
 - NextJS
@@ -30,7 +30,7 @@ communities, threads, comments, etc.
 - Express
 - PostgreSQL
 
-## Getting Started
+## 3. Getting Started
 
 ### Step 1: Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
@@ -88,7 +88,7 @@ When you want to stop the server, and subsequently all the docker containers, si
 
 Your database data will still persist even after stopping the server.
 
-## Startup Script
+## 4. Startup Script
 
 ### Usage
 
@@ -111,7 +111,7 @@ The script must contain at least 1 of the above options.
 
 Run `chmod +x startup.sh` to provide executable permissions for the file.
 
-### Startup containers (-p)
+### Startup containers (`-p`)
 
 The relevant docker containers pertaining to the given profile argument (-p) are
 started (i.e. either `prod` or `test`).
@@ -128,25 +128,25 @@ docker-compose --profile prod down
 # ... cleanup code run
 ```
 
-### Docker Sytem Prune (-c)
+### Docker Sytem Prune (`-c`)
 
 You should periodically run `./startup.sh -c` which will subsequently run `docker system
 prune --all` to cleanse unseen docker files installed as you tear down and rebuild images.
 
-## Environment Vairables
+## 5. Environment Vairables
 
 | Name         | Description                                                               | Optional | Default value |
 | ------------ | ------------------------------------------------------------------------- | -------- | ------------- |
-| NODE_ENV     | Used to state whether an environment is a production or test environment. | ✔️        | prod          |
-| BACKEND_PORT | Backend server port.                                                      | ✔️        | 3000          |
-| JWT_SECRET   | String used to sign jwt tokens for authorised requests.                   | ❌        |
-| DB_HOST      | Name of the service container name defined in docker-compose.yml.         | ❌        |
-| DB_PORT      | Database port.                                                            | ❌        | 5432          |
-| DB_USER      | Database user.                                                            | ❌        | postgres      |
-| DB_PASSWORD  | Database password.                                                        | ❌        |               |
-| DB_NAME      | Database name.                                                            | ❌        |               |
-| TEST_DB_NAME | Test database name.                                                       | ❌        |               |
-| TEST_DB_HOST | Test database host.                                                       | ❌        |               |
-| TEST_DB_PORT | Database port.                                                            | ❌        | 5432          |
+| NODE_ENV     | Used to state whether an environment is a production or test environment. | ✔️     | prod          |
+| BACKEND_PORT | Backend server port.                                                      | ✔️     | 3000          |
+| JWT_SECRET   | String used to sign jwt tokens for authorised requests.                   | ❌       |               |
+| DB_HOST      | Name of the service container name defined in docker-compose.yml.         | ❌       |               |
+| DB_PORT      | Database port.                                                            | ❌       | 5432          |
+| DB_USER      | Database user.                                                            | ❌       | postgres      |
+| DB_PASSWORD  | Database password.                                                        | ❌       |               |
+| DB_NAME      | Database name.                                                            | ❌       |               |
+| TEST_DB_NAME | Test database name.                                                       | ❌       |               |
+| TEST_DB_HOST | Test database host.                                                       | ❌       |               |
+| TEST_DB_PORT | Database port.                                                            | ❌       | 5432          |
 
 > Note: **DB_NAME** refers to the database name defined in the env variable POSTGRES_DB for the postgres image.

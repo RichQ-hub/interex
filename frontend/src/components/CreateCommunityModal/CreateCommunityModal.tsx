@@ -10,7 +10,6 @@ import { createCommunity } from '@/actions/community';
 import CommunityService from '@/services/CommunityService';
 
 const CreateCommunityModal = async () => {
-  // const session = await getServerSession(authOptions);
   const session = await getServerSession(authOptions);
   const createCommunityAction = createCommunity.bind(null, session?.user.accessToken);
   const categories = await CommunityService.getAllCategories();
