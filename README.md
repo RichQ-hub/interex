@@ -5,20 +5,20 @@ communities, threads, comments, etc.
 
 ## Table of Contents
 
-- [Planned Features](#planned-features)
-- [Technology Stack](#technology-stack)
-- [Getting Started](#getting-started)
-- [Startup Script](#startup-script)
-- [Environment Variables](#environment-vairables)
+- [1. Planned Features](#1-planned-features)
+- [2. Technology Stack](#2-technology-stack)
+- [3. Getting Started](#3-getting-started)
+- [4. Startup Script](#4-startup-script)
+- [5. Environment Variables](#5-environment-vairables)
 
-## Planned Features
+## 1. Planned Features
 
 - [ ] Add a docker watch feature in **startup.sh** to watch for file changes during development.
   - Could include the note in the relevant README section: Frontend has docker
     watch enabled to allow automatic updates as you edit and save your files. 
     More details here: https://docs.docker.com/compose/file-watch/
 
-## Technology Stack
+## 2. Technology Stack
 
 **Frontend**
 - NextJS
@@ -30,7 +30,7 @@ communities, threads, comments, etc.
 - Express
 - PostgreSQL
 
-## Getting Started
+## 3. Getting Started
 
 ### Step 1: Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
@@ -51,6 +51,8 @@ git clone git@github.com:RichQ-hub/interex.git
 - On Windows run `copy .env.example .env`
 
 ### Step 4: Run the server
+
+**On Linux:**
 
 ```bash
 ./startup.sh -p prod
@@ -89,7 +91,7 @@ When you want to stop the server, and subsequently all the docker containers, si
 
 Your database data will still persist even after stopping the server.
 
-## Startup Script
+## 4. Startup Script
 
 ### Usage
 
@@ -135,7 +137,7 @@ docker-compose --profile prod down
 You should periodically run `./startup.sh -c` which will subsequently run `docker system
 prune --all` to cleanse unseen docker files installed as you tear down and rebuild images.
 
-## Environment Vairables
+## 5. Environment Vairables
 
 | Name         | Description                                                               | Optional | Default value |
 | ------------ | ------------------------------------------------------------------------- | -------- | ------------- |

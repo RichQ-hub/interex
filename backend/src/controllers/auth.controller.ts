@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export const testConnection = async (req: Request, res: Response) => {
-  res.status(400).send('Connection Valid.');
+  res.status(200).send('Connection Valid.');
 }
 
 /**
