@@ -27,6 +27,7 @@ services:
     ports:
       - "5555:4000" # mapping the external port 5555 to container's internal port 4000 (on your computer use localhost:5555)
     # Exposes the local .env variable (in the same directory as docker-compose.yml) to the backend container.
+    # This allows the backend code to use the env variables with process.env. (seen in index.ts inside db folder).
     env_file:
       - .env
     volumes:

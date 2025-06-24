@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "start": "yarn run build && node dist/src/server.js",
+    "start": "node dist/src/server.js",
     "build": "tsc",
     "test": "jest"
   },
