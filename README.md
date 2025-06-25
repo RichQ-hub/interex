@@ -10,6 +10,7 @@ communities, threads, comments, etc.
 - [3. Getting Started](#3-getting-started)
 - [4. Startup Script](#4-startup-script)
 - [5. Environment Variables](#5-environment-vairables)
+- [6. Docker Optimisations](#6-docker-optimisations)
 
 ## 1. Planned Features
 
