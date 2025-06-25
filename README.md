@@ -162,7 +162,7 @@ prune --all` to cleanse unseen docker files installed as you tear down and rebui
 
 #### Consider the following `Dockerfile`
 
-```docker
+```dockerfile
 FROM node:20-alpine
 WORKDIR /app
 COPY . .
@@ -199,7 +199,7 @@ Our docker architecture applies optimisations taking full advantage of the layer
 
 #### Take the following `Dockerfile` from the backend folder.
 
-```docker
+```dockerfile
 # Build the dependencies and compile the application.
 FROM node:22-alpine AS builder
 WORKDIR /app
