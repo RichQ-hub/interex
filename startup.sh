@@ -41,7 +41,10 @@ while getopts ":p:ch" opt; do
           # Set the NODE_ENV variable baesd on the given arg in .env
           sed -i -e "s/\(^NODE_ENV\s*=\s*\).*/\1$NODE_ENV/" .env &&
           docker-compose --profile $NODE_ENV build &&
+					docker image prune -f &&
           docker-compose --profile $NODE_ENV up
+
+					# Could add docker prune between build and up.
 
           # Once exited (Crtl+C), we delete all running containers.
           docker-compose --profile $NODE_ENV down

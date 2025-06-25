@@ -5,6 +5,11 @@ import logger from '../utils/logger';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+/**
+ * Tests if the server is active.
+ * @param req 
+ * @param res 
+ */
 export const testConnection = async (req: Request, res: Response) => {
   res.status(200).send('Connection Valid.');
 }
