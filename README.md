@@ -83,6 +83,20 @@ frontend-1  |  ✓ Starting...
 frontend-1  |  ✓ Ready in 248ms
 ```
 
+> [!TIP]
+> Should you encounter an **internal load** error during the build phase, e.g:
+> ```bash
+> ERROR [internal] load metadata for mcr.microsoft.com/dotnet/sdk:5.0.
+> ```
+>
+> **Solution**
+> 
+> Run: `rm  ~/.docker/config.json `
+>
+> **Explanation**
+>
+> The file can get corrupted, likely with vscode extensions, etc.
+
 ### Step 5: Stopping the server
 
 When you want to stop the server, and subsequently all the docker containers, simply press
@@ -91,6 +105,8 @@ When you want to stop the server, and subsequently all the docker containers, si
 #### Data Persistence
 
 Your database data will still persist even after stopping the server.
+
+
 
 ## 4. Startup Script
 
@@ -161,7 +177,7 @@ prune --all` to cleanse unseen docker files installed as you tear down and rebui
 
 ### Image Layers
 
-#### Consider the following `Dockerfile`
+**Consider the following `Dockerfile`**
 
 ```dockerfile
 FROM node:20-alpine
@@ -186,11 +202,11 @@ Here are a few examples of situations that can cause cache to be invalidated:
 1. Any changes to the command of a RUN instruction invalidates that layer. Docker detects the change and invalidates
 the build cache if there's any modification to a RUN command in your Dockerfile.
 
-2. Any changes to files copied into the image with the COPY or ADD instructions. Docker keeps an eye on any
+1. Any changes to files copied into the image with the COPY or ADD instructions. Docker keeps an eye on any
 alterations to files within your project directory. Whether it's a change in content or properties like permissions,
 Docker considers these modifications as triggers to invalidate the cache.
 
-3. Changes to a previous layer. This is because all layers DEPEND ON the previous layer to build its app because
+1. Changes to a previous layer. This is because all layers DEPEND ON the previous layer to build its app because
 of dependencies. Hence, if a previous layer were changed, then the current layer needs to be rebuilt to use those
 updated files.
 
@@ -198,7 +214,7 @@ updated files.
 
 Our docker architecture applies optimisations taking full advantage of the layer cache invalidation system by minimising the amount of invalidations as much as possible. In turn, enjoying faster build times and more efficient space.
 
-#### Take the following `Dockerfile` from the backend folder.
+**Take the following `Dockerfile` from the backend folder.**
 
 ```dockerfile
 # Build the dependencies and compile the application.
