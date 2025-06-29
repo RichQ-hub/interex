@@ -109,7 +109,6 @@ export const getComments = async (req: Request, res: Response) => {
       mem.role,
       coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c.id AND v.type = 'Upvote'), 0) as num_upvotes,
       coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c.id AND v.type = 'Downvote'), 0) as num_downvotes
-
     FROM
       Comments c
       LEFT OUTER JOIN Users u ON c.author = u.id

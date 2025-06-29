@@ -14,7 +14,7 @@ WORKDIR /app
 COPY --from=builder /app/dist ./dist
 COPY package.json yarn.lock ./
 # Reinstall dependencies for this image and install curl for healthcheck.
-RUN yarn install --production && apk --no-cache add curl
+RUN yarn install --frozen-lockfile && apk --no-cache add curl
 EXPOSE 4000
 CMD ["sh", "-c", "if [ \"$NODE_ENV\" = 'test' ]; then yarn test; else yarn start; fi"]
 

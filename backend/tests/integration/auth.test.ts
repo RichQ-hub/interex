@@ -1,5 +1,5 @@
 import type { Server } from 'http';
-import { clearDatabase, createTestServer, initialiseDatabase } from '../utils/helpers';
+import { clearDatabase, closeServer, createTestServer, initialiseDatabase, truncateDatabase } from '../utils/helpers';
 import request from 'supertest';
 
 const BASE_URL = '/api/v1/auth';
@@ -7,17 +7,18 @@ const BASE_URL = '/api/v1/auth';
 let server: Server;
 
 beforeAll(async () => {
+	await clearDatabase();
   server = await createTestServer();
   await initialiseDatabase();
 });
 
 afterAll(() => {
-  server.close();
+  closeServer(server);
 });
 
-describe('Community Routes', () => {
+describe('Auth Routes', () => {
   afterEach(async () => {
-    await clearDatabase();
+    await truncateDatabase();
   });
 
   test('Addition works', () => {
@@ -99,6 +100,5 @@ describe('Community Routes', () => {
     expect(res2.body).toMatchObject({
       error: 'InputError: User with the email fakers@gmail.com already exists.'
     })
-      
   });
 });

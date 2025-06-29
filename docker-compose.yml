@@ -82,7 +82,7 @@ services:
     profiles: [test]
     image: postgres:16-alpine
     ports:
-      - "${TEST_DB_PORT}:5432"
+      - "5432:5432"
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

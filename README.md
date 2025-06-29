@@ -106,8 +106,6 @@ When you want to stop the server, and subsequently all the docker containers, si
 
 Your database data will still persist even after stopping the server.
 
-
-
 ## 4. Startup Script
 
 ### Usage
@@ -199,10 +197,10 @@ commands).
 
 Here are a few examples of situations that can cause cache to be invalidated:
 
-1. Any changes to the command of a RUN instruction invalidates that layer. Docker detects the change and invalidates
-the build cache if there's any modification to a RUN command in your Dockerfile.
+1. Any changes to the command of a `RUN` instruction invalidates that layer. Docker detects the change and invalidates
+the build cache if there's any modification to a `RUN` command in your Dockerfile.
 
-1. Any changes to files copied into the image with the COPY or ADD instructions. Docker keeps an eye on any
+1. Any changes to files copied into the image with the `COPY` or `ADD` instructions. Docker keeps an eye on any
 alterations to files within your project directory. Whether it's a change in content or properties like permissions,
 Docker considers these modifications as triggers to invalidate the cache.
 
@@ -212,7 +210,7 @@ updated files.
 
 ### Optimised Dockerfiles
 
-Our docker architecture applies optimisations taking full advantage of the layer cache invalidation system by minimising the amount of invalidations as much as possible. In turn, enjoying faster build times and more efficient space.
+Our docker architecture applies optimisations taking full advantage of the layer cache invalidation system by minimising the amount of invalidations as much as possible. In turn, we can enjoy faster build times and more efficient space.
 
 **Take the following `Dockerfile` from the backend folder.**
 
@@ -242,7 +240,9 @@ Here we first only copy the package.json and yarn.lock files, which are the only
 After, we then copy all the files. We don't copy all the files first because if we did `COPY . .`, then had us install
 the dependencies. What happens is that if we made changes to the code in our files that `COPY` command becomes invalidated
 so we have to rebuild it, causing the next layer/command to rebuild which is `RUN yarn build`. Hence, everytime we 
-make changes to the code, we have to rebuild the dependencies which is extremely time consuming. The solution is we 
+make changes to the code, we have to rebuild the dependencies which is extremely time consuming.
+
+The solution is we 
 build dependencies which rarely change BEFORE copying all the course code files, so that when changes are made to the code,
 the dependencies don't change and so we don't have to rebuild the dependencies every time.
 
