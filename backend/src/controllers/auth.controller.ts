@@ -6,15 +6,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 /**
- * Tests if the server is active.
- * @param req 
- * @param res 
- */
-export const testConnection = async (req: Request, res: Response) => {
-  res.status(200).send('Connection Valid.');
-}
-
-/**
  * Registers a user into the database.
  */
 export const register = async (req: Request, res: Response) => {

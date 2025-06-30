@@ -1,4 +1,4 @@
-import express, { Express } from 'express';
+import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -58,6 +58,11 @@ const createServer = () => {
   app.use(`${rootRoute}/communities`, communityRoutes);
   app.use(`${rootRoute}/threads`, threadRoutes);
   app.use(`${rootRoute}/comments`, commentRoutes);
+
+	// Healthcheck route.
+	app.get(`${rootRoute}/health`, async (req: Request, res: Response) => {
+		res.status(200).send('Connection Valid.');
+	});
 
   return app;
 }

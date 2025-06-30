@@ -36,7 +36,7 @@ services:
       - ./backend:/app
       - /app/node_modules # Explained below.
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://172.18.0.1:5555/api/v1/auth/test"]
+      test: ["CMD", "curl", "-f", "http://172.18.0.1:5555/api/v1/health"]
       timeout: 10s
       retries: 3
       start_period: 10s
