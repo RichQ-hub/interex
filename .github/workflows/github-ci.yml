@@ -54,6 +54,26 @@ jobs:
           cache-dependency-path: './backend/yarn.lock' # Include location of the yarn.lock file. This is needed for a nested lock file.
           # https://stackoverflow.com/questions/68639588/github-actions-dependencies-lock-file-is-not-found-in-runners-path
 
+      - name: Get yarn cache directory path.
+        id: yarn-cache-dir-path # Gives a name to the current step which can be referred to in future steps.
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT # Allows us to add secrets to the environment variable $GITHUB_OUTPUT
+
+      - name: Cache node_module dependencies.
+        uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }} # Allows us to access the yarn cach path from the prev step.
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+        # **/yarn.lock is a glob meaning we match all yarn.lock files in any subfolder in the entire project.
+        # We hash the yarn.lock file because if our dependencies would change, the yarn.lock contents would change, in turn
+        # the hash generated from it would be different. Hence, the key for this cache would change, signaling this step
+        # to generate a new cache with the updated node_modules. The old cache (with the old hash in its name) would still exist,
+        # which the restore keys would allude to. The restore keys are prefixes that match any of the old caches if the primary key
+        # doesn't match.
+        # We use runner.os since caches are OS-specific and the cache paths can differ between OS's.
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile # Equivalent to `npm ci`.
         # https://stackoverflow.com/questions/52499617/what-is-the-difference-between-npm-install-and-npm-ci
