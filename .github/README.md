@@ -25,10 +25,10 @@
   uses: actions/cache@v4
   id: yarn-cache
   with:
-	path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-	key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-	restore-keys: |
-		${{ runner.os }}-yarn-
+    path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+    key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+    restore-keys: |
+      ${{ runner.os }}-yarn-
 ```
 
 | Property    | Details                                                                      |
@@ -68,7 +68,9 @@ GitHub can fall back to the `abc123` cache if `def456` doesn’t exist yet.
 
 We use runner.os since caches are OS-specific and the cache paths can differ between OS's.
 
-> [!NOTE] What is **/yarn.lock syntax mean?
+> [!NOTE] 
+> **What does `**/yarn.lock` syntax mean?**
+> 
 > A glob meaning we match all yarn.lock files in any subfolder in the entire project.
 
 #### 3. Cache miss
