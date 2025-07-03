@@ -4,10 +4,10 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 
 // Routers.
-import authRoutes from '../routers/auth';
-import communityRoutes from '../routers/communities';
-import threadRoutes from '../routers/threads';
-import commentRoutes from '../routers/comments';
+import authRoutes from '../routers/auth.router';
+import communityRoutes from '../routers/communities.router';
+import threadRoutes from '../routers/threads.router';
+import commentRoutes from '../routers/comments.router';
 
 const createServer = () => {
   // Initialise the express app.

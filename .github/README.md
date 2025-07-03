@@ -71,7 +71,7 @@ We use runner.os since caches are OS-specific and the cache paths can differ bet
 > [!NOTE] 
 > **What does `**/yarn.lock` syntax mean?**
 > 
-> A glob meaning we match all yarn.lock files in any subfolder in the entire project.
+> A glob meaning we match all `yarn.lock` files in any subfolder in the entire project.
 
 #### 3. Cache miss
 
