@@ -9,12 +9,12 @@ import {
   verifyToken
 } from '../controllers/auth.controller';
 import validation from '../middleware/validation';
-import { RegisterUserSchema } from '../schemas/auth.schema';
+import { LoginUserSchema, RegisterUserSchema } from '../schemas/auth.schema';
 
 const router = Router();
 
 router.post('/register', validation(RegisterUserSchema, 'body'), catchErrors(register));
-router.post('/login', catchErrors(login));
+router.post('/login', validation(LoginUserSchema, 'body'), catchErrors(login));
 router.get('/verify', authorize, catchErrors(verifyToken));
 router.get('/users', catchErrors(getAllUsers));
 router.delete('/user', authorize, catchErrors(deleteUser));
