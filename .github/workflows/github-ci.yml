@@ -66,13 +66,12 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-        # **/yarn.lock is a glob meaning we match all yarn.lock files in any subfolder in the entire project.
-        # We hash the yarn.lock file because if our dependencies would change, the yarn.lock contents would change, in turn
-        # the hash generated from it would be different. Hence, the key for this cache would change, signaling this step
-        # to generate a new cache with the updated node_modules. The old cache (with the old hash in its name) would still exist,
-        # which the restore keys would allude to. The restore keys are prefixes that match any of the old caches if the primary key
-        # doesn't match.
-        # We use runner.os since caches are OS-specific and the cache paths can differ between OS's.
+
+        # A cache miss.
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' }}
+        name: List the state of node modules.
+        continue-on-error: true
+        run: yarn list
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile # Equivalent to `npm ci`.
@@ -88,4 +87,3 @@ jobs:
           TEST_DB_NAME: ${{ env.TEST_DB_NAME }}
           DB_USER: ${{ env.DB_USER }}
           DB_PASSWORD: ${{ env.DB_PASSWORD }}
-
