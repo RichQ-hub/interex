@@ -1,3 +1,4 @@
+import format from 'pg-format';
 import db from '../db';
 import { AccessError, InputError } from './error';
 
@@ -26,21 +27,6 @@ export const assertValidCommunity = async (communityId: string) => {
 
   if (!results.rowCount) {
     throw new InputError('Community does not exist.');
-  }
-}
-
-export const assertValidFlair = async (communityId: string, flairId: string) => {
-  const results = await db.query(`
-    SELECT
-      name
-    FROM
-      Flairs
-    WHERE
-      community_id = $1 AND id = $2;
-  `, [communityId, flairId]);
-
-  if (!results.rowCount) {
-    throw new InputError('Flair does not exist in this community.');
   }
 }
 
@@ -122,4 +108,48 @@ export const assertCommunityOwner = async (communityId: string, userId: string) 
   if (!results.rowCount) {
     throw new AccessError('User is not the owner of this community.');
   }
+}
+
+export const assertValidFlair = async (communityId: string, flairId: string) => {
+  const results = await db.query(`
+    SELECT
+      name
+    FROM
+      Flairs
+    WHERE
+      community_id = $1 AND id = $2;
+  `, [communityId, flairId]);
+
+  if (!results.rowCount) {
+    throw new InputError('Flair does not exist in this community.');
+  }
+}
+
+export const assertValidFlairs = async (communityId: string, flairIds: string[]) => {
+	// If there are no flairs, we return.
+	if (!flairIds.length) {
+		return;
+	}
+	
+	const q = format(`
+		SELECT
+			id
+		FROM
+			Flairs
+		WHERE
+			community_id = %s AND id IN (%L)
+	`, communityId, flairIds);
+
+	const results = await db.query(q);
+
+	const flairResults = results.rows.map((flair) => {
+		return String(flair.id);
+	});
+
+	// Get non-matching elements.
+	const set = new Set(flairResults);
+	const nonMatching = flairIds.filter((flairId) => !set.has(flairId)) as string[];
+	if (nonMatching.length > 0) {
+		throw new InputError(`Flairs {${nonMatching.join(', ')}} are invalid.`);
+	}
 }

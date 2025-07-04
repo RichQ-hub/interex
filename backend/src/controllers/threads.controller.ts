@@ -7,7 +7,8 @@ import {
   assertCommunityModerator,
   assertThreadOwner,
   assertValidCommunity,
-  assertValidFlair
+  assertValidFlair,
+	assertValidFlairs
 } from '../utils/assert';
 
 // ===========================================================================
@@ -139,6 +140,8 @@ export const createThread = async (req: Request, res: Response) => {
 
   await assertCommunityMember(communityId, userId);
 
+	await assertValidFlairs(communityId, flairs);
+
   const result = await db.query(`
     INSERT INTO Threads (community_id, author, title, content)
     VALUES ($1, $2, $3, $4)
@@ -148,14 +151,16 @@ export const createThread = async (req: Request, res: Response) => {
   const newThread = result.rows[0];
 
   // Add the flairs.
-  const flairTuples = flairs.map((flairId: string) => {
-    return [newThread.id, flairId];
-  })
+	if (flairs.length) {
+		const flairTuples = flairs.map((flairId: string) => {
+			return [newThread.id, flairId];
+		})
 
-  await db.query(format(`
-    INSERT INTO Thread_Flairs (thread_id, flair_id)
-    VALUES %L;
-  `, flairTuples));
+		await db.query(format(`
+			INSERT INTO Thread_Flairs (thread_id, flair_id)
+			VALUES %L;
+		`, flairTuples));
+	}
 
   res.json({
     newThread,
