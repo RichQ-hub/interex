@@ -148,9 +148,7 @@ export const createComment = async (req: Request, res: Response) => {
   const { threadId } = req.params;
   const userId = req.user || '';
 
-  const {
-    content
-  } = req.body;
+  const { content } = req.body;
 
   // Grab the community that this thread belongs to.
   const communityResult = await db.query(`
