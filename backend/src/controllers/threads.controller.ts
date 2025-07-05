@@ -52,12 +52,12 @@ export const getAllThreads = async (req: Request, res: Response) => {
   const result = await db.query(`
     SELECT
       t.id,
+			t.title,
       u.username as author,
-      t.title,
+			t.pinned_by,
       t.created_at,
-      t.pinned_by,
-      coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments,
-      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes
+			coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes,
+      coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments
     FROM
       Threads t
       JOIN Users u ON u.id = t.author
@@ -73,10 +73,10 @@ export const getAllThreads = async (req: Request, res: Response) => {
       id: thread.id,
       title: thread.title,
       author: thread.author,
+			pinnedBy: thread.pinned_by,
       createdAt: thread.created_at,
-      pinnedBy: thread.pinned_by,
-      numComments: thread.num_comments,
       numUpvotes: thread.num_upvotes,
+			numComments: thread.num_comments,
       flairs,
     }
   }));
@@ -95,13 +95,14 @@ export const getThreadDetails = async (req: Request, res: Response) => {
   const result = await db.query(`
     SELECT
       t.id,
-      u.username,
+			t.title,
+			t.content,
+      u.username as author,
       m.role,
       t.pinned_by,
-      t.title,
-      t.content,
       t.created_at,
-      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes
+      coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes,
+			coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments
     FROM
       Threads t
       JOIN Users u ON u.id = t.author
@@ -113,15 +114,20 @@ export const getThreadDetails = async (req: Request, res: Response) => {
 
   const thread = result.rows[0];
 
+	// Garb thread flairs.
+	const flairs = await getThreadFlairs(thread.id);
+
   res.json({
     id: thread.id,
-    author: thread.username,
+		title: thread.title,
+    content: thread.content,
+    author: thread.author,
     role: thread.role,
     pinnedBy: thread.pinned_by,
-    title: thread.title,
-    content: thread.content,
     createdAt: thread.created_at,
     numUpvotes: thread.num_upvotes,
+		numComments: thread.num_comments,
+		flairs
   });
 }
 

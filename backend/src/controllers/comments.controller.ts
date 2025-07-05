@@ -244,12 +244,11 @@ export const deleteComment = async (req: Request, res: Response) => {
 
 export const voteComment = async (req: Request, res: Response) => {
   const { commentId } = req.params;
+	const userId = req.user || '';
 
   const {
-    userId,
     voteType,
   }: {
-    userId: string;
     voteType: 'Upvote' | 'Downvote';
   } = req.body;
 
@@ -261,7 +260,7 @@ export const voteComment = async (req: Request, res: Response) => {
   `, [commentId, userId]);
 
   if (existingVote.rowCount) {
-    const existingVoteType = existingVote.rows[0];
+    const existingVoteType = existingVote.rows[0].type;
 
     // Case where if we upvote the same thread twice, we delete that vote.
     if (existingVoteType === voteType) {
@@ -269,24 +268,28 @@ export const voteComment = async (req: Request, res: Response) => {
         DELETE FROM Comment_Votes
         WHERE comment_id = $1 AND user_id = $2;
       `, [commentId, userId]);
-    }
+    } else {
+			// Case when there is an existing vote, but the vote type we passed is not the same,
+			// so we just return vote the opposite vote.
+			await db.query(`
+				UPDATE  Comment_Votes
+				SET     type = $1
+				WHERE   comment_id = $2 AND user_id = $3;
+			`, [voteType, commentId, userId]);
+		}
+  } else {
+		// If there was no existing vote, we create a new one.
+		await db.query(`
+			INSERT INTO Comment_Votes (user_id, comment_id, type)
+			VALUES ($1, $2, $3);
+		`, [userId, commentId, voteType]);
+	}
 
-    // Case when there is an existing vote, but the vote type we passed is not the same,
-    // so we just return vote the opposite vote.
-    await db.query(`
-      UPDATE  Comment_Votes
-      SET     type = $1
-      WHERE   comment_id = $2 AND user_id = $3;
-    `, [voteType, commentId, userId]);
-  }
+	res.json({
+    success: "true",
+  })
 
-  // If there was no existing vote, we create a new one.
-  await db.query(`
-    INSERT INTO Comment_Votes (user_id, comment_id, type)
-    VALUES ($1, $2, $3);
-  `, [userId, commentId, voteType]);
-
-  // IMPORVEMENT:
+  // TODO: IMPORVEMENT:
   // Could cache popular posts in redis.
 }
 

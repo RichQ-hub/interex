@@ -208,7 +208,7 @@ export const searchCommunities = async (req: Request, res: Response) => {
    * to fetch number the number of threads for each community, we can just do all of it in a single query.
    * 
    * How to think about it:
-   * All of the JOINS and GROUP BY clauses are executed first. We then execute the subquery with 
+   * All of the JOINS and GROUP BY clauses are executed first. We then execute the subquery which 
    * uses the community id in the resulting tuples to grab the number of threads.
    * 
    * Resource:

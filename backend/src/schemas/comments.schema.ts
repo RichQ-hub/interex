@@ -7,7 +7,6 @@ export const CreateCommentSchema = z.object({
 export const EditCommentSchema = CreateCommentSchema;
 
 export const VoteCommentSchema = z.object({
-	userId: z.string(),
 	voteType: z.union([z.literal('Upvote'), z.literal('Downvote')])
 });
 
