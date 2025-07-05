@@ -9,8 +9,16 @@ communities, threads, comments, etc.
 - [2. Technology Stack](#2-technology-stack)
 - [3. Getting Started](#3-getting-started)
 - [4. Startup Script](#4-startup-script)
-- [5. Environment Variables](#5-environment-vairables)
-- [6. Docker Optimisations](#6-docker-optimisations)
+  - [4.1 Usage](#41-usage)
+  - [4.2 Startup containers (-p)](#42-startup-containers--p)
+  - [4.3 Docker Sytem Prune (-c)](#43-docker-sytem-prune--c)
+- [5. Local Development (Backend)](#5-local-development-backend)
+  - [5.1 Production Build](#51-production-build)
+  - [5.2 Development Build](#52-development-build)
+- [6. Environment Vairables](#6-environment-vairables)
+- [7. Docker Optimisations](#7-docker-optimisations)
+  - [7.1 Image Layers](#71-image-layers)
+  - [7.2 Optimised Dockerfiles](#72-optimised-dockerfiles)
 
 ## 1. Planned Features
 
@@ -108,7 +116,7 @@ Your database data will still persist even after stopping the server.
 
 ## 4. Startup Script
 
-### Usage
+### 4.1 Usage
 
 ```bash
 Usage: ./startup.sh [-p <prod|test>] [-c] [-h]
@@ -126,11 +134,12 @@ The script must contain at least 1 of the above options.
 > found`, startup.sh could have CRLF line endings. To fix this, ensure LF line endings are
 > used instead.
 
-#### Make sure the file is executable
+> [!IMPORTANT]
+> **Make sure the file is executable**
+>
+> Run `chmod +x startup.sh` to provide executable permissions for the file.
 
-Run `chmod +x startup.sh` to provide executable permissions for the file.
-
-### Startup containers (-p)
+### 4.2 Startup containers (-p)
 
 The relevant docker containers pertaining to the given profile argument (-p) are
 started (i.e. either `prod` or `test`).
@@ -147,12 +156,36 @@ docker-compose --profile prod down
 # ... cleanup code run
 ```
 
-### Docker Sytem Prune (-c)
+### 4.3 Docker Sytem Prune (-c)
 
 You should periodically run `./startup.sh -c` which will subsequently run `docker system
 prune --all` to cleanse unseen docker files installed as you tear down and rebuild images.
 
-## 5. Environment Vairables
+## 5. Local Development (Backend)
+
+### 5.1 Production Build
+
+
+**Commands**
+
+To run a production build, enter the following commands in the `./backend` folder. All files within the `./src` and `./test` folders will be *transpiled* to native javascript and stored inside the `./dist` folder at the backend's root.
+
+```bash
+yarn build
+yarn start
+```
+
+### 5.2 Development Build
+
+Running a development build enables file watching through **nodemon**. Changes to the backend src files will automatically be reflected on the running server, allowing for faster development.
+
+**Command**
+
+```bash
+yarn dev
+```
+
+## 6. Environment Vairables
 
 | Name         | Description                                                               | Optional | Default value |
 | ------------ | ------------------------------------------------------------------------- | -------- | ------------- |
@@ -171,9 +204,9 @@ prune --all` to cleanse unseen docker files installed as you tear down and rebui
 > [!NOTE]
 > **DB_NAME** refers to the database name defined in the env variable POSTGRES_DB for the postgres image.
 
-## 6. Docker Optimisations
+## 7. Docker Optimisations
 
-### Image Layers
+### 7.1 Image Layers
 
 **Consider the following `Dockerfile`**
 
@@ -200,15 +233,15 @@ Here are a few examples of situations that can cause cache to be invalidated:
 1. Any changes to the command of a `RUN` instruction invalidates that layer. Docker detects the change and invalidates
 the build cache if there's any modification to a `RUN` command in your Dockerfile.
 
-1. Any changes to files copied into the image with the `COPY` or `ADD` instructions. Docker keeps an eye on any
+2. Any changes to files copied into the image with the `COPY` or `ADD` instructions. Docker keeps an eye on any
 alterations to files within your project directory. Whether it's a change in content or properties like permissions,
 Docker considers these modifications as triggers to invalidate the cache.
 
-1. Changes to a previous layer. This is because all layers DEPEND ON the previous layer to build its app because
+3. Changes to a previous layer. This is because all layers DEPEND ON the previous layer to build its app because
 of dependencies. Hence, if a previous layer were changed, then the current layer needs to be rebuilt to use those
 updated files.
 
-### Optimised Dockerfiles
+### 7.2 Optimised Dockerfiles
 
 Our docker architecture applies optimisations taking full advantage of the layer cache invalidation system by minimising the amount of invalidations as much as possible. In turn, we can enjoy faster build times and more efficient space.
 
