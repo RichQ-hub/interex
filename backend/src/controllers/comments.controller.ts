@@ -286,7 +286,7 @@ export const voteComment = async (req: Request, res: Response) => {
 	}
 
 	res.json({
-    success: "true",
+    message: `Comment successfully ${voteType}d`,
   })
 
   // TODO: IMPORVEMENT:

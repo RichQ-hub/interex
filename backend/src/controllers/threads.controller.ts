@@ -57,6 +57,7 @@ export const getAllThreads = async (req: Request, res: Response) => {
 			t.pinned_by,
       t.created_at,
 			coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes,
+			coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Downvote'), 0) as num_downvotes,
       coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments
     FROM
       Threads t
@@ -76,6 +77,7 @@ export const getAllThreads = async (req: Request, res: Response) => {
 			pinnedBy: thread.pinned_by,
       createdAt: thread.created_at,
       numUpvotes: thread.num_upvotes,
+			numDownvotes: thread.num_downvotes,
 			numComments: thread.num_comments,
       flairs,
     }
@@ -102,6 +104,7 @@ export const getThreadDetails = async (req: Request, res: Response) => {
       t.pinned_by,
       t.created_at,
       coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Upvote'), 0) as num_upvotes,
+			coalesce((SELECT count(v.user_id) FROM Thread_Votes v WHERE v.thread_id = t.id AND v.type = 'Downvote'), 0) as num_downvotes,
 			coalesce((SELECT count(c.id) FROM Comments c WHERE c.thread_id = t.id), 0) as num_comments
     FROM
       Threads t
@@ -126,6 +129,7 @@ export const getThreadDetails = async (req: Request, res: Response) => {
     pinnedBy: thread.pinned_by,
     createdAt: thread.created_at,
     numUpvotes: thread.num_upvotes,
+		numDownvotes: thread.num_downvotes,
 		numComments: thread.num_comments,
 		flairs
   });
@@ -246,8 +250,8 @@ export const deleteThread = async (req: Request, res: Response) => {
  * Upvotes/Downvotes on a specific thread.
  */
 export const voteThread = async (req: Request, res: Response) => {
-  const userId = req.user || '';
   const { threadId } = req.params;
+	const userId = req.user || '';
 
   const {
     voteType,
@@ -271,22 +275,26 @@ export const voteThread = async (req: Request, res: Response) => {
         DELETE FROM Thread_Votes
         WHERE thread_id = $1 AND user_id = $2;
       `, [threadId, userId]);
-    }
+    } else {
+			// Case when there is an existing vote, but the vote type we passed is not the same,
+			// so we just return vote the opposite vote.
+			await db.query(`
+				UPDATE  Thread_Votes
+				SET     type = $1
+				WHERE   thread_id = $2 AND user_id = $3;
+			`, [voteType, threadId, userId]);
+		}
+  } else {
+		// If there was no existing vote, we create a new one.
+		await db.query(`
+			INSERT INTO Thread_Votes (user_id, thread_id, type)
+			VALUES ($1, $2, $3);
+		`, [userId, threadId, voteType]);
+	}
 
-    // Case when there is an existing vote, but the vote type we passed is not the same,
-    // so we just return vote the opposite vote.
-    await db.query(`
-      UPDATE  Thread_Votes
-      SET     type = $1
-      WHERE   thread_id = $2 AND user_id = $3;
-    `, [voteType, threadId, userId]);
-  }
-
-  // If there was no existing vote, we create a new one.
-  await db.query(`
-    INSERT INTO Thread_Votes (user_id, thread_id, type)
-    VALUES ($1, $2, $3);
-  `, [userId, threadId, voteType]);
+	res.json({
+    message: `Thread successfully ${voteType}d`,
+  })
 
   // IMPORVEMENT:
   // Could cache popular posts in redis.
