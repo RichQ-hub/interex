@@ -6,7 +6,8 @@ import Navlinks from './Navlinks';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
-import LogoutButton from '../LogoutButton';
+import LogoutButton from './LogoutButton';
+import LoginButton from './LoginButton';
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -30,10 +31,7 @@ const Navbar = async () => {
           <LogoutButton />
         </>
       ) : (
-        <Link
-          href='/login'
-          className={`${saira.className} ml-auto px-6 h-2/3 bg-[#1E2329] font-bold text-xl flex items-center shadow-[0px_4px_4px_2px_rgba(0,0,0,0.80)]`}
-        >LOGIN</Link>
+				<LoginButton />
       )}
     </nav>
   )

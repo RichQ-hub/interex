@@ -23,6 +23,8 @@ const PostComment = ({
     e.preventDefault();
     setLoading(true);
 
+		console.log(comment.value);
+
     await CommentService.createComment(session?.user.accessToken, threadId, comment.value);
 
     // Refetches the data for communities.

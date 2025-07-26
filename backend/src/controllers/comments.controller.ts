@@ -56,7 +56,7 @@ export const getComments = async (req: Request, res: Response) => {
         c2.id,
         c2.content,
         c2.created_at,
-        u.username,
+        u.username as author,
         mem.role,
         coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c2.id AND v.type = 'Upvote'), 0) as num_upvotes,
         coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c2.id AND v.type = 'Downvote'), 0) as num_downvotes
@@ -82,7 +82,7 @@ export const getComments = async (req: Request, res: Response) => {
       // Take each reply tuple from the query and push a comment object to the replies list.
       replies.push({
         id: reply.id,
-        author: reply.username,
+        author: reply.author,
         authorRole: reply.role,
         posted: reply.created_at,
         content: reply.content,
@@ -105,7 +105,7 @@ export const getComments = async (req: Request, res: Response) => {
       c.id,
       c.content,
       c.created_at,
-      u.username,
+      u.username as author,
       mem.role,
       coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c.id AND v.type = 'Upvote'), 0) as num_upvotes,
       coalesce((SELECT count(v.user_id) FROM Comment_Votes v WHERE v.comment_id = c.id AND v.type = 'Downvote'), 0) as num_downvotes
@@ -127,7 +127,7 @@ export const getComments = async (req: Request, res: Response) => {
       .then((repliesList) => {
         comments.push({
           id: comment.id,
-          author: comment.username,
+          author: comment.author,
           authorRole: comment.role,
           posted: comment.created_at,
           content: comment.content,
@@ -299,9 +299,7 @@ export const voteComment = async (req: Request, res: Response) => {
 export const replyComment = async (req: Request, res: Response) => {
   const { threadId, commentId } = req.params;
   const userId = req.user || '';
-  const {
-    content
-  } = req.body;
+  const { content } = req.body;
 
   // Grab the community that this thread belongs to.
   const communityResult = await db.query(`

@@ -17,9 +17,13 @@ export const authOptions: NextAuthOptions = {
           type: 'password'
         }
       },
+			// This is a handler function that accepts credentials submitted via a HTTP POST request as input. 
+			// Essentially, this is the function that gets called when the sign-in button is clicked.
       async authorize(credentials) {
         const user = await AuthService.login(credentials?.email || '', credentials?.password || '');
         console.log(user);
+
+				// If login with backend is successful, we return a user object.
         if (!(user.error || null)) {
           return {
             id: user.id, // This will be set as the value for the 'sub' property in the JWT token (the token object in JWT callback will have sub).
@@ -37,7 +41,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     /**
      * In this callback, we are able to add properties to the token payload. The user
-     * parameter is the user object that we return from the authorize method from the
+     * parameter is the user object that we return from the authorize() method from the
      * credentials provider we set above.
      * 
      * NOTE:

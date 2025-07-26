@@ -50,7 +50,7 @@ class CommunityService {
       body: JSON.stringify(payload)
     };
 
-    const response = await parseJSON(`${BASE_URL}/new`, options);
+    const response = await parseJSON(`${BASE_URL}/create`, options);
     return response.community;
   }
 
@@ -64,7 +64,7 @@ class CommunityService {
       body: JSON.stringify(payload)
     };
 
-    const response = await parseJSON(`${BASE_URL}/category/new`, options);
+    const response = await parseJSON(`${BASE_URL}/category/create`, options);
     return response.category;
   }
 
@@ -78,7 +78,7 @@ class CommunityService {
       body: JSON.stringify(payload)
     };
 
-    const response = await parseJSON(`${BASE_URL}/flair/new/${communityId}`, options);
+    const response = await parseJSON(`${BASE_URL}/flair/create/${communityId}`, options);
     return response.flair;
   }
 
