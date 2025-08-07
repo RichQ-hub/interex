@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import Provider from '@/lib/sessionContext';
 import { fira } from '@/fonts';
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: 'Interex',
@@ -24,6 +25,7 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body className={`${fira.className} antialiased text-white box-border`}>
+				<NextTopLoader showSpinner={false} />
         <Provider session={session}>
           <Navbar />
           <div className='min-h-screen mt-14 bg-gradient-to-b from-interex-bg-black to-interex-bg-blue to-15%'>

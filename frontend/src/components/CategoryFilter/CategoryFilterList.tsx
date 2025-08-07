@@ -29,7 +29,7 @@ const CategoryFilterList = ({
     
     // We use scroll = false, so that the scroll position doesn't reset to the top when we 
     // update the search params.
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
   return (

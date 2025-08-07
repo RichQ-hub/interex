@@ -46,6 +46,7 @@ jobs:
       - name: Checkout repository code.
         uses: actions/checkout@v4
   
+      # Sets up your build environment with node installed.
       - name: Setup node version
         uses: actions/setup-node@v4
         with:

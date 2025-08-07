@@ -8,12 +8,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 import { Suspense } from 'react';
 import CommunitiesList from '@/components/CommunitiesList';
-import CommunitiesListSkeleton from '@/skeletons/CommunitiesListSkeleton';
 import CategoryFilterSkeleton from '@/skeletons/CategoryFilterSkeleton';
 import AddCommunityButton from '@/components/AddCommunityButton';
 import CreateCommunityModal from '@/components/CreateCommunityModal';
 import CreateCategoryModal from '@/components/CreateCategoryModal';
 import AddCategoryButton from '@/components/AddCategoryButton';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const SORT_OPTIONS = ['Alphabetical', 'Threads (High - Low)', 'Threads (Low - High)'];
 const PAGE_SIZE_OPTIONS = ['10', '20', '50'];
@@ -105,7 +105,7 @@ export default async function CommunityFinderPage({
         </div>
 
         {/* Community Cards */}
-        <Suspense key={query + sortBy + pageSize} fallback={<CommunitiesListSkeleton />}>
+        <Suspense key={query + page + sortBy + category} fallback={<LoadingSpinner />}>
           <CommunitiesList
             query={query}
             sortBy={sortBy}

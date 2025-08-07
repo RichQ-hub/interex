@@ -1,5 +1,7 @@
+import LoadingSpinner from '@/components/LoadingSpinner';
+
 export default async function CommunityThreadsLoading() {
   return (
-    <h1>Loading community threads</h1>
+    <LoadingSpinner />
   )
 }
