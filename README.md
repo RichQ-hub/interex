@@ -5,20 +5,29 @@ communities, threads, comments, etc.
 
 ## Table of Contents
 
-- [1. Planned Features](#1-planned-features)
-- [2. Technology Stack](#2-technology-stack)
-- [3. Getting Started](#3-getting-started)
-- [4. Startup Script](#4-startup-script)
-  - [4.1 Usage](#41-usage)
-  - [4.2 Startup containers (-p)](#42-startup-containers--p)
-  - [4.3 Docker Sytem Prune (-c)](#43-docker-sytem-prune--c)
-- [5. Local Development (Backend)](#5-local-development-backend)
-  - [5.1 Production Build](#51-production-build)
-  - [5.2 Development Build](#52-development-build)
-- [6. Environment Vairables](#6-environment-vairables)
-- [7. Docker Optimisations](#7-docker-optimisations)
-  - [7.1 Image Layers](#71-image-layers)
-  - [7.2 Optimised Dockerfiles](#72-optimised-dockerfiles)
+- [Interex](#interex)
+  - [Table of Contents](#table-of-contents)
+  - [1. Planned Features](#1-planned-features)
+  - [2. Technology Stack](#2-technology-stack)
+  - [3. Getting Started](#3-getting-started)
+    - [Step 1: Install Docker Desktop](#step-1-install-docker-desktop)
+    - [Step 2: Clone the project](#step-2-clone-the-project)
+    - [Step 3: Copy .env.example file](#step-3-copy-envexample-file)
+    - [Step 4: Run the server](#step-4-run-the-server)
+      - [Ready Indication](#ready-indication)
+    - [Step 5: Stopping the server](#step-5-stopping-the-server)
+      - [Data Persistence](#data-persistence)
+  - [4. Startup Script](#4-startup-script)
+    - [4.1 Usage](#41-usage)
+    - [4.2 Startup containers (-p)](#42-startup-containers--p)
+    - [4.3 Docker Sytem Prune (-c)](#43-docker-sytem-prune--c)
+  - [5. Local Development (Backend)](#5-local-development-backend)
+    - [5.1 Production Build](#51-production-build)
+    - [5.2 Development Build](#52-development-build)
+  - [6. Environment Vairables](#6-environment-vairables)
+  - [7. Docker Optimisations](#7-docker-optimisations)
+    - [7.1 Image Layers](#71-image-layers)
+    - [7.2 Optimised Dockerfiles](#72-optimised-dockerfiles)
 
 ## 1. Planned Features
 
@@ -65,6 +74,11 @@ git clone git@github.com:RichQ-hub/interex.git
 
 ```bash
 ./startup.sh -p prod
+```
+
+**On Windows:**
+```bash
+bash startup.sh -p prod
 ```
 
 > [!IMPORTANT]
